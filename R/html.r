@@ -6,7 +6,7 @@ writeRaw <- function(htmlStr,htmlFile,append=TRUE)
   ##@in htmlStr  : [character] text
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-  
+
   cat(htmlStr,file=htmlFile,append=append);
 }
 
@@ -143,11 +143,13 @@ writeCR <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-  
+
   cat("\n",file=htmlFile,append=append);
 }
-  
-writeBeginTable <- function(header,htmlFile,border=1,width="100%",append=TRUE)
+
+writeBeginTable <- function(header,htmlFile,border=1,
+                            width="100%",append=TRUE,
+                            columnWidth=NULL)
 {
 
   ##@bdescr
@@ -159,19 +161,22 @@ writeBeginTable <- function(header,htmlFile,border=1,width="100%",append=TRUE)
   ##@in width    : [character] width of table
   ##@in append   : [logical] append the html code
 
-  
+
   tablePara <- paste("border=\"",border,"\" width=\"",width,"\"",sep="")
   writeRawCR(paste("<table ",tablePara," >",sep=""),htmlFile,append);
   writeBeginTag("tr",htmlFile);
-  
-  for(i in 1:length(header))
-  {
-    writeBeginTag("th",htmlFile);
+
+  for(i in 1:length(header)) {
+    para <- ""
+    if(!is.null(columnWidth)) {
+      para = paste("width=\"", columnWidth[i], "\"", sep="")
+    }
+    writeBeginTag("th",htmlFile, para=para);
     writeRaw(header[i],htmlFile);
     writeEndTag("th",htmlFile);
     writeCR(htmlFile);
   }
-    
+
   writeEndTag("tr",htmlFile,append);
   writeCR(htmlFile);
 }
@@ -186,7 +191,7 @@ writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
   ##@in bgcolor  : [character] color for table cells
-  
+
   writeBeginTag("tr",htmlFile);
   if(length(bgcolor) == 1)
   {
@@ -206,7 +211,7 @@ writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
     writeEndTag("td",htmlFile);
     writeCR(htmlFile);
   }
-    
+
   writeEndTag("tr",htmlFile,append);
   writeCR(htmlFile);
 }
@@ -221,12 +226,12 @@ writeLink <- function(target,name,htmlFile,append=TRUE)
   ##@in name     : [character] name of the target
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-  
+
   writeBeginTag("a",htmlFile,paste("href=\"",target,"\"",sep=""),append=append);
   writeRaw(name,htmlFile,append=TRUE);
   writeEndTag("a",htmlFile,append=TRUE);
 }
-  
+
 writeEndTable <- function(htmlFile,append=TRUE)
 {
   writeEndTag("table",htmlFile,append);
@@ -256,7 +261,7 @@ writeHtmlEnd <- function(htmlFile)
   ## write end of html code
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
-  
+
   writeEndBody(htmlFile);
   writeEndHtml(htmlFile);
 }
@@ -264,13 +269,13 @@ writeHtmlEnd <- function(htmlFile)
 writeHtmlSep <- function(htmlFile)
 {
   ##@bdescr
-  ## write horizontal seperator 
+  ## write horizontal seperator
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
-  
+
   writeRawCR("<hr>",htmlFile);
 }
-  
+
 writeImage <- function(img,htmlFile,append=TRUE)
 {
   ##@bdescr
@@ -279,7 +284,7 @@ writeImage <- function(img,htmlFile,append=TRUE)
   ##@in img :      [character] name of the image file
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-  
+
   writeBeginTag("img",htmlFile,para=paste("src=\"",img,"\"",sep=""),append);
   writeEndTag("img",htmlFile);
 }
@@ -287,7 +292,7 @@ writeImage <- function(img,htmlFile,append=TRUE)
 writeHtmlSection <- function(title,sec,htmlFile,append=TRUE)
 {
   ##@bdescr
-  ## write titles for section 
+  ## write titles for section
   ##@bdescr
   ##@in title    : [character] title of the section
   ##@in sec      : [integer] size of title (between 1-6)
@@ -300,4 +305,4 @@ writeHtmlSection <- function(title,sec,htmlFile,append=TRUE)
   writeEndTag(secTag,htmlFile,append);
   writeCR(htmlFile,append);
 }
-  
+
