@@ -329,8 +329,11 @@ printHTMLProtocol <- function(testData,
   }
 
 
-
-
+  
+  ver <- cbind(unlist(version))
+  pr("\n\n --------------------------------\n")
+  write.table(ver, sep="\t", quote=FALSE, append=TRUE, file=fileName)
+  
   ## finish html document
   writeHtmlEnd(htmlFile=fileName)
 }
