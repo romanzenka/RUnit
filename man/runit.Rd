@@ -125,8 +125,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
-  \code{\link{printTextProtocol}} for printing a plain text version of a
-  test protocol.
+  \code{\link{printTextProtocol}} and \code{\link{printHTMLProtocol}} for printing the test protocol.
 }
 
 
