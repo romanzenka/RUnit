@@ -1,0 +1,54 @@
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%
+%  $Id$
+%
+%
+%\VignetteIndexEntry{affy primer}
+%\VignetteKeywords{Unit Testing, Code INspection, Programming}
+%\VignetteDepends{}
+%\VignettePackage{RUnit}
+documentclass[12pt, a4paper]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage{hyperref}
+%\usepackage[authoryear,round]{natbib}
+
+%\textwidth=6.2in
+%\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\author{Thomas K\"onig, Klaus J\"unemann, and Matthias Burger}
+\begin{document}
+\title{RUnit - A Unit Testing Framework for R}
+
+\maketitle
+\tableofcontents
+\section{Introduction}
+The \Rpackage{RUnit} package provides ...
+
+\section{Getting Started: Setting up test cases}
+\label{section:gettingStarted}
+
+Bla bla
+\begin{Sinput}
+R> library(RUnit) ##load the package
+\end{Sinput}
+
+%\bibliographystyle{plainnat}
+
+\end{document}
+
+
+
+
+
+

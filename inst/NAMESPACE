@@ -1,0 +1,181 @@
+######################################################################
+##
+## library: EpiR.dev
+## =====================================
+##
+## inst/NAMESPACE
+## =====================================
+## initialization of classes, namespace, ...
+##
+##
+## Dependencies
+## =====================================
+##
+##
+## Version
+## =====================================
+##  $Id$
+##
+## Copyright (c) 2003-2004  Epigenomics AG Berlin - All rights reserved
+## THIS IS PROPRIETARY SOURCE CODE of Epigenomics AG Berlin
+##
+######################################################################
+
+##  namespace export pattern
+##  see package namespace documentation
+##  and the pdf document under isci/lit/R/Tierney_note-more-namespaces.pdf
+
+useDynLib(EpiR.dev)
+
+import(ctest)
+import(mva)
+import(exactRankTests)
+import(EpiR.base)
+import(RSVM)
+
+export("EpiR.dev")
+
+##  export ALL classes defined in EpiR.dev
+##  listing in alphabetical order as given by ls
+exportClasses("ANOVAPValScoring",
+              "BinLearnerScoring",
+              "CH3Aggregate",
+              "CH3MLCalibrationScore",
+              "CH3Score",
+              "CH3Signal",
+              "CH3SimpleDiffScore",
+              "CH3SimpleLogScore",
+              "CH3SimplePropScore",
+              "ChipNoiseModelNormalizer",
+              "ChipTransRocke",
+              "ConfCurve",
+              "CorrelationScoring",
+              "CrossValidation",
+              "CrossValidationFS",
+              "Curve",
+              "DetectionOligoNormalizer",
+              "Filter",
+              "FilterRank",
+              "FilterScore",
+              "FisherStatScoring",
+              "FrequencyTable",
+              "FrequencyTable2x2",
+              "GenericOligoMatcher",
+              "HotellingT2PValScoring",
+              "KruskalWallisPValScoring",
+              "LearnAlgo",
+              "LearnAlgoState",
+              "Learner",
+              "LearnerState",
+              "LocalNormalizer",
+              "Location",
+              "LocationOligoAverager",
+              "LogCGTGCH3Signal",
+              "LogRegLearner",
+              "LogRegLearnerState",
+              "MethylationLogSignal",
+              "MethylationProportionSignal",
+              "MethylationSignal",
+              "MultiSVMOvO",
+              "MultiSVMOvOState",
+              "MultipleTest2SampleScoring",
+              "Multivariate1SampleRanking",
+              "Multivariate1SampleScoring",
+              "Multivariate2SampleRanking",
+              "Multivariate2SampleScoring",
+              "MultivariateLogRegPValScoring",
+              "NAHandler",
+              "NegativeControlNormalizer",
+              "Normalizer",
+              "OligoAverager",
+              "OligoMatcher",
+              "OligoNameMatcher",
+              "PCA",
+              "ProjectionAlgo",
+              "ROCCurve",
+              "RSVMState",
+              "Ranking",
+              "RobustHotellingT2Scoring",
+              "RobustPCA",
+              "Scale",
+              "SimpleCH3Signal",
+              "SimpleOligoMatcher",
+              "TTestPValScoring",
+              "TwoWayANOVA",
+              "TwoWayANOVAState",
+              "UnitIntensityNormalizer",
+              "UnivarSample2ClassDevel",
+              "Univariate2SampleRanking",
+              "Univariate2SampleScoring",
+              "UnivariateNSampleRanking",
+              "UnivariateNSampleScoring",
+              "UnivariatePairwiseNSampleRanking",
+              "WestfallYoungPValRanking",
+              "WestfallYoungPValScoring",
+              "WilcoxonPValScoring",
+              "binSVM",
+              "dummyRanking")
+
+##  export ALL methods defined in EpiR.dev
+##  listing in alphabetical order
+exportMethods("analyse",
+              "average",
+              "auc",
+              "calcProjectionBase",
+              "calcSignal",
+              "ch3signal",
+              "compute",
+              "crossvalidation",
+              "decision",
+              "filter",
+              "getAccuracy",
+              "getAlpha",
+              "getC",
+              "getColumnProfile",
+              "getCompareFunc",
+              "getEps",
+              "getErrorRate",
+              "getKernel",
+              "getLearnModus",
+              "getLearnParameter",
+              "getLikelihoodRatioNeg",
+              "getLikelihoodRatioPlus",
+              "getMaxNrLabel",
+              "getN",
+              "getNegativePredictiveValue",
+              "getOddsRatio",
+              "getPositivePredictiveValue",
+              "getPrevalence",
+              "getPValue",
+              "getRho",
+              "getRowProfile",
+              "getSelectedFeatures",
+              "getSensitivity",
+              "getSpecificity",
+              "getSum",
+              "getSV",
+              "getThreshold",
+              "getTestMissFrequencies",
+              "getTrainMissFrequencies",
+              "handleNA",
+              "isWorkingOligo",
+              "loc",
+              "matching",
+              "normalize",
+              "optFeatureDim",
+              "orderScore",
+              "orderTiedScore",
+              "predict",
+              "printObject",
+              "ranking",
+              "rankingR",
+              "rankingC",
+              "rankingRC",
+              "ROCtest",
+              "sc",
+              "score",
+              "setLearnModus",
+              "setLearnParameter",
+              "train",
+              "verifyObject")
+
