@@ -66,4 +66,4 @@ printHTML.trackInfo(resTrack)
 }
 
 \keyword{programming}
-\keyword{RUnit}
+\concept{RUnit}

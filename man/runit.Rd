@@ -141,4 +141,4 @@ printTextProtocol(testData, showDetails=TRUE)
 }
 
 \keyword{programming}
-\keyword{RUnit}
+\concept{RUnit}

@@ -95,4 +95,4 @@ checkException(fun(TRUE))   ## passes fine
 }
 
 \keyword{programming}
-\keyword{RUnit}
+\concept{RUnit}

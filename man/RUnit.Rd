@@ -19,5 +19,5 @@ and thus for test case coverage analysis.
 for unit testing or \code{\link{inspect}} and
 \code{\link{tracker}} for code inspection.}
 
-\keword{programming}
-\keyword{RUnit}
+\keyword{programming}
+\concept{RUnit}
