@@ -205,7 +205,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
                             full.names=TRUE)
     for(testFile in testFiles) {
       ## set a standard random number generator.
-      RNGkind(kind="Marsaglia-Multicarry", normal.kind="Kinderman-Ramage")
+      RNGkind(kind="Mersenne-Twister", normal.kind="Inversion")
       .sourceTestFile(testFile, testSuite$testFuncRegexp)
     }
   }
