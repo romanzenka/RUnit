@@ -58,7 +58,7 @@ printTextProtocol <- function(testData,
     return()
   }
 
-  errInfo <- getErrors(testData)
+  errInfo <- .getErrors(testData)
   pr("Number of test functions:", errInfo$nTestFunc)
   pr("Number of errors:", errInfo$nErr)
   pr("Number of failures:", errInfo$nFail, "\n\n")
@@ -148,8 +148,16 @@ printTextProtocol <- function(testData,
                 pr(testFuncInfo$msg, nl=FALSE)
                 if(length(testFuncInfo$traceBack) > 0) {
                   pr("   Call Stack:")
-                  for(i in traceBackCutOff:length(testFuncInfo$traceBack)) {
-                    pr("   ", 1+i-traceBackCutOff, ": ", testFuncInfo$traceBack[i], sep="")
+                  if(traceBackCutOff > length(testFuncInfo$traceBack)) {
+                    pr("   (traceBackCutOff argument larger than length of trace back: full trace back printed)")
+                    for(i in 1:length(testFuncInfo$traceBack)) {
+                      pr("   ", i, ": ", testFuncInfo$traceBack[i], sep="")
+                    }
+                  }
+                  else {
+                    for(i in traceBackCutOff:length(testFuncInfo$traceBack)) {
+                      pr("   ", 1+i-traceBackCutOff, ": ", testFuncInfo$traceBack[i], sep="")
+                    }
                   }
                 }
               }
@@ -170,7 +178,7 @@ print.RUnitTestData <- function(x, ...)
   ##
   ##@in  x : [RUnitTestData] S3 class object
 
-  errInfo <- getErrors(x)
+  errInfo <- .getErrors(x)
   cat("Number of test functions:", errInfo$nTestFunc, "\n")
   cat("Number of errors:", errInfo$nErr, "\n")
   cat("Number of failures:", errInfo$nFail, "\n")

@@ -66,11 +66,23 @@ printHTMLProtocol <- function(testData,
   printTraceBack <- function(traceBack) {
     if(length(traceBack) > 0) {
       writeRaw("Call Stack:<br/>", htmlFile=fileName)
-      writeBeginTag("ol", htmlFile=fileName)
-      for(i in traceBackCutOff:length(traceBack)) {
-        writeBeginTag("li", htmlFile=fileName)
-        writeRaw(traceBack[i], htmlFile=fileName)
-        writeEndTag("li", htmlFile=fileName)
+
+      if(traceBackCutOff > length(testFuncInfo$traceBack)) {
+        writeRaw("(traceBackCutOff argument larger than length of trace back: full trace back printed)<br/>", htmlFile=fileName)
+        writeBeginTag("ol", htmlFile=fileName)
+        for(i in 1:length(traceBack)) {
+          writeBeginTag("li", htmlFile=fileName)
+          writeRaw(traceBack[i], htmlFile=fileName)
+          writeEndTag("li", htmlFile=fileName)
+        }
+      }
+      else {
+        writeBeginTag("ol", htmlFile=fileName)
+        for(i in traceBackCutOff:length(traceBack)) {
+          writeBeginTag("li", htmlFile=fileName)
+          writeRaw(traceBack[i], htmlFile=fileName)
+          writeEndTag("li", htmlFile=fileName)
+        }
       }
       writeEndTag("ol", htmlFile=fileName)
     }
@@ -92,7 +104,7 @@ printHTMLProtocol <- function(testData,
     return()
   }
   ## basic Info
-  errInfo <- getErrors(testData)
+  errInfo <- .getErrors(testData)
   writeP(paste("Number of test functions:", errInfo$nTestFunc))
   writeP(paste("Number of errors:", errInfo$nErr),
          para=ifelse(errInfo$nErr == 0, "", paste("style", errorStyle, sep="=")))
