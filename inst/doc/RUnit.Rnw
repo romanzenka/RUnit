@@ -185,7 +185,7 @@ Before running the test function it is necessary to create a test suite which is
 testsuite.c2f <- defineTestSuite("c2f",
                                  dirs=paste(path.package(package="RUnit"), "examples",sep="/"),
                                  testFileRegexp="^runit.+\\.r",
-                                 testFuncRegexp="^test.+")
+                                 testFuncRegexp="^test.+")
 \end{Sinput}
 All that remains is to run the test suite and print the test protocol:
 \begin{Sinput}
@@ -266,7 +266,7 @@ bar <- function(x, y=NULL) {
   res <- x^y
   return(res)
 }
-  
+
 track <- tracker(); ## initialize a tracking "object"
 track$init(); ## initialize the tracker
 a <- 1:10
