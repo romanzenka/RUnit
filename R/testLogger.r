@@ -18,7 +18,7 @@
 ##  $Id$
 
 
-newTestLogger <- function(useOwnErrorHandler) {
+.newTestLogger <- function(useOwnErrorHandler) {
   ##@bdescr
   ## creates a new, empty TestLogger 'object'.
   ## TestLogger is an object based on the 'closure trick'. It has the task
@@ -157,9 +157,9 @@ newTestLogger <- function(useOwnErrorHandler) {
 
 
 ## tools to handle the testData listlistlist
-getErrors <- function(testData) {
+.getErrors <- function(testData) {
   if(class(testData) != "RUnitTestData") {
-    stop("getErrors needs an object of class 'RUnitTestData' as argument.")
+    stop(".getErrors needs an object of class 'RUnitTestData' as argument.")
   }
   ret <- list(nErr=0, nFail=0, nTestFunc=0)
   for(i in seq(length=length(testData))) {
