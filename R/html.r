@@ -75,7 +75,7 @@ writeEndHead <- function(htmlFile,append=TRUE)
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
 
-  writeRaw("<head>\n",htmlFile,append);
+  writeRaw("</head>\n",htmlFile,append);
 }
 
 
@@ -98,7 +98,7 @@ writeEndHtml <- function(htmlFile,append=TRUE)
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
 
-  writeRaw("<html>\n",htmlFile,append);
+  writeRaw("</html>\n",htmlFile,append);
 }
 
 writeBeginBody <- function(htmlFile,append=TRUE)
