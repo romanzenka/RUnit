@@ -7,9 +7,9 @@
 \title{Tracking the results of the inspect process.}
 
 
-\usage{tracker()
-          tracker$init()
-          tracker$getTrackInfo()
+\usage{track <- tracker()
+       track$init()
+       track$getTrackInfo()
 }
 
 \description{
