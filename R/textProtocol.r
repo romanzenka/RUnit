@@ -30,11 +30,58 @@ printTextProtocol <- function(testData,
   ##@edescr
   ##
   ##@in  testData            : [RUnitTestData] S3 class object
-  ##@in  fileName            : [character]
-  ##@in  separateFailureList : [logical] flag
-  ##@in  showDetails         :
+  ##@in  fileName            : [character] string, fulll path + file name to be written to
+  ##@in  separateFailureList : [logical] if TRUE (default) add a failure list
+  ##@in  showDetails         : [logical] if TRUE (default) add detailed trackbacks for each error incurred
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
 
+    ##  preconditions
+  if (!is(testData, "RUnitTestData"))
+  {
+    stop("Argument 'testData' must be of class 'RUnitTestData'.")
+  }
+
+  if (!is.character(fileName))
+  {
+    stop("Argument 'fileName' has to be of type character.")
+  }
+  if (length(fileName) != 1)
+  {
+    stop("Argument 'fileName' must contain exactly one element.")
+  }
+  
+  if (!is.logical(separateFailureList))
+  {
+    stop("Argument 'separateFailureList' has to be of type logical.")
+  }
+  if (length(separateFailureList) != 1)
+  {
+    stop("Argument 'separateFailureList' must contain exactly one element.")
+  }
+
+  if (!is.logical(showDetails))
+  {
+    stop("Argument 'showDetails' has to be of type logical.")
+  }
+  if (length(showDetails) != 1)
+  {
+    stop("Argument 'showDetails' must contain exactly one element.")
+  }
+  
+  if (!is.numeric(traceBackCutOff))
+  {
+    stop("Argument 'traceBackCutOff' has to be of type logical.")
+  }
+  if (length(traceBackCutOff) != 1)
+  {
+    stop("Argument 'traceBackCutOff' must contain exactly one element.")
+  }
+  if (traceBackCutOff < 0 || traceBackCutOff > 100)
+  {
+    stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
+  }
+
+  
   ## just a convenience function
   pr <- function(..., sep=" ", nl=TRUE) {
     if(nl) {

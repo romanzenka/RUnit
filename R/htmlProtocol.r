@@ -30,8 +30,47 @@ printHTMLProtocol <- function(testData,
   ##
   ##@in  testData            : [RUnitTestData] S3 class object
   ##@in  fileName            : [character]
-  ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
+  ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures 
+  ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to be displayed
 
+  ##  preconditions
+  if (!is(testData, "RUnitTestData"))
+  {
+    stop("Argument 'testData' must be of class 'RUnitTestData'.")
+  }
+
+  if (!is.character(fileName))
+  {
+    stop("Argument 'fileName' has to be of type character.")
+  }
+  if (length(fileName) != 1)
+  {
+    stop("Argument 'fileName' must contain exactly one element.")
+  }
+  
+  if (!is.logical(separateFailureList))
+  {
+    stop("Argument 'separateFailureList' has to be of type logical.")
+  }
+  if (length(separateFailureList) != 1)
+  {
+    stop("Argument 'separateFailureList' must contain exactly one element.")
+  }
+  
+  if (!is.numeric(traceBackCutOff))
+  {
+    stop("Argument 'traceBackCutOff' has to be of type logical.")
+  }
+  if (length(traceBackCutOff) != 1)
+  {
+    stop("Argument 'traceBackCutOff' must contain exactly one element.")
+  }
+  if (traceBackCutOff < 0 || traceBackCutOff > 100)
+  {
+    stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
+  }
+  
+  
   ## some little helper functions
   ## get singular or plural right
   sop <- function(number, word, plext="s") ifelse(number == 1, paste(number, word),
