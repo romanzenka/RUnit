@@ -1,11 +1,13 @@
 \name{textProtocol}
 \alias{printTextProtocol}
+\alias{printHTMLProtocol}
 \alias{print.RUnitTestData}
 \alias{summary.RUnitTestData}
-\title{Printing a plain text version of an RUnit test run.}
+\title{Printing a plain text or HTML version of an RUnit test run.}
 
 \usage{
   printTextProtocol(testData, fileName = "", separateFailureList = TRUE, showDetails = TRUE, traceBackCutOff=9)
+  printHTMLProtocol(testData, fileName = "", separateFailureList = TRUE, traceBackCutOff=9)
   print(testData)
   summary(testData, ...)
 }
@@ -33,13 +35,15 @@
   printTextProtocol() call.}
 }
 
-\description{These functions produce a text protocol (as opposed to
-  other output formats such as HTML) from the data object returned from
-  the \code{runTestSuite} function.
-
-  \code{printTextProtocol} contains the actual print functionality. The
-  resulting test protocol can be configured through the function
+\description{
+  \code{printTextProtocol} prints a plain text protocol of a test run.
+  The resulting test protocol can be configured through the function
   arguments.
+
+  \code{printHTMLProtocol} prints an HTML protocol of a test run.
+  For long outputs this version of the test protocol is slightly more
+  readable than the plain text version due to links in the document.
+  The resulting test protocol can be configured through the function arguments.
 
   \code{print} prints the number of executed test functions and the
   number of failures and errors.
@@ -75,6 +79,10 @@ testData <- runTestSuite(myTestSuite)
 ## prints detailed text protocol
 ## to standard out:
 printTextProtocol(testData, showDetails=TRUE)
+## prints detailed html protocol
+## to standard out
+printHTMLProtocol(testData)
+
 }
 
 \keyword{programming}
