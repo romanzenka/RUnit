@@ -59,6 +59,8 @@ checkException(expr, msg)
   error. Otherwise \code{TRUE} is returned.
 }
 
+\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+
 \seealso{
   \code{\link{all.equal}}, \code{\link{all.equal.numeric}} and
   \code{\link{identical}} are the underlying comparison functions.
@@ -87,3 +89,6 @@ checkException(f(TRUE))   ## passes fine
 ## checkException(f(FALSE))  ## failure, because f raises no error
 
 }
+
+\keyword{programming}
+\keyword{RUnit}
