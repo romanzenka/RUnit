@@ -17,7 +17,7 @@
 
 ##  $Id$
 
-
+library(methods)
 library("splines")
 
 
