@@ -169,6 +169,8 @@ The result of the tracking process allows further analysis of the executed code.
 \subsubsection{Usage}
 The usage of the Code Inspector and the Tracker object is very simple. The following code snippet is an example:
 <<eval=FALSE>>=
+library(RUnit)
+
 tr <- tracker(); ## initialize a tracking "object"
 tr$init(); ## initialize the tracker
 
