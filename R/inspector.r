@@ -17,9 +17,6 @@
 
 ##  $Id$
 
-library(methods)
-library("splines")
-
 
 includeTracker <- function(fbody)
 {
