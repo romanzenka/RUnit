@@ -32,6 +32,10 @@ returned either.}
 
 \authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
+\seealso{
+  \code{\link{tracker}} for the call tracking object.
+}
+
 \examples{
 
 ## example function
@@ -51,10 +55,10 @@ track <- tracker()
 track$init()
 
 ## inspect the function
-## res is the result of foo
+## res will collect the result of calling foo
 res <- inspect(foo(10))
 
-## get the tracking info
+## get the tracked function call info
 resTrack <- track$getTrackInfo()
 
 ## create HTML sites
