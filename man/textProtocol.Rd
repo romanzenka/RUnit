@@ -9,7 +9,7 @@
 
 \usage{
   printTextProtocol(testData, fileName = "", separateFailureList = TRUE, showDetails = TRUE, traceBackCutOff=9)
-  printHTMLProtocol(testData, fileName = "", separateFailureList = TRUE, traceBackCutOff=9)
+  printHTMLProtocol(testData, fileName = "", separateFailureList = TRUE, traceBackCutOff=9, testFileToLinkMap=function(x) x )
   print.RUnitTestData(x, ...)
   summary.RUnitTestData(object, ...)
   getErrors(testData)
@@ -34,6 +34,8 @@
     removed from the stack if \code{runTestSuite} has been called from
     the console. This argument takes effect only if
     \code{showDetails=TRUE}.}
+  \item{testFileToLinkMap}{This function can be used to map the full name of the test file
+    to a corresponding html link to be used in the html protocol. By default, this is the identity map.}
   \item{...}{additional arguments to summary are passed on to the
   printTextProtocol() call.}
 }

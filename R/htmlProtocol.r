@@ -20,7 +20,8 @@
 printHTMLProtocol <- function(testData,
                               fileName = "",
                               separateFailureList = TRUE,
-                              traceBackCutOff=9) {
+                              traceBackCutOff=9,
+                              testFileToLinkMap=function(x) x) {
 
   ##@bdescr
   ##  Report generator
@@ -32,7 +33,8 @@ printHTMLProtocol <- function(testData,
   ##@in  fileName            : [character]
   ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to be displayed
-
+  ##@in  testFileToLinkMap   : [function] a function transforming the full name of the test file to a link location
+  
   ## --------------------------------
   ##  CHECK OF INPUT DATA
   ## --------------------------------
@@ -354,8 +356,8 @@ printHTMLProtocol <- function(testData,
         writeBeginTag("ul", htmlFile=fileName)
         for(testFileName in testFileNames) {
           writeBeginTag("li", htmlFile=fileName)
-          writeLink(target=testFileName,
-                    name=paste("Test file:", testFileName),
+          writeLink(target=testFileToLinkMap(testFileName),
+                    name=paste("Test file:", basename(testFileName)),
                     htmlFile=fileName)
 
 
