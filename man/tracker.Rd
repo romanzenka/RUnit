@@ -1,7 +1,7 @@
 \name{tracker}
 \alias{tracker}
 
-\title{Holds the results of the inspect process.}
+\title{Tracking the results of the inspect process.}
 
 
 \usage{tracker()
@@ -11,22 +11,23 @@
 
 \description{
   \code{tracker} create a new environment to manage and store the result
-  of the tracking process. The \code{inspector} function needs such
-  environment with the name "track". The tracker counts how often every
-  function was inspect by \code{inspect} and summarize the results of
+  of the tracking process. The \code{inspector} function requires such an
+  environment with the name "track". The tracker records how often each
+  and every
+  function was called by \code{inspect} and summarizes the results of
   all calls.
   \code{tracker$init} initializes the tracker environment.
-  \code{tracker$getTrackInfo} return a list with the result of the
-  tracking process.
+  \code{tracker$getTrackInfo} returns a list with the tracked results of the
+  inspection process.
 }
 
 \details{The return object is a list with the following elements.
-  \item{src}{The source code of the function}
-  \item{run}{The number of executions for every line of code.}
-  \item{graph}{A matrix. Every element in the matrix counts how often a
+  \item{src}{The source code of the function.}
+  \item{run}{The number of executions for each line of code.}
+  \item{graph}{A matrix. Each element in the matrix counts how often a
     code line was called from the previous code line in the execution flow.}
   \item{nrRuns}{Counts how often the function was called.}
-  \item{funcCall}{The declaration of the function}
+  \item{funcCall}{The declaration of the function.}
 }
 
 \authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}

@@ -1,27 +1,34 @@
+%%
+%% $Id$
+%%
 \name{inspect}
 \alias{inspect}
-\title{Track the executed code lines of a method.}
+\title{Track the executed code lines of a function or method.}
 
 \usage{
-  inspect(...)
+  inspect(expr)
 }
 
 \arguments{
-  \item{...}{A usual R function call.}
+  \item{expr}{Any R function or methods call.}
 }
 
 \description{
   \code{inspect} examines and modifies the source code of a function or
-  method. Not all R expression can be handled at the current
-  state. After the modifcation of the source code, the modified function
+  method.  After the modifcation of the source code, the modified function
   will be executed and the result of the tracking process will be
   stored. To store the information a \code{tracker} environment with the
   name track must exist.
+  Note, that not all R code constructs can be handled at the current
+  state. In some cases it is not possible to track a specific code line.
+  Therefore, clearly structured code with consequent use of
+  opening and closing braces to indicate conditional expressions can
+  prevent these parser problems.
 }
 
-\details{The return value of \code{inspect} is the result of the
-  function. In some cases it is not possible to track every code line.
-}
+\details{The return value of \code{inspect} is the result returned by
+the function executed. If the function has no return value nothing is
+returned either.}
 
 \authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
