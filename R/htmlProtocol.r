@@ -152,7 +152,7 @@ printHTMLProtocol <- function(testData,
   writeHtmlSection(title, 1, htmlFile=fileName)
 
   if(length(testData) == 0) {
-    writeP("no test cases :-(")
+    writeP(" no test cases :-(")
     return()
   }
   ## basic Info
@@ -349,7 +349,7 @@ printHTMLProtocol <- function(testData,
       res <- tsList$sourceFileResults
       testFileNames <- names(res)
       if(length(res) == 0) {
-        pr("no test files")
+        pr(" no test files")
       }
       else {
         ## loop over all source files
@@ -363,7 +363,7 @@ printHTMLProtocol <- function(testData,
 
           testFuncNames <- names(res[[testFileName]])
           if(length(testFuncNames) == 0) {
-            pr("no test functions")
+            pr(" no test functions")
           }
           else {
             ## loop over all test functions in the test file
