@@ -9,7 +9,7 @@
 \usage{
 checkEquals(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 checkEqualsNumeric(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
-checkTrue(a, msg)
+checkTrue(expr, msg)
 checkException(expr, msg)
 DEACTIVATED(msg)
 }
@@ -17,10 +17,12 @@ DEACTIVATED(msg)
 \arguments{
   \item{a, b}{two objects to be compared (should not be S4 class objects).}
   \item{msg}{an optional message to document a check and to facilitate
-    the identification of a possible failure. The message just appears
-    as text in the test protocol but is not further used in any of the check functions.}
+    the identification of a possible failure. The message only appears
+    as text in the test protocol, it is not further used in any of the check functions.}
   \item{tolerance}{numeric >= 0.  A check does not fail if differences smaller than `tolerance'.}
-  \item{expr}{valid R expression which is checked to create an error.}
+  \item{expr}{syntactically valid R expression which can be evaluated
+  and must return a logical scalar (TRUE|FALSE). A named expression is
+  also allowed but the name is disregarded.}
   \item{...}{optional arguments passed to \code{all.equal} or \code{all.equal.numeric}}
 }
 
@@ -37,8 +39,8 @@ DEACTIVATED(msg)
   \code{checkEqualsNumeric} works just like \code{checkEquals} except
   that it invokes \code{all.equal.numeric} instead of \code{all.equal}
 
-  \code{checkTrue} uses the function \code{identical} to check if its
-  first argument is \code{TRUE}. If not, an error is
+  \code{checkTrue} uses the function \code{identical} to check if the expression
+  provided as first argument evaluates to \code{TRUE}. If not, an error is
   generated and the failure is reported to the test logger such that it
   appears in the test protocol.
 
