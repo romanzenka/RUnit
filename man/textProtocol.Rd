@@ -2,13 +2,16 @@
 \alias{printTextProtocol}
 \alias{printHTMLProtocol}
 \alias{print.RUnitTestData}
+\alias{print}
 \alias{summary.RUnitTestData}
+\alias{summary}
+
 \title{Printing a plain text or HTML version of an RUnit test run.}
 
 \usage{
   printTextProtocol(testData, fileName = "", separateFailureList = TRUE, showDetails = TRUE, traceBackCutOff=9)
   printHTMLProtocol(testData, fileName = "", separateFailureList = TRUE, traceBackCutOff=9)
-  print(testData)
+  print(testData, ...)
   summary(testData, ...)
 }
 

@@ -6,7 +6,7 @@
 \title{Definition and execution of RUnit test suites.}
 
 \usage{
-defineTestSuite(name, dirs, testFileRegexp="^runit.+\.r$", testFuncRegexp="^test.+")
+defineTestSuite(name, dirs, testFileRegexp="^runit.+\\.r$", testFuncRegexp="^test.+")
 isValidTestSuite(testSuite)
 runTestSuite(testSuites, useOwnErrorHandler=TRUE)
 runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
