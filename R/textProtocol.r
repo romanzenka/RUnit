@@ -35,7 +35,7 @@ printTextProtocol <- function(testData,
   ##@in  showDetails         : [logical] if TRUE (default) add detailed trackbacks for each error incurred
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
 
-    ##  preconditions
+  ##  preconditions
   if (!is(testData, "RUnitTestData"))
   {
     stop("Argument 'testData' must be of class 'RUnitTestData'.")
@@ -93,9 +93,11 @@ printTextProtocol <- function(testData,
   }
 
   ## get singular or plural right
-  sop <- function(number, word, plext="s") ifelse(number == 1, paste(number, word),
-                                  paste(number, paste(word, plext, sep="")))
-
+  sop <- function(number, word, plext="s")
+  {
+    ifelse(number == 1, paste(number, word),
+           paste(number, paste(word, plext, sep="")))
+  }
 
   ## header part
   cat("RUNIT TEST PROTOCOL --", date(), "\n", file = fileName)
