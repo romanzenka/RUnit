@@ -35,6 +35,12 @@
 \tableofcontents
 \section*{Abstract}
 \label{section:abstract}
+Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modelled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyse and report the software quality status. The presented framework is completely implemented with R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an easy to understand test protocol. 
+To verify the coverage of the test framework a code inspector is provided that monitors the code coverage of executed test cases. The result of individual test invocations as well as package wide evaluations can be compiled into a summary report exported to HTML. This report details the executed tests, their failure or success, as well as the code coverage. Taking it one step further and combining the build system with a development and release procedure with defined code status description this approach opens the way for a principled software quality monitoring and risk assessment of the developed application.
+For our code development we have utilized the described system with great benefit w.r.t. code reliability and maintenance efforts in a medium sized development team.
+
+\section*{Abstract}
+\label{section:abstract}
 Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modelled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyse and report the software quality status. The presented framework is completely implemented with R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an easy to understand test protocol.
 To verify the coverage of the test framework a code inspector is provided that monitors the code coverage of executed test cases. The result of individual test invocations as well as package wide evaluations can be compiled into a summary report exported to HTML. This report details the executed tests, their failure or success, as well as the code coverage. Taking it one step further and combining the build system with a development and release procedure with defined code status description this approach opens the way for a principled software quality monitoring and risk assessment of the developed application.
 For our code development we have utilized the described system with great benefit w.r.t. code reliability and maintenance efforts in a medium sized development team.
@@ -67,7 +73,7 @@ that a useful testing framework should satisfy:
     covered by some test case.}
 \end {itemize}
 Testing frameworks that address these aspects have been written in a
-variety of languages such as Smallalk, Java, C++ and Python. In
+variety of languages such as Smalltalk, Java, C++ and Python. In
 particular, the approach described in
 [ref:http://www.xprogramming.com/testfram.htm] has turned out to be
 very successful, leading -- among others -- to the popular JUnit
@@ -76,25 +82,32 @@ been ported to many other languages (see
 [ref:http://www.xprogramming.com] for an extensive list of testing
 frameworks for all kinds of languages). Accordingly, the RUnit package is our
 version of  porting JUnit to R, supplemented by additional
-functionality to inspect the test coverage of some function.
+functionality to inspect the test coverage of some function under question.
 
-At this point one may wonder why R needs yet another testing framework
-even though the standard method, namely {\it R CMD check}, is widely
-accepted and applied.
+One may wonder why R would need yet another testing framework
+even though the standard method, namely executing {\it R CMD check} on ones complete package at the shell prompt, is widely accepted and applied.
 We think, however, that the RUnit approach is more in line with the above listed
-requirements. Moreover, testing frameworks based on JUnit ports seem
+requirements and can be seen as a complement to the existing process in that:
+\begin{itemize}
+\item{test cases are called and executed from the R prompt}
+\item{the programmer decides which result or functionality to put under testing, e.g.\
+      formating issues of textual output do not need to matter}
+\item{test and reference data files need not be maintained seperately but are combined into one file}
+\item{test cases need not be limited to testing/using functionality from one package checked at a time}
+\end{itemize}
+Moreover, testing frameworks based on JUnit ports seem
 to have become a quasi standard in many programming languages. Therefore,
 programmers new to R but familiar with other languages might
 appreciate a familiar testing environment. And finally, offering more
-than  one alternative in the important field of code testing is certainly useful.
+than one alternative in the important field of code testing is certainly not a bad idea and could turn out useful.
 
 Before explaining the components of the RUnit package in detail,
 we would like to list some of the lessons learned in the attempt of
-writing useful testsuites for our software (a more complete collection
+writing useful test suites for our software (a more complete collection
 of tips relating to a Test-First development approach can be found in [ref:http://www.xprogramming.com/xpmag/testFirstGuidelines.htm]):
 \begin{itemize}
 
-\item {Develop your test cases parallel to implementing your
+\item {Develop test cases parallel to implementing your
     functionality. Keep testing all the time (code - test - simplify
     cycle). Do not wait until the software is complete and attempt to
     add test cases at the very end. This typically leads to crappy
@@ -108,24 +121,25 @@ of tips relating to a Test-First development approach can be found in [ref:http:
 
 \item{Good test coverage enables refactoring, by which a
         reorganisation of the implementation is meant. Without testing the
-        attitude {\it I better do not touch this code anymore} once some piece
+        attitude {\it 'I better do not touch this code anymore'} once some piece
         of software appears to be working is frequently
         encountered. It is very pleasing and time-saving just to run a
-        testsuite after some improvement or simplification of the
+        test suite after some improvement or simplification of the
         implementation to see that all test cases are still passing
         (or possibly reveal some newly introduced bug). This
         refactoring ability is a key benefit of unit testing leading
         not only to better software quality but also to better design.}
 
 \item{Do not test internal functions but just the public interface of
-    a library. Since R does not provide much language support for this
-    distinction, the first step here is to clearify which
-    functions are meant to be called by a user of a library and which are
+    a library. Since R does not provide very much language support for this
+    distinction, the first step here is to clarify which
+    functions are meant to be called by a user of a package and which are
     not. If internal functions are directly tested, the ability of
     refactoring gets lost because this typically involves
     reorganisation of the internal part of a library.}
 
 \item {Once a bug has been found, add a corresponding test case.}
+
 
 \end{itemize}
 
@@ -133,6 +147,11 @@ of tips relating to a Test-First development approach can be found in [ref:http:
 
 %\subsection{Background}
 %\label{section:Background}
+
+\subsection{Motivation}
+
+\subsection{Background}
+\label{section:Background}
 
 \section{Getting Started: Setting up test cases}
 \label{section:gettingStarted}
@@ -231,11 +250,17 @@ if(a==1){
  print("do FALSE");
 }
 @
-The problem is the \textit{else} branch, that cannot modified in the current version.
+The problem is the \textit{else} branch, that cannot be modified in the current version.
 \section{Summary}
 
 \section{Future Development Ideas}
-
+Here we briefly list -- in an unordered manner -- some of the avenues for future development we or someone interested in this package could take:
+\begin{itemize}
+\item{extend the checkEquals function to handle complex S4 class objects correctly in comparisons}
+\item{improve the export of text suite execution data i.e.\ by adding XML data export support}
+\item{add some evaluation methods to the code inspector e.g. use software metrics to estimate standard mesures of code quality, complexity, and performance}
+\item{overcome the problem of nested calls to registered functions for code inspection}
+\item{allow automatic registration of functions & methods}
 %\bibliographystyle{plainnat}
 
 \end{document}
