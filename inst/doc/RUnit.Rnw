@@ -53,7 +53,7 @@ code - test - simplify  cycle leads to faster and more successful
 software development than the usually futile attempt to add test cases
 once the software is largely finished. This line of thought has been
 pushed furthest by the Extreme Programming
-[\cite{http://www.xprogramming.com}] and Test-First paradigms
+\cite{xp} and Test-First paradigms
 where test cases are viewed as the essential guidelines for the
 development process. These considerations lead to various requirements
 that a useful testing framework should satisfy:
@@ -68,22 +68,20 @@ that a useful testing framework should satisfy:
 \end {itemize}
 
 
-\paragraph{Background}
-\label{paragraph:Background}
+%\paragraph{Background}
+%\label{paragraph:Background}
 Testing frameworks that address these aspects have been written in a
 variety of languages such as Smalltalk, Java, C++ and Python. In
-particular, the approach described in
-[\cite{http://www.xprogramming.com/testfram.htm}] has turned out to be
+particular, the approach described in \cite{beck} has turned out to be
 very successful, leading -- among others -- to the popular JUnit
-library for Java [\cite{http://www.JUnit.org/}], which has
-been ported to many other languages (see
-[\cite{http://www.xprogramming.com}] for an extensive list of testing
+library for Java \cite{junit}, which has
+been ported to many other languages (see \cite{xp} for an extensive list of testing
 frameworks for all kinds of languages). Accordingly, the RUnit package is our
 version of  porting JUnit to R, supplemented by additional
 functionality to inspect the test coverage of some function under question.
 
-\paragraph{Motivation}
-\label{paragraph:Motivation}
+%\paragraph{Motivation}
+%\label{paragraph:Motivation}
 One may wonder why R would need yet another testing framework
 even though the standard method, namely executing {\it R CMD check} on ones complete package at the shell prompt, is widely accepted and applied.
 We think, however, that the RUnit approach is more in line with the above listed
@@ -104,18 +102,18 @@ than one alternative in the important field of code testing is certainly not a b
 Before explaining the components of the RUnit package in detail,
 we would like to list some of the lessons learned in the attempt of
 writing useful test suites for our software (a more complete collection
-of tips relating to a Test-First development approach can be found in [\cite{http://www.xprogramming.com/xpmag/testFirstGuidelines.htm}]):
+of tips relating to a Test-First development approach can be found in \cite{tfg}):
 \begin{itemize}
 
 \item {Develop test cases parallel to implementing your
     functionality. Keep testing all the time (code - test - simplify
     cycle). Do not wait until the software is complete and attempt to
     add test cases at the very end. This typically leads to crappy
-    test cases and incomplete test cases.}
+    and incomplete test cases.}
 
 \item{Distinguish between unit and integration tests: Unit tests
     should be as small as possible and check one unit of functionality
-    that can\'t be further decomposed. Integration tests, on the other
+    that cannot be further decomposed. Integration tests, on the other
     hand, run through a whole analysis workflow and check the
     interplay of various software components.}
 
@@ -140,20 +138,89 @@ of tips relating to a Test-First development approach can be found in [\cite{htt
 
 \item {Once a bug has been found, add a corresponding test case.}
 
+\item{We greatly benefitted from an automated test system: A
+    shell script, running nightly, checks out and installs all relevant packages.
+    After that all test suites are run and the resulting test protocol is stored
+    in a central location. This provides an excellent overview over the current
+    status of the system and the collection of nightly test protocols documents
+    the development progress.}
+
+\end{itemize}
+
+
+\section{The RUnit package}
+\label{section:RUnitPackage}
+This section contains a detailed explanation of the RUnit package and
+examples how to use it. As has already been mentioned the package
+contains two independent components: a framework for test case
+execution and a tool that allows to inspect the flow of execution
+inside a function in order to analyse which portions of code are
+covered by some test case.
+Both components are now discussed in turn.
+
+\subsection{Test case execution}
+\label{subsection:Testcaseexecution}
+The basic idea of this component is to execute a set of test functions
+defined through naming conventions, store whether or not the test
+succeeded in a central logger object and finally write a test protocol
+that allows to precisely identify the problems.
+
+As an example consider a function that converts centigrade to
+fahrenheit:
+\begin{Sinput}
+c2f <- function(c) return(9/5 * c + 32)
+\end{Sinput}
+A corresponding test function could look like this:
+\begin{Sinput}
+test.c2f <- function() {
+  checkEquals(c2f(0), 32)
+  checkEquals(c2f(10), 50)
+  checkException(c2f("xx"))
+}
+\end{Sinput}
+The default naming convention for test functions in the RUnit package is {\tt test...} as is standard in JUnit. To perform the actual checks that the function to be tested works correctly a set of functions called {\tt check ...} is provided. The purpose of these {\tt check} functions is two-fold: they make sure that a possible failure is reported to the central test logger so that it will appear properly in the final test protocol and they are supposed to make explicit the actual checks in a test case as opposed to other code used to set up the test scenario. Note that {\tt checkException} fails if the passed expression does not generate an error. This kind of test is useful to make sure that a function correctly recognises error situations instead of silently creating inappropriate results. These check functions are direct equivalents to the various {\tt assert} functions of the JUnit framework. More information can be found in the online help.
+
+Before running the test function it is necessary to create a test suite which is a collection of test functions and files relating to one topic. One could, for instance, create one test suite for one R package. A test suite is just a list containing a name, an array of absolute directories containing the locations of the test files, a regular expression identifying the test files and a regular expression identifying the test functions. In our example assume that the test function is located in a file {\tt runitc2f.r} located in a directory {\tt /foo/bar/}. To create the corresponding test suite we can use a helper function:
+\begin{Sinput}
+testsuite.c2f <- defineTestSuite("c2f", dirs="/foo/bar",
+                                 testFileRegexp="^runit.+\\.r",
+                                 testFuncRegexp="^test.+")
+\end{Sinput}
+All that remains is to run the test suite and print the test protocol:
+\begin{Sinput}
+testResult <- runTestSuite(testsuite.c2f)
+printTextProtocol(testResult)
+\end{Sinput}
+The resulting test protocol should be self explanatory and can also be printed as HTML version. See the online help for further information.
+Note that for executing just one test file there is also a shortcut in order to make test case execution as easy as possible:
+ \begin{Sinput}
+runTestFile("/foo/bar/runitc2f.r")
+\end{Sinput}
+
+The creation and execution of test suites can be summarised by the following recipe:
+\begin{enumerate}
+\item{create as many test functions in as many test files as necessary }
+\item{create one or more test suites using the helper function {\tt defineTestSuite}}
+\item{run the test suites with {\tt runTestSuite}}
+\item{print the test protocol either with {\tt printTextProtocol} or with {\tt printHTMLProtocol} (or with a generic method like {\tt print} or {\tt summary})}
+\end{enumerate}
+
+ We conclude this section with some further comments on various apects of the test execution framework:
+\begin{itemize}
+\item{A test file can contain an arbitrary number of test functions. A test directory can contain an arbitrary number of test files, a test suite can contain an arbitrary number of test directories and the test runner can run an arbitrary number of test suites -- all resulting in one test protocol. The test function and file names of a test suite must, however,  obey a naming convention expressible through regular expressions.
+    As default test functions start with {\tt test} and files with {\tt runit}.}
+\item{RUnit makes a distinction between failures and error. A failure occurs if one of the check functions fail (e.g. {\tt checkTrue(FALSE)} creates a failure). An error is reported if an ordinary R error (usually created by {\tt stop}) occurs.}
+\item{The test runner tries hard to leave a clean R session behind. Therefore all objects created during test case execution will be deleted after a test file has been processed.}
+\item{In order to prevent misterious errors the random number generator is reset to a standard setting before sourcing a test file. If a particular setting is needed to generate reproducible results it is fine to configure the random number generator at the beginning of a test file. This setting applies during the execution of all test functions of that test file but is reset before the next test file is sourced.}
+\item{In each source file one can define the parameterless functions {\tt .setUp()} and {\tt .tearDown()}.
+which are then executed directly before and after each test function. This can, for instance, be used to control global settings or create addition log information.}
 
 \end{itemize}
 
 
 
-\section{Getting Started: Setting up test cases}
-\label{section:gettingStarted}
-
-\subsection{R Unit Testing}
-\label{subsection:RUnitTesting}
-
 \subsection{R Code Inspection}
 \label{subsection:RCodeInspection}
-\subsubsection{Introduction}
 The Code Inspector is an additional tool for checking detailed test case coverage and getting profiling information.
 It records how often a code line will be executed and we use that information for improving our test cases, because we can detect not executed code lines.
 The Code Inspector is able to handle S4 methods.
@@ -249,14 +316,22 @@ The problem is the \textit{else} branch, that cannot be modified in the current 
 \section{Future Development Ideas}
 Here we briefly list -- in an unordered manner -- some of the avenues for future development we or someone interested in this package could take:
 \begin{itemize}
-\item{extend the checkEquals function to handle complex S4 class objects correctly in comparisons}
-\item{improve the export of text suite execution data i.e.\ by adding XML data export support}
-\item{add some evaluation methods to the code inspector e.g. use software metrics to estimate standard mesures of code quality, complexity, and performance}
-\item{overcome the problem of nested calls to registered functions for code inspection}
-\item{allow automatic registration of functions \& methods}
+\item{extend the {\tt checkEquals} function to handle complex S4 class objects correctly in comparisons.}
+\item{record all warnings generated during the execution of a test function.}
+\item{add tools to create test cases automatically. This is a research project but -- given the importance of testing -- worth the effort. See \cite{junit} for various approaches in other languages.}
+\item{improve the export of test suite execution data e.g.\ by adding XML data export support.}
+\item{add some evaluation methods to the code inspector e.g. use software metrics to estimate standard mesures of code quality, complexity, and performance.}
+\item{overcome the problem of nested calls to registered functions for code inspection.}
+\item{allow automatic registration of functions \& methods.}
 \end{itemize}
 
-\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+% \bibliographystyle{plainnat}
+\bibitem{xp} http://www.xprogramming.com
+\bibitem{beck} http://www.xprogramming.com/testfram.htm
+\bibitem{junit} http://www.junit.org/
+\bibitem{tfg} http://www.xprogramming.com/xpmag/testFirstGuidelines.htm
+\end{thebibliography}
 
 \end{document}
 
