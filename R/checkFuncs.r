@@ -30,17 +30,17 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
   ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
   ##@in msg : [character|TRUE] an optional message to further identify and document the call
 
-  
+
   if(!is.numeric(tolerance)) {
     stop("tolerance has to be a numeric value")
   }
   if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$checkNo <<- 1 + .testLogger$checkNo
+    .testLogger$incrementCheckNum()
   }
   res <- all.equal(a,b, tolerance=tolerance, ...)
   if (!identical(res, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$isFailure <<- TRUE
+      .testLogger$setFailure()
     }
     stop(paste(res, collapse="\n"))
   }
@@ -66,12 +66,12 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
   }
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$checkNo <<- 1 + .testLogger$checkNo
+    .testLogger$incrementCheckNum()
   }
   res <- all.equal.numeric(a,b, tolerance=tolerance, ...)
   if (!identical(res, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$isFailure <<- TRUE
+      .testLogger$setFailure()
     }
     stop(paste(res, collapse="\n"))
   }
@@ -92,12 +92,12 @@ checkTrue <- function(a, msg)
 
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$checkNo <<- 1 + .testLogger$checkNo
+    .testLogger$incrementCheckNum()
   }
 
   if (!identical(a, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$isFailure <<- TRUE
+      .testLogger$setFailure()
     }
     stop("Test not TRUE.")
   }
@@ -117,12 +117,12 @@ checkException <- function(expr, msg)
   ##@in msg  : [character|TRUE] an optional message to further identify and document the call
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$checkNo <<- 1 + .testLogger$checkNo
+    .testLogger$incrementCheckNum()
   }
 
   if (!inherits(try(eval(expr, envir = parent.frame())), "try-error")) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$isFailure <<- TRUE
+      .testLogger$setFailure()
     }
     stop("Error not generated as expected.")
   }
@@ -133,3 +133,17 @@ checkException <- function(expr, msg)
 
 
 
+DEACTIVATED <- function(msg="")
+{
+  ##@bdescr
+  ## checks whether or not something is true
+  ##@edescr
+  ##@in a   : [expression] the logical expression to be checked to be TRUE
+  ##@in msg : [character|TRUE] optional message to further identify and document the call
+
+
+  if(exists(".testLogger", envir=.GlobalEnv)) {
+    .testLogger$setDeactivated(paste(msg, "\n", sep=""))
+  }
+  stop()
+}

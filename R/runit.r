@@ -88,19 +88,16 @@ isValidTestSuite <- function(testSuite)
   ##@in  funcName : [character] name of test case function
 
   ##  write to stdout for logging
-  cat("\n\nExecuting test function",funcName," ... ")
-  
+
+
   func <- get(funcName, envir=envir)
   ## anything else than a function is ignored.
   if(mode(func) != "function") {
-    cat("\n ", funcName," is not of mode function. skipped.\n")
+##     cat("\n ", funcName," is not of mode function. skipped.\n")
     return()
   }
 
-
-  ## reset book keeping variables in .testLogger
-  .testLogger$isFailure <<- FALSE
-  .testLogger$checkNo <<- 0
+  cat("\n\nExecuting test function",funcName," ... ")
 
   ## safe execution of setup function
   res <- try(setUpFunc())
@@ -111,16 +108,21 @@ isValidTestSuite <- function(testSuite)
     return()
   }
 
+  ## reset book keeping variables in .testLogger
+  .testLogger$cleanup()
   ## ordinary test function execution:
   timing <- try(system.time(func()))
   if (inherits(timing, "try-error")) {
-    if(.testLogger$isFailure) {
+    if(.testLogger$isFailure()) {
       .testLogger$addFailure(testFuncName=funcName,
-                             failureMsg=geterrmessage(),
-                             checkNum = .testLogger$checkNo)
+                             failureMsg=geterrmessage())
+    }
+    else if(.testLogger$isDeactivated()) {
+      .testLogger$addDeactivated(testFuncName=funcName)
     }
     else {
-      .testLogger$addError(testFuncName=funcName, errorMsg=geterrmessage())
+      .testLogger$addError(testFuncName=funcName,
+                           errorMsg=geterrmessage())
     }
   }
   else {
@@ -187,7 +189,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##@edescr
   ##
   ##@in  testSuites     : [list] list of test suite lists
-  ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler 
+  ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler
   ##@ret                :
 
   oldErrorHandler <- getOption("error")

@@ -30,7 +30,7 @@ printHTMLProtocol <- function(testData,
   ##
   ##@in  testData            : [RUnitTestData] S3 class object
   ##@in  fileName            : [character]
-  ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures 
+  ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to be displayed
 
   ##  preconditions
@@ -47,7 +47,7 @@ printHTMLProtocol <- function(testData,
   {
     stop("Argument 'fileName' must contain exactly one element.")
   }
-  
+
   if (!is.logical(separateFailureList))
   {
     stop("Argument 'separateFailureList' has to be of type logical.")
@@ -56,7 +56,7 @@ printHTMLProtocol <- function(testData,
   {
     stop("Argument 'separateFailureList' must contain exactly one element.")
   }
-  
+
   if (!is.numeric(traceBackCutOff))
   {
     stop("Argument 'traceBackCutOff' has to be of type logical.")
@@ -69,8 +69,8 @@ printHTMLProtocol <- function(testData,
   {
     stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
   }
-  
-  
+
+
   ## some little helper functions
   ## get singular or plural right
   sop <- function(number, word, plext="s")
@@ -135,7 +135,7 @@ printHTMLProtocol <- function(testData,
 
 
   errorStyle <- "color:red"
-
+  deactivatedStyle <- "color:black"
 
   title <- paste("RUNIT TEST PROTOCOL", date(), sep="--")
 
@@ -150,6 +150,9 @@ printHTMLProtocol <- function(testData,
   ## basic Info
   errInfo <- .getErrors(testData)
   writeP(paste("Number of test functions:", errInfo$nTestFunc))
+  if(errInfo$nDeactivated > 0) {
+    writeP(paste("Number of deactivated test functions:", errInfo$nDeactivated))
+  }
   writeP(paste("Number of errors:", errInfo$nErr),
          para=ifelse(errInfo$nErr == 0, "", paste("style", errorStyle, sep="=")))
   writeP(paste("Number of failures:", errInfo$nFail),
@@ -160,17 +163,17 @@ printHTMLProtocol <- function(testData,
   writeHtmlSection(sop(length(testData), "Test suite"), 3, htmlFile=fileName)
 
   ## table of test suites
-  writeBeginTable(c("Name", "Test functions", "Errors", "Failures"),
-                  width="60%",
+  writeBeginTable(c("Name", "Test functions", "Deactivated", "Errors", "Failures"),
+                  width="80%",
                   htmlFile=fileName,
-                  columnWidth=c("30%", "30%", "20%", "20%"))
+                  columnWidth=c("20%", "20%", "20%", "20%", "20%"))
   for(tsName in names(testData)) {
     rowString <- c(paste("<a href=\"#", tsName, "\">", tsName, "</a>", sep=""),
                    testData[[tsName]]$nTestFunc,
+                   testData[[tsName]]$nDeactivated,
                    testData[[tsName]]$nErr,
                    testData[[tsName]]$nFail)
-    rowCols <- c("",
-                 "",
+    rowCols <- c("", "", "",
                  ifelse(testData[[tsName]]$nErr==0, "", "red"),
                  ifelse(testData[[tsName]]$nFail==0, "", "red"))
 
@@ -243,6 +246,38 @@ printHTMLProtocol <- function(testData,
     writeHtmlSep(htmlFile=fileName)
   }
 
+
+  ## deactivated table
+  if(separateFailureList && (errInfo$nDeactivated > 0)) {
+    writeHtmlSection("Deactivated", 3, htmlFile=fileName)
+    writeBeginTable(c("Test suite : test function", "message"),
+                    htmlFile=fileName,
+                    columnWidth=c("30%", "70%"))
+    for(tsName in names(testData)) {
+      if(testData[[tsName]]$nDeactivated > 0) {
+        srcFileRes <- testData[[tsName]]$sourceFileResults
+        srcFileNames <- names(srcFileRes)
+        for(i in seq(length=length(srcFileRes))) {
+          testFuncNames <- names(srcFileRes[[i]])
+          for(j in seq(length=length(testFuncNames))) {
+            funcList <- srcFileRes[[i]][[testFuncNames[j]]]
+            if(funcList$kind == "deactivated") {
+              lnk <- paste("<a href=\"",
+                           createTestFuncRef(tsName, srcFileNames[i],
+                                             testFuncNames[j], asAnchor=TRUE),
+                           "\">",
+                           paste(tsName, testFuncNames[j], sep=" : "),
+                           "</a>", sep="")
+              writeTableRow(row=c(lnk, funcList$msg),
+                            htmlFile=fileName)
+            }
+          }
+        }
+      }
+    }
+    writeEndTable(htmlFile=fileName)
+    writeHtmlSep(htmlFile=fileName)
+  }
 
   ## details
   writeHtmlSection("Details", 3, htmlFile=fileName)
@@ -318,16 +353,21 @@ printHTMLProtocol <- function(testData,
                   writeBeginTag("u", para=paste("style", errorStyle, sep="="),
                                 htmlFile=fileName)
                   writeRaw(paste(testFuncName, ": FAILURE !! (check number ",
-                                 testFuncInfo$checkNo, ")  ", sep=""),
+                                 testFuncInfo$checkNum, ")  ", sep=""),
                            htmlFile=fileName)
                   writeEndTag("u", htmlFile=fileName)
+                  writeEndTag("a", htmlFile=fileName)
+                }
+                else if (testFuncInfo$kind == "deactivated") {
+                  writeRaw(paste(testFuncName, ": DEACTIVATED, ", sep=""),
+                           htmlFile=fileName)
                   writeEndTag("a", htmlFile=fileName)
                 }
                 else {
                   writeLi(paste(testFuncName, ": unknown error kind", sep=""))
                   writeEndTag("a", htmlFile=fileName)
                 }
-                pr(testFuncInfo$msg, nl=FALSE)
+                pr(testFuncInfo$msg)
                 printTraceBack(testFuncInfo$traceBack)
               }
               writeEndTag("li", htmlFile=fileName)
@@ -343,13 +383,13 @@ printHTMLProtocol <- function(testData,
   }
 
 
-  
+
   ver <- cbind(unlist(version))
   colnames(ver) <- ""
   pr("\n\n --------------------------------\n")
   write.table(ver, sep="\t", quote=FALSE, append=TRUE,
               col.names=FALSE, file=fileName)
-  
+
   ## finish html document
   writeHtmlEnd(htmlFile=fileName)
 }
