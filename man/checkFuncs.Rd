@@ -5,7 +5,7 @@
 \alias{checkException}
 \title{RUnit check functions}
 
-\usage {
+\usage{
 checkEquals(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 checkEqualsNumeric(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 checkTrue(a, msg)
