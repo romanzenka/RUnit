@@ -94,19 +94,6 @@ isValidTestSuite <- function(testSuite)
   }
 
 
-  ##  sanity check:
-  ##  exclude functions where in the function body 'runit' is called
-  ##  this causes recursions or argument mismatch errors
-  ##  and breaks the execution loop
-  ##  body returns a 'call' expression, we need a character string
-  funcBody <- deparse(body(func))
-  findIdx <- grep("runit\\(", funcBody)
-  if (length(findIdx) > 0) {
-    .testLogger$addError(testFuncName=funcName,
-                        msg="test function body contains call to 'runit'. Not evaluated.\n")
-    return()
-  }
-
   ## reset book keeping variables in .testLogger
   .testLogger$isFailure <<- FALSE
   .testLogger$checkNo <<- 0
