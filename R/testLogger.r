@@ -46,7 +46,6 @@
       currentTraceBack <<- c(currentTraceBack, names(last.dump)[i])
   }
   if(useOwnErrorHandler) {
-    print("installing own error handler")
     options(error=errorHandler)
   }
 
