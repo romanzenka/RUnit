@@ -20,6 +20,15 @@
 
 plotConnection.trackInfo <- function(con,pngfile,...)
 {
+  ##@bdescr
+  ##  create a plot displaying the execution flow as a graph
+  ##@edescr
+  ##
+  ##@in  con     : [matrix] counts of execution calls for previous functions
+  ##@in  pngfile : [character] string specifying the full path & file name of the
+  ##               plot file (PNG) to be generate
+  ##
+  
   ## experimental 2nd order connections
   ## color for arrows
   color <- c("black","lightgreen","green","lightblue","blue","orangered","red")
@@ -45,19 +54,20 @@ plotConnection.trackInfo <- function(con,pngfile,...)
   con <- (con + 14) %/% 15;
 
   ## open png device
-  png(file=pngfile,width=1024,height=960);
+  png(file=pngfile,width=1024,height=960)
   
   ## basic plot
-  plot(x=1:nrow(con),y=1:nrow(con),type="n",axes=FALSE,ylab="# line",xlab="",ylim=c(nrow(con),1));
+  plot(x=1:nrow(con), y=1:nrow(con), type="n",axes=FALSE,ylab="# line",xlab="",
+       ylim=c(nrow(con),1))
 
   ## draw text lines
-  text(x=1,y=1:nrow(con),labels=1:nrow(con));
+  text(x=1, y=1:nrow(con), labels=1:nrow(con))
 
   ## offset, to avoid complete overlay
-  offset <- rep(3,length=nrow(con));
+  offset <- rep(3,length=nrow(con))
 
   ## minimal x
-  xmin <- 2;
+  xmin <- 2
   
   ## check all connections
   for(i in 1:nrow(con))
@@ -68,66 +78,79 @@ plotConnection.trackInfo <- function(con,pngfile,...)
       ## check for an existing connection
       if(con[i,j] != 0)
       {
-        colDraw <- color[con[i,j]];
-        from <- j;
-        to <- i;
+        colDraw <- color[con[i,j]]
+        from <- j
+        to <- i
 
         ## circular
         if(from == to)
         {
-          top <- from+0.5;
-          bot <- from-0.5;
-          middle <- (xmin+offset[from])/2;
+          top <- from + 0.5
+          bot <- from - 0.5
+          middle <- (xmin+offset[from])/2
 
           ## top spline
-          splTop <- spline(c(xmin,middle,offset[from]),c(from+0.2,top,from));
+          splTop <- spline(c(xmin,middle,offset[from]), c(from + 0.2,top,from))
 
           ## bottom spline
-          splBot <- spline(c(xmin,middle,offset[from]),c(from-0.2,bot,from));
-          lines(splTop$x,splTop$y,col=colDraw);
-          lines(splBot$x,splBot$y,col=colDraw);
-          l <- length(splTop$y);
+          splBot <- spline(c(xmin,middle,offset[from]), c(from - 0.2,bot,from))
+          lines(splTop$x, splTop$y, col=colDraw)
+          lines(splBot$x, splBot$y, col=colDraw)
+          l <- length(splTop$y)
+          
           ## draw arrow tips
-          arrows(splTop$x[l-1],splTop$y[l-1],splTop$x[l],splTop$y[l],length=0.04,col=colDraw)
-          offset[from] <- offset[from]+1;
+          arrows(splTop$x[l-1], splTop$y[l-1], splTop$x[l], splTop$y[l],
+                 length=0.04, col=colDraw)
+          offset[from] <- offset[from] + 1
         }
         else
         {
           ## "regular" case
           middle <- (i+j)/2;
-          splxy <- spline(c(from-0.2,middle,to+0.2),c(xmin-0.2,offset[from],xmin+0.2));
-          lines(splxy$y,splxy$x,col=colDraw);
+          splxy <- spline(c(from - 0.2, middle, to + 0.2),
+                          c(xmin - 0.2, offset[from], xmin + 0.2))
+          lines(splxy$y, splxy$x, col=colDraw)
+          
           if(i < j)
           {
             l <- length(splxy$y);
             ## draw an arrow tip
-            arrows(splxy$y[l-1],splxy$x[l-1],splxy$y[l],splxy$x[l],length=0.06,col=colDraw)
+            arrows(splxy$y[l-1], splxy$x[l-1], splxy$y[l], splxy$x[l],
+                   length=0.06, col=colDraw)
           }
           else
           {
             ## draw "inverse" arrow tip
-            arrows(splxy$y[2],splxy$x[2],splxy$y[1],splxy$x[1],length=0.06,col=colDraw)
+            arrows(splxy$y[2], splxy$x[2], splxy$y[1], splxy$x[1],
+                   length=0.06, col=colDraw)
           }
           ## set offset higher
-          offset[from] <- offset[from]+1;
+          offset[from] <- offset[from] + 1
         }
       }
     }
   }
 
-  legposx <- nrow(con);
-  leg.txt <- c("0-15%","15-30%","30-45%","45-60%","60-75%","75-90%","90-100%");
+  legposx <- nrow(con)
+  leg.txt <- c("0-15%","15-30%","30-45%","45-60%","60-75%","75-90%","90-100%")
   legend(x=legposx,y=1,legend=leg.txt,lty=1,xjust=1,col=color)
   
-  dev.off();
+  dev.off()
 
-  return(NULL);
+  return(NULL)
 }
+
 
 printHTML.trackInfo <- function(res,baseDir=".")
 {
-
-
+  ##@bdescr
+  ##  create a HTML representation of the TrackInfo object data
+  ##@edescr
+  ##
+  ##@in  res     : [list] trackInfo object
+  ##@in  baseDir . [character] string specifying the full path to the root directory to hold the HTML pages
+  ##
+  
 
   path <- paste(baseDir,"/results",sep="");
   dir.create(path);
@@ -138,11 +161,11 @@ printHTML.trackInfo <- function(res,baseDir=".")
   writeHtmlHeader("Overview",htmlFile);
   writeHtmlSection("Overview",2,htmlFile);
   writeBeginTable(c("categ.","Name","signature"),htmlFile)
-  for(i in 1:length(res))
+  for(i in seq(along=res))
   {
     funcID <- strsplit(names(res)[i],"/")[[1]];
-    funcCat <- funcID[1];
-    funcName <- funcID[2];
+    funcCat <- funcID[1]
+    funcName <- funcID[2]
     if(length(funcID) > 2)
     {
       sig <- funcID[3:length(funcID)];
@@ -201,7 +224,7 @@ printHTML.trackInfo <- function(res,baseDir=".")
   }
   
   ## create result pages
-  for(i in 1:length(res))
+  for(i in seq(along=res))
   {
     absGraphImg <- paste(path,"/con",i,".png",sep="");
     absGraphFile <- paste(path,"/con",i,".html",sep="");
@@ -236,14 +259,15 @@ printHTML.trackInfo <- function(res,baseDir=".")
     writeCR(htmlFile);
 
     writeBeginTable(c("line","code","calls","time"),htmlFile)
-    for(j in 1:length(res[[i]]$src))
+    for(j in seq(along=res[[i]]$src))
     {
       srcLine <- res[[i]]$src[j]
-      leadingSpaceNr <- attr(regexpr("^( )*",srcLine),"match.length");
+      leadingSpaceNr <- attr(regexpr("^( )*",srcLine),"match.length")
       if(leadingSpaceNr > 0)
       {
          srcLine <- gsub("^( )*","",srcLine)
-         srcLine <- paste(paste(rep("&ensp;",leadingSpaceNr),collapse=""),srcLine,collapse="",sep="");
+         srcLine <- paste(paste(rep("&ensp;",leadingSpaceNr),collapse=""),
+                          srcLine,collapse="",sep="")
       }
       if(res[[i]]$run[j] > 0)
       {
@@ -253,29 +277,28 @@ printHTML.trackInfo <- function(res,baseDir=".")
       {
         bgcolor <- "#D00000"
       }
-      writeTableRow(c(j,srcLine,res[[i]]$run[j],round(res[[i]]$time[j],2)),htmlFile,bgcolor=bgcolor);
+      writeTableRow(c(j,srcLine,res[[i]]$run[j],round(res[[i]]$time[j],2)),
+                    htmlFile,bgcolor=bgcolor)
     }
 
-    writeEndTable(htmlFile);
-    writeHtmlSep(htmlFile);
-    writeLinkRef(htmlFile,"index.html","index",relGraphFile,"graph");
+    writeEndTable(htmlFile)
+    writeHtmlSep(htmlFile)
+    writeLinkRef(htmlFile,"index.html","index",relGraphFile,"graph")
 
-    writeHtmlEnd(htmlFile);
+    writeHtmlEnd(htmlFile)
     
-    plotConnection.trackInfo(res[[i]]$graph,absGraphImg);
-    writeHtmlHeader("Connection",absGraphFile);
-    writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function");
+    plotConnection.trackInfo(res[[i]]$graph,absGraphImg)
+    writeHtmlHeader("Connection",absGraphFile)
+    writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function")
     writeHtmlSep(absGraphFile);
     writeHtmlSection("Connection",2,absGraphFile);
     writeImage(relGraphImg,absGraphFile);
     writeCR(absGraphFile);
     writeHtmlSep(absGraphFile);
     writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function");
-    writeHtmlEnd(absGraphFile);
+    writeHtmlEnd(absGraphFile)
     
   }
-  
-
   
 }
 
