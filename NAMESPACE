@@ -1,0 +1,43 @@
+######################################################################
+##
+## RUnit
+## =====================================
+##
+## inst/NAMESPACE
+## =====================================
+## initialization of classes, namespace, ...
+##
+##
+## Dependencies
+## =====================================
+##
+##
+## Version
+## =====================================
+##  $Id$
+##
+##
+######################################################################
+
+
+import(methods)
+import(splines)
+
+export(".setUp",
+       ".tearDown",
+       "checkTrue",
+       "checkEquals",
+       "checkEqualsNumeric",
+       "checkException",
+       "defineTestSuite",
+       "inspect",
+       "isValidTestSuite",
+       "print.RUnitTestData",
+       "printTextProtocol",
+       "printHTMLProtocol",
+       "printHTML.trackInfo",
+       "runTestSuite",
+       "runTestFile",
+       "summary.RUnitTestData",
+       "tracker")
+
