@@ -194,6 +194,6 @@ summary.RUnitTestData <- function(object, ...)
   ##
   ##@in  object : [RUnitTestData] S3 class object
 
-  printTextProtocol(testData, ...)
+  printTextProtocol(object, ...)
 }
 
