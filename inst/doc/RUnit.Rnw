@@ -183,9 +183,10 @@ The default naming convention for test functions in the RUnit package is {\tt te
 Before running the test function it is necessary to create a test suite which is a collection of test functions and files relating to one topic. One could, for instance, create one test suite for one R package. A test suite is just a list containing a name, an array of absolute directories containing the locations of the test files, a regular expression identifying the test files and a regular expression identifying the test functions. In our example assume that the test function is located in a file {\tt runitc2f.r} located in a directory {\tt /foo/bar/}. To create the corresponding test suite we can use a helper function:
 \begin{Sinput}
 testsuite.c2f <- defineTestSuite("c2f",
-                                 dirs=paste(path.package(package="RUnit"), "examples",sep="/"),
-                                 testFileRegexp="^runit.+\\.r",
-                                 testFuncRegexp="^test.+")
+                 dirs=paste(path.package(package="RUnit"),
+                            "examples",sep="/"),
+                 testFileRegexp="^runit.+\\.r",
+                 testFuncRegexp="^test.+")
 \end{Sinput}
 All that remains is to run the test suite and print the test protocol:
 \begin{Sinput}
@@ -195,7 +196,8 @@ printTextProtocol(testResult)
 The resulting test protocol should be self explanatory and can also be printed as HTML version. See the online help for further information.
 Note that for executing just one test file there is also a shortcut in order to make test case execution as easy as possible:
  \begin{Sinput}
-runTestFile(paste(path.package(package="RUnit"),"examples/runitc2f.r",sep="/"))
+runTestFile(paste(path.package(package="RUnit"),
+            "examples/runitc2f.r",sep="/"))
 \end{Sinput}
 
 The creation and execution of test suites can be summarised by the following recipe:
@@ -280,12 +282,12 @@ resTrack <- track$getTrackInfo(); ## get the result of Code Inspector (a list)
 printHTML.trackInfo(resTrack) ; ## create HTML sites
 @
 
-The first two lines creates and initialize the tracking object.
-The inspect(...) function in line three and four awaits a complete function call as argument.
-The inspect function executes and tracks the function. The results will be stored in the tracking object.
+Note, that the tracking object is an global object and must have the name {\tt track}.
+The {\tt inspect} function awaits a function call as argument and executes and tracks the function.
+The results will be stored in the tracking object.
 The result of the function (not of the Tracker) will be returned as usual.
 The tracking results will received by tr\$getResult().
-With printHTML(...) the result of the tracking process will be presented as HTML pages.
+With {\tt printHTML} the result of the tracking process will be presented as HTML pages.
 
 \subsubsection{Technical Details}
 The general idea for the code tracking was to modify the source code of the function.
