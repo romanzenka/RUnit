@@ -355,17 +355,12 @@ printHTMLProtocol <- function(testData,
         ## loop over all source files
         writeBeginTag("ul", htmlFile=fileName)
         for(testFileName in testFileNames) {
-          writeBeginTag("li", htmlFile=fileName)
-          writeLink(target=testFileToLinkMap(testFileName),
-                    name=paste("Test file:", basename(testFileName)),
-                    htmlFile=fileName)
-
-
           testFuncNames <- names(res[[testFileName]])
-          if(length(testFuncNames) == 0) {
-            pr(" no test functions")
-          }
-          else {
+          if(length(testFuncNames) > 0) {
+            writeBeginTag("li", htmlFile=fileName)
+            writeLink(target=testFileToLinkMap(testFileName),
+                      name=paste("Test file:", basename(testFileName)),
+                      htmlFile=fileName)
             ## loop over all test functions in the test file
             writeBeginTag("ul", htmlFile=fileName)
             for(testFuncName in testFuncNames) {

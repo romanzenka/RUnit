@@ -178,13 +178,10 @@ printTextProtocol <- function(testData,
       else {
         ## loop over all source files
         for(testFileName in testFileNames) {
-          pr("---------------------------")
-          pr("Test file:", testFileName)
           testFuncNames <- names(res[[testFileName]])
-          if(length(testFuncNames) == 0) {
-            pr("no test functions")
-          }
-          else {
+          if(length(testFuncNames) > 0) {
+            pr("---------------------------")
+            pr("Test file:", testFileName)
             ## loop over all test functions in the test file
             for(testFuncName in testFuncNames) {
               testFuncInfo <- res[[testFileName]][[testFuncName]]
