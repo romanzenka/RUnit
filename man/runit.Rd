@@ -95,6 +95,13 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
     or failure.}
   \item{traceBack}{The full trace back as a character vector in the case of an error and
     \code{NULL} otherwise.}
+
+  Quite often, it is useful to base test cases on random numbers. To
+  make this procedure reproducible, the function \code{runTestSuite}
+  sets the random number generator to a default setting. This default
+  can be overwritten in a \code{.setUp} function defined in a test
+  function. This setup function is called before each test function (see
+  the pdf document associated to this package for further details).
 }
 
 

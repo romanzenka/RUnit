@@ -2,21 +2,19 @@
 \alias{printTextProtocol}
 \alias{printHTMLProtocol}
 \alias{print.RUnitTestData}
-\alias{print}
 \alias{summary.RUnitTestData}
-\alias{summary}
 
 \title{Printing a plain text or HTML version of an RUnit test run.}
 
 \usage{
   printTextProtocol(testData, fileName = "", separateFailureList = TRUE, showDetails = TRUE, traceBackCutOff=9)
   printHTMLProtocol(testData, fileName = "", separateFailureList = TRUE, traceBackCutOff=9)
-  print(testData, ...)
-  summary(testData, ...)
+  print.RUnitTestData(x, ...)
+  summary.RUnitTestData(object, ...)
 }
 
 \arguments{
-  \item{testData}{An object of class \code{RUnitTestData}, typically
+  \item{testData, x, object}{objects of class \code{RUnitTestData}, typically
     obtained  as return value of a test run.}
   \item{fileName}{Connection where to print the text protocol (printing
     is done by the \code{cat} command).}
