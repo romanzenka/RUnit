@@ -13,11 +13,12 @@
 }
 
 \description{
-  \code{tracker} create a new environment to manage and store the result
-  of the tracking process. The \code{inspector} function requires such an
-  environment with the name "track". The tracker records how often each
-  and every
-  function was called by \code{inspect} and summarizes the results of
+  The current implementation uses the 'closure trick' to hide all details from
+  the user and only allows to retrieve the results of the code inspection.
+  \code{tracker} is used to create a new environment to manage and store the results
+  of the tracking process. The \code{inspect} function requires such an
+  environment with the name "track" (currently mandatory). The tracker records how often each
+  and every function was called by \code{inspect} and summarizes the results of
   all calls.
   \code{tracker$init} initializes the tracker environment.
   \code{tracker$getTrackInfo} returns a list with the tracked results of the
@@ -34,6 +35,11 @@
 }
 
 \authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+
+\seealso{
+  \code{\link{inspect}} for the registration of functions \& methods to
+  be on the tracking list.
+}
 
 \examples{
 
@@ -65,19 +71,17 @@ track <- tracker()
 track$init()
 
 ## inspect the function
-## resFoo1 is the result of foo(50)
+## resFoo1 will contain the result of calling foo(50)
 resFoo1 <- inspect(foo(50))
 
-## resFoo2 is the result of foo(20)
 resFoo2 <- inspect(foo(20))
 
-## resBar1 is the result of bar(30)
 resBar1 <- inspect(bar(30))
 
-## get the tracking info for all inspect call
+## get the tracked function call info for all inspect calls
 resTrack <- track$getTrackInfo()
 
-## create HTML sites for all inspect calls
+## create HTML sites in folder ./results for all inspect calls
 printHTML.trackInfo(resTrack)
 }
 
