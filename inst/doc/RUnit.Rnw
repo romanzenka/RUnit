@@ -53,7 +53,7 @@ code - test - simplify  cycle leads to faster and more successful
 software development than the usually futile attempt to add test cases
 once the software is largely finished. This line of thought has been
 pushed furthest by the Extreme Programming
-[ref:http://www.xprogramming.com] and Test-First paradigms
+[\cite{http://www.xprogramming.com}] and Test-First paradigms
 where test cases are viewed as the essential guidelines for the
 development process. These considerations lead to various requirements
 that a useful testing framework should satisfy:
@@ -73,7 +73,7 @@ that a useful testing framework should satisfy:
 Testing frameworks that address these aspects have been written in a
 variety of languages such as Smalltalk, Java, C++ and Python. In
 particular, the approach described in
-[ref:http://www.xprogramming.com/testfram.htm] has turned out to be
+[\cite{http://www.xprogramming.com/testfram.htm}] has turned out to be
 very successful, leading -- among others -- to the popular JUnit
 library for Java [\cite{http://www.JUnit.org/}], which has
 been ported to many other languages (see
@@ -115,13 +115,13 @@ of tips relating to a Test-First development approach can be found in [\cite{htt
 
 \item{Distinguish between unit and integration tests: Unit tests
     should be as small as possible and check one unit of functionality
-    that can't be further decomposed. Integration tests, on the other
+    that can\'t be further decomposed. Integration tests, on the other
     hand, run through a whole analysis workflow and check the
     interplay of various software components.}
 
 \item{Good test coverage enables refactoring, by which a
         reorganisation of the implementation is meant. Without testing the
-        attitude {\it 'I better do not touch this code anymore'} once some piece
+        attitude {\it `I better do not touch this code anymore`} once some piece
         of software appears to be working is frequently
         encountered. It is very pleasing and time-saving just to run a
         test suite after some improvement or simplification of the
@@ -252,7 +252,9 @@ Here we briefly list -- in an unordered manner -- some of the avenues for future
 \item{add some evaluation methods to the code inspector e.g. use software metrics to estimate standard mesures of code quality, complexity, and performance}
 \item{overcome the problem of nested calls to registered functions for code inspection}
 \item{allow automatic registration of functions \& methods}
-%\bibliographystyle{plainnat}
+\end{itemize}
+
+\bibliographystyle{plainnat}
 
 \end{document}
 
