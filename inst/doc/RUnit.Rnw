@@ -30,7 +30,7 @@
 %
 \begin{document}
 \title{RUnit - A Unit Test Framework for R}
-\author{Thomas K\"onig, Klaus J\"unemann, and Matthias Burger}
+\author{Thomas K\"onig\footnote{koenig@epigenomics.com}, Klaus J\"unemann\footnote{kjuen@epigenomics.com}, and Matthias Burger\\Epigenomics AG}
 \maketitle
 \tableofcontents
 \section*{Abstract}
