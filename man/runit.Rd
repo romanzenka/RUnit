@@ -7,7 +7,7 @@
 
 \usage{
 defineTestSuite(name, dirs, testFileRegexp="^runit.+\.r$", testFuncRegexp="^test.+")
-isValidTestSuite(ts)
+isValidTestSuite(testSuite)
 runTestSuite(testSuites, useOwnErrorHandler=TRUE)
 runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
 }
@@ -17,6 +17,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
   \item{dirs}{Vector of absolute directory names where to look for test files.}
   \item{testFileRegexp}{Regular expression for test files.}
   \item{testFuncRegexp}{Regular expression for test functions.}
+  \item{testSuite}{A single object of class test suite.}
   \item{testSuites}{A single object of class test suite or a list of
     test suite objects.}
   \item{useOwnErrorHandler}{If \code{TRUE} the RUnit framework installs
@@ -104,6 +105,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
   \code{defineTestSuite} returns an object of class  \code{RUnitTestSuite}.
 }
 
+\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
@@ -122,3 +124,6 @@ testData <- runTestSuite(myTestSuite)
 ## to standard out:
 printTextProtocol(testData, showDetails=TRUE)
 }
+
+\keyword{programming}
+\keyword{RUnit}
