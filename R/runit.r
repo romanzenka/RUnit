@@ -1,28 +1,19 @@
-######################################################################
+##  RUnit : A unit test framework for the R programming language
+##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
-## library: EpiR.tools
-## =====================================
+##  This program is free software; you can redistribute it and/or modify
+##  it under the terms of the GNU General Public License as published by
+##  the Free Software Foundation; either version 2 of the License, or
+##  (at your option) any later version.
 ##
-## runit.r
-## =====================================
-## very simply framework for unit tests, strongly inspired by Javas junit
-## It has 3 components:
-## - The TestLogger object for storing information and creating the test protocol
-## - A set of functions for finding and executing the test functions
-## - A set of functions to be used inside the test cases to test something
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
 ##
-## Dependencies
-## =====================================
-## absolutely nothing :-)
-##
-## Version
-## =====================================
-##  $Id$
-##
-## Copyright (c) 2003  Epigenomics AG Berlin - All rights reserved
-## THIS IS PROPRIETARY SOURCE CODE of Epigenomics AG Berlin
-##
-######################################################################
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
 ## Convenience functions to handle test suites
@@ -226,6 +217,7 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^t
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
   dn <- dirname(absFileName)
-  ts <- defineTestSuite(name=nn, dirs=dn, testFileRegexp=fn, testFuncRegexp=testFuncRegexp)
+  ts <- defineTestSuite(name=nn, dirs=dn, testFileRegexp=paste("^", fn, "$", sep=""),
+                        testFuncRegexp=testFuncRegexp)
   return(runTestSuite(ts))
 }
