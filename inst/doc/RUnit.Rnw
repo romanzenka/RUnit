@@ -26,9 +26,11 @@ documentclass[12pt, a4paper]{article}
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rpackage}[1]{{\textit{#1}}}
 
+\makeindex                                                %
+\begin{document}   
 \author{Thomas K\"onig, Klaus J\"unemann, and Matthias Burger}
 \begin{document}
-\title{RUnit - A Unit Testing Framework for R}
+\title{RUnit - A Unit Test Framework for R}
 
 \maketitle
 \tableofcontents
