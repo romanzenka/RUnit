@@ -18,14 +18,19 @@
 
 ## Convenience functions to handle test suites
 defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\.r$", testFuncRegexp="^test.+") {
-  return(list(name=name,
+  ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,
-              testFuncRegexp=testFuncRegexp))
+              testFuncRegexp=testFuncRegexp)
+  class(ret) <- "RUnitTestSuite"
+  return(ret)
 }
 
 
 isValidTestSuite <- function(ts) {
+  if(class(ts) != "RUnitTestSuite") {
+    return(FALSE)
+  }
   if(!setequal(names(ts), c("name", "dirs", "testFileRegexp", "testFuncRegexp"))) {
     return(FALSE)
   }
