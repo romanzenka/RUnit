@@ -259,7 +259,6 @@ printHTMLProtocol <- function(testData,
               }
               else {
                 if(testFuncInfo$kind == "error") {
-                  ## pr(paste(testFuncName, ": ERROR !! ", sep=""))
                   writeBeginTag("u", para=paste("style", errorStyle, sep="="), htmlFile=fileName)
                   writeRaw(paste(testFuncName, ": ERROR !!  ", sep=""), htmlFile=fileName)
                   writeEndTag("u", htmlFile=fileName)
