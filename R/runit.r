@@ -87,9 +87,13 @@ isValidTestSuite <- function(testSuite)
   ##@edescr
   ##@in  funcName : [character] name of test case function
 
+  ##  write to stdout for logging
+  cat("\n\nExecuting test function",funcName," ... ")
+  
   func <- get(funcName, envir=envir)
   ## anything else than a function is ignored.
   if(mode(func) != "function") {
+    cat("\n ", funcName," is not of mode function. skipped.\n")
     return()
   }
 
@@ -132,8 +136,10 @@ isValidTestSuite <- function(testSuite)
     return()
   }
 
+  cat(" done successfully.\n\n")
   return()
 }
+
 
 .sourceTestFile <- function(absTestFileName, testFuncRegexp)
 {
