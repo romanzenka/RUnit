@@ -97,6 +97,7 @@ checkTrue <- function(a, msg)
   }
 
   ##  allow named logical argument a
+  a <- eval(a)
   names(a) <- NULL
   
   if (!identical(a, TRUE)) {
