@@ -86,6 +86,7 @@ printHTMLProtocol <- function(testData,
     writeBeginTag("p", para=para, htmlFile=fileName)
     writeRaw(string, htmlFile=fileName)
     writeEndTag("p", htmlFile=fileName)
+    writeCR(htmlFile=fileName)
   }
   writeLi <- function(..., para="") {
     writeBeginTag("li", para=para, htmlFile=fileName)
