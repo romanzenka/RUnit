@@ -1,3 +1,6 @@
+%%
+%% $Id$
+%%
 \name{printHTML.trackInfo}
 \alias{printHTML.trackInfo}
 \title{Write HTML pages of the tracking result.}
