@@ -170,8 +170,6 @@ isValidTestSuite <- function(testSuite)
 }
 
 
-
-
 runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##@bdescr
   ## This is the main function of the runit framework. It finds all the relevant
@@ -184,9 +182,6 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##
   ##@in  testSuites     : [list] list of test suite lists
   ##@ret                :
-
-  ##  record work space objects before test case execution
-  lsObjects <- ls(envir = .GlobalEnv, all.names=TRUE)
 
   oldErrorHandler <- getOption("error")
   ## initialize TestLogger
@@ -213,12 +208,6 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   }
 
   ret <- .testLogger$getTestData()
-
-  ## clean up: remove objects that have been created during the test runs
-  lsCurrentObjects <- ls(envir = .GlobalEnv, all.names=TRUE)
-  ##  start in the local environment and then progressively search all frame
-  ##  till the object is found
-  rm(list=lsCurrentObjects[!(lsCurrentObjects %in% lsObjects)], inherits=TRUE)
   ## reinstall error handler
   options(error=oldErrorHandler)
   return(ret)
