@@ -16,7 +16,7 @@
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5)
+checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 {
   ##@bdescr
   ## checks if two objects are equal, thin wrapper around 'all.equal'
@@ -36,7 +36,7 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5)
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$checkNo <<- 1 + .testLogger$checkNo
   }
-  res <- all.equal(a,b, tolerance=tolerance)
+  res <- all.equal(a,b, tolerance=tolerance, ...)
   if (!identical(res, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$isFailure <<- TRUE
@@ -48,7 +48,7 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5)
   }
 }
 
-checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5)
+checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 {
   ##@bdescr
   ## checks if two objects are equal, thin wrapper around 'all.equal.numeric'
@@ -67,7 +67,7 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5)
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$checkNo <<- 1 + .testLogger$checkNo
   }
-  res <- all.equal.numeric(a,b, tolerance=tolerance)
+  res <- all.equal.numeric(a,b, tolerance=tolerance, ...)
   if (!identical(res, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$isFailure <<- TRUE
