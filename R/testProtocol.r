@@ -20,7 +20,7 @@
 printTextProtocol <- function(testData,
                               fileName = "",
                               separateFailureList = TRUE,
-                              showDetails = FALSE,
+                              showDetails = TRUE,
                               traceBackCutOff=9) {
 
   ## just a convenience function
@@ -55,10 +55,10 @@ printTextProtocol <- function(testData,
     nFail <- nFail + testData[[i]]$nFail
   }
 
-  pr("Number of test functions:", nTestFunc)
-  pr("Number of errors:", nErr)
-  pr("Number of failures:", nFail, "\n\n")
-
+  errInfo <- getErrors(testData)
+  pr("Number of test functions:", errInfo$nTestFunc)
+  pr("Number of errors:", errInfo$nErr)
+  pr("Number of failures:", errInfo$nFail, "\n\n")
 
 
   ## summary of test suites
@@ -157,3 +157,16 @@ printTextProtocol <- function(testData,
     }
   }
 }
+
+
+print.RUnitTestData <- function(testData) {
+  errInfo <- getErrors(testData)
+  cat("Number of test functions:", errInfo$nTestFunc, "\n")
+  cat("Number of errors:", errInfo$nErr, "\n")
+  cat("Number of failures:", errInfo$nFail, "\n")
+}
+
+summary.RUnitTestData <- function(testData, ...) {
+  printTextProtocol(testData, ...)
+}
+
