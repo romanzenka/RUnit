@@ -17,7 +17,7 @@
 
 ##  $Id$
 
-defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\.r$", testFuncRegexp="^test.+")
+defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.r$", testFuncRegexp="^test.+")
 {
   ##@bdescr
   ##  Convenience functions to handle test suites
