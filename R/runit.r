@@ -181,6 +181,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##@edescr
   ##
   ##@in  testSuites     : [list] list of test suite lists
+  ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler 
   ##@ret                :
 
   oldErrorHandler <- getOption("error")
@@ -202,7 +203,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
                             full.names=TRUE)
     for(testFile in testFiles) {
       ## set a standard random number generator.
-      RNGkind(kind="Mersenne-Twister", normal.kind="Inversion")
+      RNGkind(kind="Marsaglia-Multicarry", normal.kind="Kinderman-Ramage")
       .sourceTestFile(testFile, testSuite$testFuncRegexp)
     }
   }
