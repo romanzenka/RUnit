@@ -6,18 +6,18 @@
 \title{Write HTML pages of the tracking result.}
 
 \usage{
-  printHTML.trackInfo(res,baseDir=".")
+  printHTML.trackInfo(trackInfo, baseDir=".")
 }
 
 \arguments{
-  \item{res}{A list, containing the result of the function \code{tracker}.}
+  \item{trackInfo}{A list, containing the result of the function \code{tracker}.}
   \item{baseDir}{A character string, specifying the base directory for
-  the HTML pages to be written to.}
+  the HTML pages to be written to. Defaults to the current working directory.}
 }
 
 \description{
-  \code{printHTML.trackInfo} creates a directory named
-  "result"  in the base directory. All HTML pages and images will be put
+  \code{printHTML.trackInfo} creates a subdirectory named
+  "result"  in the base directory specified via \code{baseDir}. All HTML pages and images will be put
   in that directory.
 }
 
@@ -37,7 +37,7 @@
 
 \examples{
 
-## example function
+##  example function
 foo <- function(x){
    y <- 0
    for(i in 1:100)
@@ -47,20 +47,20 @@ foo <- function(x){
    return(y)
 }
 
-## the name track is necessary
+##  the name track is necessary
 track <- tracker()
 
-## initialize the tracker
+##  initialize the tracker
 track$init()
 
-## inspect the function
-## res is the result of foo
+##  inspect the function
+##  res is the result of foo
 res <- inspect(foo(10))
 
-## get the tracking info
+##  get the tracking info
 resTrack <- track$getTrackInfo()
 
-## create HTML sites
+##  create HTML pages
 printHTML.trackInfo(resTrack)
 }
 
