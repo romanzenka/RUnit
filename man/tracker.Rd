@@ -64,24 +64,24 @@ bar <- function(x){
 
 
 
-## the name track is necessary
+##  the object name track is 'fixed' (current implementation)
 track <- tracker()
 
-## initialize the tracker
+##  initialize the tracker
 track$init()
 
-## inspect the function
-## resFoo1 will contain the result of calling foo(50)
+##  inspect the function
+##  resFoo1 will contain the result of calling foo(50)
 resFoo1 <- inspect(foo(50))
 
 resFoo2 <- inspect(foo(20))
 
 resBar1 <- inspect(bar(30))
 
-## get the tracked function call info for all inspect calls
+##  get the tracked function call info for all inspect calls
 resTrack <- track$getTrackInfo()
 
-## create HTML sites in folder ./results for all inspect calls
+##  create HTML sites in folder ./results for all inspect calls
 printHTML.trackInfo(resTrack)
 }
 
