@@ -142,11 +142,96 @@ of tips relating to a Test-First development approach can be found in [ref:http:
 
 \subsection{R Code Inspection}
 \label{subsection:RCodeInspection}
+\subsubsection{Introduction}
+The Code Inspector is an additional tool for checking detailed test case coverage and getting profiling information.
+It records how often a code line will be executed and we use that information for improving our test cases, because we can detect not executed code lines.
+The Code Inspector is able to handle S4 methods.
+During the development of the Code Inspector, we noticed, that the syntax of R is very flexible.
+Because our coding philosophy has an emphasis of maintenance and a clear style, we developed style guides for our R coding.
+Therefore, one goal for the Code Inspector was to handle our coding styles in a correct manner.
+This leads to the consequence that not all R expression can be handled correctly.
+In our implementation the Code Inspector has two main functional parts.
+The first part is responsible for parsing and modifying the code of the test function.
+The second part, called the Tracker, holds the result of the code tracking.
+The result of the tracking process allows further analysis of the executed code.
 
-\begin{Sinput}
-R> library(RUnit) ##load the package
-\end{Sinput}
+\subsubsection{Usage}
+The usage of the Code Inspector and the Tracker object is very simple. The following code snippet is an example:
+<<eval=FALSE>>=
+tr <- tracker(); ## initialize a tracking "object"
+tr$init(); ## initialize the tracker
 
+resFoo <- inspect(foo(a)); ## execute the test function and track
+resBar <- inspect(bar(d)); ## execute the test function and track
+
+resTrack <- tr$getResult(); ## get the result of Code Inspector (a list)
+
+printHTML(resTrack) ; ## create HTML sites
+@
+
+The first two lines creates and initialize the tracking object.
+The inspect(...) function in line three and four awaits a complete function call as argument.
+The inspect function executes and tracks the function. The results will be stored in the tracking object.
+The result of the function (not of the Tracker) will be returned as usual.
+The tracking results will received by tr\$getResult().
+With printHTML(...) the result of the tracking process will be presented as HTML pages.
+
+\subsubsection{Technical Details}
+The general idea for the code tracking was to modify the source code of the function.
+Therefore, we used the parse and deparse functions and the capability of R to generate functions on runtime.
+To track the function we tried to include in every code line a hook.
+That hook calls a function of the trackes object.
+The information of the tracking will be stored in the closure of the tracking object (actually a function).
+Because the R parser allows very nested expressions, we didn't try to modify every R expression.
+This is a task for the future.
+A simple example for the modifying process is as follow:\\
+original:
+<<eval=FALSE>>=
+foo <- function(x)
+{
+   y <- 0;
+  for(i in 1:x)
+  {
+      y <- y + x;
+  }
+  return(y)
+}
+@
+modified:
+<<eval=FALSE>>=
+foo.mod <- function(x)
+{
+   tr$bp(1) ;
+   y <- 0;
+   tr$bp(2);
+   for(i in 1:x)
+  {
+      tr$bp(4) ;
+     y <- y +x;
+  }
+   tr$bp(6);
+   return(y);
+}
+@
+
+Problematic code lines are:
+
+<<eval=FALSE>>=
+if(a==1){
+  print("do TRUE")
+} else print ("do FALSE");
+@
+This must be modified to
+<<eval=FALSE>>=
+if(a==1){
+   tr$bp(2);
+   print("do TRUE")
+}else{
+ tr$bp(3);
+ print("do FALSE");
+}
+@
+The problem is the \textit{else} branch, that cannot modified in the current version.
 \section{Summary}
 
 \section{Future Development Ideas}
