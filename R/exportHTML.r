@@ -148,13 +148,34 @@ printHTML.trackInfo <- function(res,baseDir=".")
   ##@edescr
   ##
   ##@in  res     : [list] trackInfo object
-  ##@in  baseDir . [character] string specifying the full path to the root directory to hold the HTML pages
+  ##@in  baseDir : [character] string specifying the full path to the root directory to hold the HTML pages
   ##
   
+  ##  preconditions
+  if (!is.list(res))
+  {
+    stop("argument 'res' has to be a list of class 'trackInfo'.")
+  }
 
+  if (!is.character(baseDir))
+  {
+    stop("argument 'baseDir' has to be of type 'character'.")
+  }
+  if (length(baseDir) != 1)
+  {
+    stop("argument 'baseDir' has to contain exactly one element.")
+  }
+
+  
   path <- paste(baseDir,"/results",sep="");
-  dir.create(path);
-
+  if (!file.exists(path))
+  {
+    res <- dir.create(path)
+    if(!res)
+    {
+      stop(paste("could not create", path) )
+    }
+  }
   htmlFile <- paste(path,"/index.html",sep="");
 
   ## create index.html
