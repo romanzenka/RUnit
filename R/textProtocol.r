@@ -34,7 +34,7 @@ printTextProtocol <- function(testData,
   ##@in  separateFailureList : [logical] flag
   ##@in  showDetails         :
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
-  
+
   ## just a convenience function
   pr <- function(..., sep=" ", nl=TRUE) {
     if(nl) {
@@ -56,15 +56,6 @@ printTextProtocol <- function(testData,
   if(length(testData) == 0) {
     pr("no test cases :-(")
     return()
-  }
-
-  nTestFunc <- 0
-  nErr <- 0
-  nFail <- 0
-  for(i in seq(length=length(testData))) {
-    nTestFunc <- nTestFunc + testData[[i]]$nTestFunc
-    nErr <- nErr + testData[[i]]$nErr
-    nFail <- nFail + testData[[i]]$nFail
   }
 
   errInfo <- getErrors(testData)
@@ -178,7 +169,7 @@ print.RUnitTestData <- function(x, ...)
   ##@edescr
   ##
   ##@in  x : [RUnitTestData] S3 class object
-  
+
   errInfo <- getErrors(x)
   cat("Number of test functions:", errInfo$nTestFunc, "\n")
   cat("Number of errors:", errInfo$nErr, "\n")
@@ -188,13 +179,13 @@ print.RUnitTestData <- function(x, ...)
 
 summary.RUnitTestData <- function(object, ...)
 {
-  
+
   ##@bdescr
   ##  Generic summary method
   ##@edescr
   ##
   ##@in  object : [RUnitTestData] S3 class object
-  
+
   printTextProtocol(testData, ...)
 }
 
