@@ -81,20 +81,24 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
 }
 
 
-
 checkTrue <- function(a, msg)
 {
   ##@bdescr
   ## checks whether or not something is true
   ##@edescr
+  ##
   ##@in a   : [expression] the logical expression to be checked to be TRUE
   ##@in msg : [character|TRUE] optional message to further identify and document the call
-
+  ##
+  ##@ret    : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
 
+  ##  allow named logical argument a
+  names(a) <- NULL
+  
   if (!identical(a, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
@@ -105,6 +109,7 @@ checkTrue <- function(a, msg)
     return(TRUE)
   }
 }
+
 
 checkException <- function(expr, msg)
 {

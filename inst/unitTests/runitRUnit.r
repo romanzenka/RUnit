@@ -52,6 +52,23 @@ testRUnit.checkTrue <- function()
 {
   checkException( checkTrue( FALSE))
   checkEquals( checkTrue( TRUE), TRUE)
+
+  ##  named arguments
+  namedArg <- TRUE
+  names(namedArg) <- "Yes"
+  checkEquals( checkTrue( namedArg), TRUE)
+  
+  namedArg <- FALSE
+  names(namedArg) <- "No"
+  checkException( checkTrue( namedArg))
+
+
+  ##  incorrect length
+  checkException( checkTrue( c(TRUE, TRUE)))
+  checkException( checkTrue( c(FALSE, TRUE)))
+  checkException( checkTrue( logical(0)))
+  checkException( checkTrue( logical(2)))
+  
 }
 
 
