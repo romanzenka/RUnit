@@ -73,8 +73,11 @@ printHTMLProtocol <- function(testData,
   
   ## some little helper functions
   ## get singular or plural right
-  sop <- function(number, word, plext="s") ifelse(number == 1, paste(number, word),
-                                  paste(number, paste(word, plext, sep="")))
+  sop <- function(number, word, plext="s")
+  {
+    ifelse(number == 1, paste(number, word),
+           paste(number, paste(word, plext, sep="")))
+  }
 
   pr <- function(...) {
     writeRaw(paste(...), htmlFile=fileName)
@@ -93,7 +96,8 @@ printHTMLProtocol <- function(testData,
     writeRaw(paste(...), htmlFile=fileName)
     writeEndTag("li", htmlFile=fileName)
   }
-  createTestFuncRef <- function(testSuite, srcFileName, testFuncName, asAnchor=FALSE) {
+  createTestFuncRef <- function(testSuite, srcFileName, testFuncName,
+                                asAnchor=FALSE) {
     tmp <- paste(testSuite, srcFileName, testFuncName, sep="_")
     if(asAnchor) {
       return(paste("#", gsub("\/", "_", tmp), sep=""))
@@ -191,7 +195,8 @@ printHTMLProtocol <- function(testData,
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "error") {
               lnk <- paste("<a href=\"",
-                           createTestFuncRef(tsName, srcFileNames[i], testFuncNames[j], asAnchor=TRUE),
+                           createTestFuncRef(tsName, srcFileNames[i],
+                                             testFuncNames[j], asAnchor=TRUE),
                            "\">",
                            paste(tsName, testFuncNames[j], sep=" : "),
                            "</a>", sep="")
@@ -222,7 +227,8 @@ printHTMLProtocol <- function(testData,
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "failure") {
               lnk <- paste("<a href=\"",
-                           createTestFuncRef(tsName, srcFileNames[i], testFuncNames[j], asAnchor=TRUE),
+                           createTestFuncRef(tsName, srcFileNames[i],
+                                             testFuncNames[j], asAnchor=TRUE),
                            "\">",
                            paste(tsName, testFuncNames[j], sep=" : "),
                            "</a>", sep="")
@@ -246,7 +252,8 @@ printHTMLProtocol <- function(testData,
     tsList <- testData[[tsName]]
     writeBeginTag("p", htmlFile=fileName)
 
-    writeBeginTag("a", para=paste("name=\"", tsName, "\"", sep=""), htmlFile=fileName)
+    writeBeginTag("a", para=paste("name=\"", tsName, "\"", sep=""),
+                  htmlFile=fileName)
     writeHtmlSection(paste("Test Suite:", tsName), 5, htmlFile=fileName)
     writeEndTag("a", htmlFile=fileName)
 
@@ -294,19 +301,25 @@ printHTMLProtocol <- function(testData,
               writeBeginTag("a", para=paste("name=\"", anchorName, "\"", sep=""),
                             htmlFile=fileName)
               if(testFuncInfo$kind == "success") {
-                pr(paste(testFuncName, ":", " ... OK (", testFuncInfo$time, " seconds)", sep=""))
+                pr(paste(testFuncName, ":", " ... OK (", testFuncInfo$time,
+                         " seconds)", sep=""))
                 writeEndTag("a", htmlFile=fileName)
               }
               else {
                 if(testFuncInfo$kind == "error") {
-                  writeBeginTag("u", para=paste("style", errorStyle, sep="="), htmlFile=fileName)
-                  writeRaw(paste(testFuncName, ": ERROR !!  ", sep=""), htmlFile=fileName)
+                  writeBeginTag("u", para=paste("style", errorStyle, sep="="),
+                                htmlFile=fileName)
+                  writeRaw(paste(testFuncName, ": ERROR !!  ", sep=""),
+                           htmlFile=fileName)
                   writeEndTag("u", htmlFile=fileName)
                   writeEndTag("a", htmlFile=fileName)
                 }
                 else if (testFuncInfo$kind == "failure") {
-                  writeBeginTag("u", para=paste("style", errorStyle, sep="="), htmlFile=fileName)
-                  writeRaw(paste(testFuncName, ": FAILURE !! (check number ", testFuncInfo$checkNo, ")  ", sep=""), htmlFile=fileName)
+                  writeBeginTag("u", para=paste("style", errorStyle, sep="="),
+                                htmlFile=fileName)
+                  writeRaw(paste(testFuncName, ": FAILURE !! (check number ",
+                                 testFuncInfo$checkNo, ")  ", sep=""),
+                           htmlFile=fileName)
                   writeEndTag("u", htmlFile=fileName)
                   writeEndTag("a", htmlFile=fileName)
                 }
@@ -334,7 +347,8 @@ printHTMLProtocol <- function(testData,
   ver <- cbind(unlist(version))
   colnames(ver) <- ""
   pr("\n\n --------------------------------\n")
-  write.table(ver, sep="\t", quote=FALSE, append=TRUE, file=fileName)
+  write.table(ver, sep="\t", quote=FALSE, append=TRUE,
+              col.names=FALSE, file=fileName)
   
   ## finish html document
   writeHtmlEnd(htmlFile=fileName)
