@@ -7,7 +7,7 @@
 %\VignetteKeywords{Unit Testing, Code INspection, Programming}
 %\VignetteDepends{}
 %\VignettePackage{RUnit}
-documentclass[12pt, a4paper]{article}
+\documentclass[12pt, a4paper]{article}
 
 \usepackage{amsmath,pstricks}
 \usepackage{hyperref}
@@ -26,24 +26,43 @@ documentclass[12pt, a4paper]{article}
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rpackage}[1]{{\textit{#1}}}
 
-\makeindex                                                %
+%\makeindex
+%
 \begin{document}   
-\author{Thomas K\"onig, Klaus J\"unemann, and Matthias Burger}
-\begin{document}
 \title{RUnit - A Unit Test Framework for R}
-
+\author{Thomas K\"onig, Klaus J\"unemann, and Matthias Burger}
 \maketitle
 \tableofcontents
+\section*{Abstract}
+\label{section:abstract}
+Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modelled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyse and report the software quality status. The presented framework is completely implemented with R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an easy to understand test protocol. 
+To verify the coverage of the test framework a code inspector is provided that monitors the code coverage of executed test cases. The result of individual test invocations as well as package wide evaluations can be compiled into a summary report exported to HTML. This report details the executed tests, their failure or success, as well as the code coverage. Taking it one step further and combining the build system with a development and release procedure with defined code status description this approach opens the way for a principled software quality monitoring and risk assessment of the developed application.
+For our code development we have utilized the described system with great benefit w.r.t. code reliability and maintenance efforts in a medium sized development team.
+
 \section{Introduction}
 The \Rpackage{RUnit} package provides ...
+
+\subsection{Motivation}
+
+\subsection{Background}
+\label{section:Background}
 
 \section{Getting Started: Setting up test cases}
 \label{section:gettingStarted}
 
-Bla bla
+\subsection{R Unit Testing}
+\label{subsection:RUnitTesting}
+
+\subsection{R Code Inspection}
+\label{subsection:RCodeInspection}
+
 \begin{Sinput}
 R> library(RUnit) ##load the package
 \end{Sinput}
+
+\section{Summary}
+
+\section{Future Development Ideas}
 
 %\bibliographystyle{plainnat}
 
