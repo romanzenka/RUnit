@@ -22,7 +22,7 @@ defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\.r$", testFuncR
   ##@bdescr
   ##  Convenience functions to handle test suites
   ##@edescr
-  
+
   ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,
@@ -34,7 +34,7 @@ defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\.r$", testFuncR
 
 isValidTestSuite <- function(testSuite)
 {
-  if(class(testSuite) != "RUnitTestSuite")
+  if(!identical(class(testSuite), "RUnitTestSuite"))
   {
     return(FALSE)
   }
