@@ -183,7 +183,8 @@ printHTMLProtocol <- function(testData,
                      testData[[tsName]]$nDeactivated,
                      testData[[tsName]]$nErr,
                      testData[[tsName]]$nFail)
-      rowCols <- c("", "", "",
+      rowCols <- c("", "",
+                   ifelse(testData[[tsName]]$nDeactivated==0, "", "yellow"),
                    ifelse(testData[[tsName]]$nErr==0, "", "red"),
                    ifelse(testData[[tsName]]$nFail==0, "", "red"))
 
