@@ -15,10 +15,14 @@
 ##  along with this program; if not, write to the Free Software
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+##  $Id$
 
-## Convenience functions to handle test suites
 defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\.r$", testFuncRegexp="^test.+")
 {
+  ##@bdescr
+  ##  Convenience functions to handle test suites
+  ##@edescr
+  
   ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,

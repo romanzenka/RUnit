@@ -15,6 +15,8 @@
 ##  along with this program; if not, write to the Free Software
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+##  $Id$
+
 
 checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 {
@@ -28,8 +30,7 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
   ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
   ##@in msg : [character|TRUE] an optional message to further identify and document the call
 
-
-
+  
   if(!is.numeric(tolerance)) {
     stop("tolerance has to be a numeric value")
   }
