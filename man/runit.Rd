@@ -115,7 +115,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
 \examples{
 
 ## run some test suite
-myTestSuite <- defineTestSuite("my test suite", "test-directory")
+myTestSuite <- defineTestSuite("my test suite", "tests")
 testData <- runTestSuite(myTestSuite)
 
 ## prints detailed text protocol

@@ -64,7 +64,9 @@
 \examples{
 
 ## run some test suite
+myTestSuite <- defineTestSuite("my test suite", "tests")
 testData <- runTestSuite(myTestSuite)
+
 
 ## prints detailed text protocol
 ## to standard out:
