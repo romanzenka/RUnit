@@ -141,20 +141,20 @@ plotConnection.trackInfo <- function(con,pngfile,...)
 }
 
 
-printHTML.trackInfo <- function(res,baseDir=".")
+printHTML.trackInfo <- function(trackInfo,baseDir=".")
 {
   ##@bdescr
   ##  create a HTML representation of the TrackInfo object data
   ##@edescr
   ##
-  ##@in  res     : [list] trackInfo object
-  ##@in  baseDir : [character] string specifying the full path to the root directory to hold the HTML pages
+  ##@in  trackInfo : [list] trackInfo object
+  ##@in  baseDir   : [character] string specifying the full path to the root directory to hold the HTML pages
   ##
   
   ##  preconditions
-  if (!is.list(res))
+  if (!is.list(trackInfo))
   {
-    stop("argument 'res' has to be a list of class 'trackInfo'.")
+    stop("argument 'trackInfo' has to be a list of class 'trackInfo'.")
   }
 
   if (!is.character(baseDir))
@@ -170,8 +170,8 @@ printHTML.trackInfo <- function(res,baseDir=".")
   path <- paste(baseDir,"/results",sep="");
   if (!file.exists(path))
   {
-    res <- dir.create(path)
-    if(!res)
+    ok <- dir.create(path)
+    if(!ok)
     {
       stop(paste("could not create", path) )
     }
@@ -182,9 +182,9 @@ printHTML.trackInfo <- function(res,baseDir=".")
   writeHtmlHeader("Overview",htmlFile);
   writeHtmlSection("Overview",2,htmlFile);
   writeBeginTable(c("categ.","Name","signature"),htmlFile)
-  for(i in seq(along=res))
+  for(i in seq(along=trackInfo))
   {
-    funcID <- strsplit(names(res)[i],"/")[[1]];
+    funcID <- strsplit(names(trackInfo)[i],"/")[[1]];
     funcCat <- funcID[1]
     funcName <- funcID[2]
     if(length(funcID) > 2)
@@ -245,7 +245,7 @@ printHTML.trackInfo <- function(res,baseDir=".")
   }
   
   ## create result pages
-  for(i in seq(along=res))
+  for(i in seq(along=trackInfo))
   {
     absGraphImg <- paste(path,"/con",i,".png",sep="");
     absGraphFile <- paste(path,"/con",i,".html",sep="");
@@ -263,7 +263,7 @@ printHTML.trackInfo <- function(res,baseDir=".")
     writeHtmlSep(htmlFile);
     writeHtmlSection("Result",2,htmlFile);
 
-    funcName <- strsplit(names(res)[i],"/")[[1]][2]; 
+    funcName <- strsplit(names(trackInfo)[i],"/")[[1]][2]; 
     writeRaw("Function:",htmlFile);
     writeBeginTag("b",htmlFile);
     writeRaw(funcName,htmlFile);
@@ -272,7 +272,7 @@ printHTML.trackInfo <- function(res,baseDir=".")
 
     writeRaw("Runs:",htmlFile);
     writeBeginTag("b",htmlFile);
-    writeRaw(res[[i]]$nrRuns,htmlFile);
+    writeRaw(trackInfo[[i]]$nrRuns,htmlFile);
     writeEndTag("b",htmlFile);
     writeCR(htmlFile);
 
@@ -280,9 +280,9 @@ printHTML.trackInfo <- function(res,baseDir=".")
     writeCR(htmlFile);
 
     writeBeginTable(c("line","code","calls","time"),htmlFile)
-    for(j in seq(along=res[[i]]$src))
+    for(j in seq(along=trackInfo[[i]]$src))
     {
-      srcLine <- res[[i]]$src[j]
+      srcLine <- trackInfo[[i]]$src[j]
       leadingSpaceNr <- attr(regexpr("^( )*",srcLine),"match.length")
       if(leadingSpaceNr > 0)
       {
@@ -290,7 +290,7 @@ printHTML.trackInfo <- function(res,baseDir=".")
          srcLine <- paste(paste(rep("&ensp;",leadingSpaceNr),collapse=""),
                           srcLine,collapse="",sep="")
       }
-      if(res[[i]]$run[j] > 0)
+      if(trackInfo[[i]]$run[j] > 0)
       {
         bgcolor <- "#00D000"
       }
@@ -298,7 +298,7 @@ printHTML.trackInfo <- function(res,baseDir=".")
       {
         bgcolor <- "#D00000"
       }
-      writeTableRow(c(j,srcLine,res[[i]]$run[j],round(res[[i]]$time[j],2)),
+      writeTableRow(c(j,srcLine,trackInfo[[i]]$run[j],round(trackInfo[[i]]$time[j],2)),
                     htmlFile,bgcolor=bgcolor)
     }
 
@@ -308,15 +308,15 @@ printHTML.trackInfo <- function(res,baseDir=".")
 
     writeHtmlEnd(htmlFile)
     
-    plotConnection.trackInfo(res[[i]]$graph,absGraphImg)
+    plotConnection.trackInfo(trackInfo[[i]]$graph,absGraphImg)
     writeHtmlHeader("Connection",absGraphFile)
     writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function")
-    writeHtmlSep(absGraphFile);
-    writeHtmlSection("Connection",2,absGraphFile);
-    writeImage(relGraphImg,absGraphFile);
-    writeCR(absGraphFile);
-    writeHtmlSep(absGraphFile);
-    writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function");
+    writeHtmlSep(absGraphFile)
+    writeHtmlSection("Connection",2,absGraphFile)
+    writeImage(relGraphImg,absGraphFile)
+    writeCR(absGraphFile)
+    writeHtmlSep(absGraphFile)
+    writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function")
     writeHtmlEnd(absGraphFile)
     
   }
