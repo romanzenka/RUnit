@@ -107,7 +107,7 @@ printTextProtocol <- function(testData,
     return()
   }
 
-  errInfo <- .getErrors(testData)
+  errInfo <- getErrors(testData)
   pr("Number of test functions:", errInfo$nTestFunc)
   if(errInfo$nDeactivated > 0) {
     pr("Number of deactivated test functions:", errInfo$nDeactivated)
@@ -237,7 +237,7 @@ print.RUnitTestData <- function(x, ...)
   ##
   ##@in  x : [RUnitTestData] S3 class object
 
-  errInfo <- .getErrors(x)
+  errInfo <- getErrors(x)
   cat("Number of test functions:", errInfo$nTestFunc, "\n")
   if(errInfo$nDeactivated > 0) {
     cat("Number of deactivated test functions:", errInfo$nDeactivated, "\n")

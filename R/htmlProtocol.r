@@ -154,7 +154,7 @@ printHTMLProtocol <- function(testData,
     return()
   }
   ## basic Info
-  errInfo <- .getErrors(testData)
+  errInfo <- getErrors(testData)
   writeP(paste("Number of test functions:", errInfo$nTestFunc))
   if(errInfo$nDeactivated > 0) {
     writeP(paste("Number of deactivated test functions:", errInfo$nDeactivated))
