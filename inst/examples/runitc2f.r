@@ -45,7 +45,7 @@ test.errordemo <- function() {
 
 
 ## How to run the tests (do not uncomment in this file,
-## but execute the commands at the R prompt).
+## but execute the commands at the R prompt):
 ## All you have to do is to adapt the directory locations.
 ## ------------------------------------------------
 
