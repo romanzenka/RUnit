@@ -21,7 +21,6 @@
 
 
 import(methods)
-import(splines)
 
 export(".setUp",
        ".tearDown",
