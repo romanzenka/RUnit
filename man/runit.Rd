@@ -121,7 +121,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
   \code{defineTestSuite} returns an object of class  \code{RUnitTestSuite}.
 }
 
-\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.

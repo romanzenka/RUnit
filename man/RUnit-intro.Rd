@@ -1,8 +1,3 @@
-##
-##  
-##   $Id$
-##
-##
 \name{RUnit}
 \alias{RUnit}
 \title{RUnit - Package Description}

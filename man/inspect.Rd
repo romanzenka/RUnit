@@ -1,6 +1,3 @@
-%%
-%% $Id$
-%%
 \name{inspect}
 \alias{inspect}
 \title{Track the executed code lines of a function or method.}
@@ -30,7 +27,7 @@
 the function executed. If the function has no return value nothing is
 returned either.}
 
-\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
 \seealso{
   \code{\link{tracker}} for the call tracking object.

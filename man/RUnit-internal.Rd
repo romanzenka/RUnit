@@ -1,6 +1,3 @@
-%%
-%% $Id$
-%%
 \name{RUnit-internal}
 
 \alias{includeTracker}

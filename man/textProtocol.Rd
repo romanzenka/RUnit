@@ -3,6 +3,7 @@
 \alias{printHTMLProtocol}
 \alias{print.RUnitTestData}
 \alias{summary.RUnitTestData}
+\alias{getErrors}
 
 \title{Printing a plain text or HTML version of an RUnit test run.}
 
@@ -11,6 +12,7 @@
   printHTMLProtocol(testData, fileName = "", separateFailureList = TRUE, traceBackCutOff=9)
   print.RUnitTestData(x, ...)
   summary.RUnitTestData(object, ...)
+  getErrors(testData)
 }
 
 \arguments{
@@ -49,7 +51,12 @@
   \code{print} prints the number of executed test functions and the
   number of failures and errors.
 
-  \code{summary} directly delegates the work to \code{printTextProtocol}.
+  \code{summary} directly delegates the work to
+  \code{printTextProtocol}.
+
+  \code{getErrors} returns a list containing the number of test
+  functions, the number of deactivated functions (if there are any), the
+  number of errors and the number of failures.
 }
 
 \details{
@@ -63,7 +70,7 @@
   information as possible is provided.
 }
 
-\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
 \seealso{
   \code{\link{runTestSuite}}

@@ -3,6 +3,7 @@
 \alias{checkEqualsNumeric}
 \alias{checkTrue}
 \alias{checkException}
+\alias{DEACTIVATED}
 \title{RUnit check functions}
 
 \usage{
@@ -10,6 +11,7 @@ checkEquals(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 checkEqualsNumeric(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 checkTrue(a, msg)
 checkException(expr, msg)
+DEACTIVATED(msg)
 }
 
 \arguments{
@@ -45,21 +47,23 @@ checkException(expr, msg)
   If it does the test is OK. Otherwise an error is
   generated and the failure is reported to the test logger such that it
   appears in the test protocol.
+
+  \code{DEACTIVATED} interrupts the test function and reports the test case
+  as deactivated. In the test protocol deactivated test functions are
+  listed separately. Test case deactivation can be useful in the case of
+  major refactoring. Alternatively, test cases can be commented out
+  completely but then it is easy to forget the test case altogether.
 }
 
 \details{
-  These check functions are direct equivalents of the various
+  The check functions are direct equivalents of the various
   methods of the class junit.framework.Assert of Javas junit framework
   which served as basis for the RUnit package.
 }
 
 
-\value {
-  If a check fails none of the check functions return but generate an
-  error. Otherwise \code{TRUE} is returned.
-}
 
-\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
 \seealso{
   \code{\link{all.equal}}, \code{\link{all.equal.numeric}} and
@@ -92,6 +96,7 @@ fun <- function(x) {
 checkException(fun(TRUE))   ## passes fine
 ## checkException(fun(FALSE))  ## failure, because f raises no error
 
+## DEACTIVATED("here one can document on the reason for deactivation")
 }
 
 \keyword{programming}
