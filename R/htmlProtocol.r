@@ -33,7 +33,9 @@ printHTMLProtocol <- function(testData,
   ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to be displayed
 
-  ##  preconditions
+  ## --------------------------------
+  ##  CHECK OF INPUT DATA
+  ## --------------------------------
   if (!is(testData, "RUnitTestData"))
   {
     stop("Argument 'testData' must be of class 'RUnitTestData'.")
@@ -70,8 +72,10 @@ printHTMLProtocol <- function(testData,
     stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
   }
 
+  ## --------------------------------
+  ## HELPER FUNCTIONS
+  ## --------------------------------
 
-  ## some little helper functions
   ## get singular or plural right
   sop <- function(number, word, plext="s")
   {
@@ -132,14 +136,16 @@ printHTMLProtocol <- function(testData,
     }
   }
 
-
-
   errorStyle <- "color:red"
   deactivatedStyle <- "color:black"
 
-  title <- paste("RUNIT TEST PROTOCOL", date(), sep="--")
+
+  ## --------------------------------------------
+  ## PART 1: TITLE AND BASIC ERROR INFORMATION
+  ## --------------------------------------------
 
   ## title
+  title <- paste("RUNIT TEST PROTOCOL", date(), sep="--")
   writeHtmlHeader(title, htmlFile=fileName)
   writeHtmlSection(title, 1, htmlFile=fileName)
 
@@ -159,28 +165,55 @@ printHTMLProtocol <- function(testData,
          para=ifelse(errInfo$nFail == 0, "", paste("style", errorStyle, sep="=")))
   writeHtmlSep(htmlFile=fileName)
 
+  ## --------------------------------
+  ## PART 2: TABLE OF TEST SUITES
+  ## --------------------------------
+
   ## summary of test suites
   writeHtmlSection(sop(length(testData), "Test suite"), 3, htmlFile=fileName)
-
   ## table of test suites
-  writeBeginTable(c("Name", "Test functions", "Deactivated", "Errors", "Failures"),
-                  width="80%",
-                  htmlFile=fileName,
-                  columnWidth=c("20%", "20%", "20%", "20%", "20%"))
-  for(tsName in names(testData)) {
-    rowString <- c(paste("<a href=\"#", tsName, "\">", tsName, "</a>", sep=""),
-                   testData[[tsName]]$nTestFunc,
-                   testData[[tsName]]$nDeactivated,
-                   testData[[tsName]]$nErr,
-                   testData[[tsName]]$nFail)
-    rowCols <- c("", "", "",
-                 ifelse(testData[[tsName]]$nErr==0, "", "red"),
-                 ifelse(testData[[tsName]]$nFail==0, "", "red"))
+  if(errInfo$nDeactivated > 0) {
+    writeBeginTable(c("Name", "Test functions", "Deactivated", "Errors", "Failures"),
+                    width="80%",
+                    htmlFile=fileName,
+                    columnWidth=c("20%", "20%", "20%", "20%", "20%"))
+    for(tsName in names(testData)) {
+      rowString <- c(paste("<a href=\"#", tsName, "\">", tsName, "</a>", sep=""),
+                     testData[[tsName]]$nTestFunc,
+                     testData[[tsName]]$nDeactivated,
+                     testData[[tsName]]$nErr,
+                     testData[[tsName]]$nFail)
+      rowCols <- c("", "", "",
+                   ifelse(testData[[tsName]]$nErr==0, "", "red"),
+                   ifelse(testData[[tsName]]$nFail==0, "", "red"))
 
-    writeTableRow(row=rowString, bgcolor=rowCols, htmlFile=fileName)
+      writeTableRow(row=rowString, bgcolor=rowCols, htmlFile=fileName)
+    }
+    writeEndTable(htmlFile=fileName)
   }
-  writeEndTable(htmlFile=fileName)
+  else {  ## skip 'deactivated' column if no functions have been deactivated
+    writeBeginTable(c("Name", "Test functions", "Errors", "Failures"),
+                    width="60%",
+                    htmlFile=fileName,
+                    columnWidth=c("30%", "30%", "20%", "20%"))
+    for(tsName in names(testData)) {
+      rowString <- c(paste("<a href=\"#", tsName, "\">", tsName, "</a>", sep=""),
+                     testData[[tsName]]$nTestFunc,
+                     testData[[tsName]]$nErr,
+                     testData[[tsName]]$nFail)
+      rowCols <- c("", "",
+                   ifelse(testData[[tsName]]$nErr==0, "", "red"),
+                   ifelse(testData[[tsName]]$nFail==0, "", "red"))
+
+      writeTableRow(row=rowString, bgcolor=rowCols, htmlFile=fileName)
+    }
+    writeEndTable(htmlFile=fileName)
+  }
   writeHtmlSep(htmlFile=fileName)
+
+  ## ------------------------------------------------
+  ## PART 3: ERROR, FAILURE AND DEACTIVATED TABLES
+  ## -------------------------------------------------
 
   ## error table
   if(separateFailureList && (errInfo$nErr > 0)) {
@@ -279,7 +312,10 @@ printHTMLProtocol <- function(testData,
     writeHtmlSep(htmlFile=fileName)
   }
 
-  ## details
+  ## --------------------------------
+  ## PART 4: DETAILS
+  ## --------------------------------
+
   writeHtmlSection("Details", 3, htmlFile=fileName)
 
   ## loop over all test suites
