@@ -27,7 +27,10 @@
     are removed from the stack before it is written to the protocol. The
     default value is chosen such that all uninteresting RUnit calls are
     removed from the stack if \code{runTestSuite} has been called from
-    the console. This argument takes effect only if \code{showDetails=TRUE}.}
+    the console. This argument takes effect only if
+    \code{showDetails=TRUE}.}
+  \item{...}{additional arguments to summary are passed on to the
+  printTextProtocol() call.}
 }
 
 \description{These functions produce a text protocol (as opposed to
@@ -55,6 +58,7 @@
   information as possible is provided.
 }
 
+\authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
 \seealso{
   \code{\link{runTestSuite}}
@@ -72,3 +76,6 @@ testData <- runTestSuite(myTestSuite)
 ## to standard out:
 printTextProtocol(testData, showDetails=TRUE)
 }
+
+\keyword{programming}
+\keyword{RUnit}
