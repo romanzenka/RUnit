@@ -96,12 +96,21 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
   \item{traceBack}{The full trace back as a character vector in the case of an error and
     \code{NULL} otherwise.}
 
+  To further control test case execution it is possible to define two
+  parameterless function \code{.setUp()} and \code{.tearDown()} in a
+  test file. \code{.setUp()} is executed directly before and
+  \code{.tearDown()} directly after each test function.
+
   Quite often, it is useful to base test cases on random numbers. To
   make this procedure reproducible, the function \code{runTestSuite}
-  sets the random number generator to a default setting. This default
-  can be overwritten in a \code{.setUp} function defined in a test
-  function. This setup function is called before each test function (see
-  the pdf document associated to this package for further details).
+  sets the random number generator to the default setting
+  \code{RNGkind(kind="Marsaglia-Multicarry",
+    normal.kind="Kinderman-Ramage")} before sourcing each test file
+  (note that this default has been chosen due to historical reasons and
+  differs from the current R default). This default can be overwritten
+  by  configuring the random number generator at the beginning of a test
+  file. This setting, however, is valid only inside its own source file
+  and gets overwritten when the next test file is sourced.
 }
 
 
