@@ -16,7 +16,7 @@
 ## =====================================
 ##  $Id$
 ##
-##  
+##
 ######################################################################
 
 
@@ -32,12 +32,12 @@ export(".setUp",
        "defineTestSuite",
        "inspect",
        "isValidTestSuite",
-       "print",
+       "print.RUnitTestData",
        "printTextProtocol",
        "printHTMLProtocol",
        "printHTML.trackInfo",
        "runTestSuite",
        "runTestFile",
-       "summary",
+       "summary.RUnitTestData",
        "tracker")
 
