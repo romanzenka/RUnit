@@ -332,6 +332,7 @@ printHTMLProtocol <- function(testData,
 
   
   ver <- cbind(unlist(version))
+  colnames(ver) <- ""
   pr("\n\n --------------------------------\n")
   write.table(ver, sep="\t", quote=FALSE, append=TRUE, file=fileName)
   
