@@ -12,14 +12,12 @@ generate a summary report. It also provides tools for code inspection
 and thus for test case coverage analysis.
 }
 
-\references{useR! 2004 Vienna}
+\references{RUnit - A Unit Test Framework for R. useR! 2004 Vienna}
 \author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
 
-\seealso{See Also as \code{\link{~~fun~~}}, ~~~
- or\code{\link{}} }
+\seealso{See  \code{\link{defineTestSuite}}, \code{\link{runTestSuite}}
+for unit testing or \code{\link{inspect}} and
+\code{\link{tracker}} for code inspection.}
 
-\examples{
-##---- Should be DIRECTLY executable !! ----
-}
 \keword{programming}
 \keyword{RUnit}
