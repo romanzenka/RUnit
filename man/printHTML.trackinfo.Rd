@@ -1,28 +1,33 @@
-\name{printHTML.trackinfo}
-\alias{printHTML.trackinfo}
+\name{printHTML.trackInfo}
+\alias{printHTML.trackInfo}
 \title{Write HTML pages of the tracking result.}
 
 \usage{
-  printHTML.trackinfo(res,baseDir=".")
+  printHTML.trackInfo(res,baseDir=".")
 }
 
 \arguments{
-  \item{res}{The result of the function tracking.}
-  \item{baseDir}{Base directory for the HTML pages.}
+  \item{res}{A list, containing the result of the function \code{tracker}.}
+  \item{baseDir}{A character string, specifying the base directory for
+  the HTML pages to be written to.}
 }
 
 \description{
-  \code{printHTML.trackinfo} creates a directory named
+  \code{printHTML.trackInfo} creates a directory named
   "result"  in the base directory. All HTML pages and images will be put
   in that directory.
 }
 
 \details{An "index.html" page will be created in the directory
-  "result" and is the root of the HTML pages. The result for every
-  function consists of two HTML pages. The first page is an overview how
-  often every line of code was executed. Not executed lines are red,
-  executed lines are green. The second page is a representation of the
-  execution flow of the function.  
+  "result" and which is the root entry page of the HTML pages. The
+  displayed result for every function consists of two HTML pages.
+  The first page is an overview on how
+  often every line of code was executed. Code lines not executed are
+  highlighted red, executed lines are shown in green. The second page is
+  a graph representation of the
+  execution flow of the function. Each code line has a edge pointing to
+  the next code line that is executed subsequently. Thus loops and jumps
+  become clearly visible.
 }
 
 \authors{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
