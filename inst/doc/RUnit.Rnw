@@ -182,9 +182,10 @@ The default naming convention for test functions in the RUnit package is {\tt te
 
 Before running the test function it is necessary to create a test suite which is a collection of test functions and files relating to one topic. One could, for instance, create one test suite for one R package. A test suite is just a list containing a name, an array of absolute directories containing the locations of the test files, a regular expression identifying the test files and a regular expression identifying the test functions. In our example assume that the test function is located in a file {\tt runitc2f.r} located in a directory {\tt /foo/bar/}. To create the corresponding test suite we can use a helper function:
 \begin{Sinput}
-testsuite.c2f <- defineTestSuite("c2f", dirs="/foo/bar",
+testsuite.c2f <- defineTestSuite("c2f",
+                                 dirs=paste(path.package(package="RUnit"), "examples",sep="/"),
                                  testFileRegexp="^runit.+\\.r",
-                                 testFuncRegexp="^test.+")
+                                 testFuncRegexp="^test.+")
 \end{Sinput}
 All that remains is to run the test suite and print the test protocol:
 \begin{Sinput}
@@ -194,7 +195,7 @@ printTextProtocol(testResult)
 The resulting test protocol should be self explanatory and can also be printed as HTML version. See the online help for further information.
 Note that for executing just one test file there is also a shortcut in order to make test case execution as easy as possible:
  \begin{Sinput}
-runTestFile("/foo/bar/runitc2f.r")
+runTestFile(paste(path.package(package="RUnit"),"examples/runitc2f.r",sep="/"))
 \end{Sinput}
 
 The creation and execution of test suites can be summarised by the following recipe:
@@ -238,15 +239,45 @@ The usage of the Code Inspector and the Tracker object is very simple. The follo
 <<eval=FALSE>>=
 library(RUnit)
 
-tr <- tracker(); ## initialize a tracking "object"
-tr$init(); ## initialize the tracker
+##  define sample functions to be tested
+foo <- function(x) {
+  x <- x*x
+  x <- 2*x
+  return(x)
+}
+test.foo <- function() {
+
+  checkTrue(is.numeric(foo(1:10)))
+  checkEquals(length(foo(1:10)), 10)
+  checkEqualsNumeric(foo(1), 2)
+}
+
+bar <- function(x, y=NULL) {
+
+  if (is.null(y)) {
+    y <- x
+  }
+
+  if (all(y > 100)) {
+    ##  subtract 100
+    y <- y - 100
+  }
+
+  res <- x^y
+  return(res)
+}
+  
+track <- tracker(); ## initialize a tracking "object"
+track$init(); ## initialize the tracker
+a <- 1:10
+d <- seq(0,1,0.1)
 
 resFoo <- inspect(foo(a)); ## execute the test function and track
 resBar <- inspect(bar(d)); ## execute the test function and track
 
-resTrack <- tr$getResult(); ## get the result of Code Inspector (a list)
+resTrack <- track$getTrackInfo(); ## get the result of Code Inspector (a list)
 
-printHTML(resTrack) ; ## create HTML sites
+printHTML.trackInfo(resTrack) ; ## create HTML sites
 @
 
 The first two lines creates and initialize the tracking object.
@@ -281,15 +312,15 @@ modified:
 <<eval=FALSE>>=
 foo.mod <- function(x)
 {
-   tr$bp(1) ;
+   track$bp(1) ;
    y <- 0;
-   tr$bp(2);
+   track$bp(2);
    for(i in 1:x)
   {
-      tr$bp(4) ;
+      track$bp(4) ;
      y <- y +x;
   }
-   tr$bp(6);
+   track$bp(6);
    return(y);
 }
 @
@@ -297,17 +328,17 @@ foo.mod <- function(x)
 Problematic code lines are:
 
 <<eval=FALSE>>=
-if(a==1){
+if(any(a==1)) {
   print("do TRUE")
 } else print ("do FALSE");
 @
 This must be modified to
 <<eval=FALSE>>=
-if(a==1){
-   tr$bp(2);
+if(any(a==1)) {
+   track$bp(2);
    print("do TRUE")
 }else{
- tr$bp(3);
+ track$bp(3);
  print("do FALSE");
 }
 @
