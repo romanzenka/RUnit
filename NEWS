@@ -1,15 +1,18 @@
         Dear Emacs, please make this -*-Text-*- mode!
-	**************************************************
-	*						 *
-	*	       RUnit      			 *
-	*						 *
-	**************************************************
+        **************************************************
+        * 
+        *
+        *	       RUnit
+        *
+        * 
+        *
+        **************************************************
 
 
 
 Changes in RUnit 0.4.0
 
-    o	New 'error' category DEACTIVATED introduced: If the function
+    o   New 'error' category DEACTIVATED introduced: If the function
         DEACTIVATED is inserted into a test function the function
         stops at that point and is reported as deactivated in the test
         protocol.
@@ -18,11 +21,13 @@ Changes in RUnit 0.4.0
         'RUnitTestData' and returns some very basic error information
         of a test run.
 
-    o   The name of the currently execute test function is written to
+    o   The name of the currently executed test function is written to
         standard out.
 
     o   'printHTMLProtocol' fixed such that it does not produce a
         warning anymore.
+
+    o   Dependency on package 'splines' removed.
 
     o   Various small fixes of the documentation.
 
