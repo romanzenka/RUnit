@@ -70,23 +70,27 @@ checkException(expr, msg)
 
 \examples{
 
-checkTrue(1<2, "check1")  ## passes fine
-## checkTrue(1>2, "check2")  ## appears as failure in the test protocol
+checkTrue(1 < 2, "check1")     ## passes fine
+## checkTrue(1 > 2, "check2")  ## appears as failure in the test protocol
 
 v <- 1:3
 w <- 1:3
 checkEquals(v,w)          ## pasess fine
 names(v) <- c("A", "B", "C")
-## checkEquals(v,w)     ## fails because v and w have different names
+## checkEquals(v,w)      ## fails because v and w have different names
 checkEqualsNumeric(v,w)  ## passes fine because names are ignored
 
 
-f <- function(x) {
-  if(x) stop()
+fun <- function(x) {
+  if(x)
+  {
+   stop("stop conditions signaled")
+  }
+  return()
 }
 
-checkException(f(TRUE))   ## passes fine
-## checkException(f(FALSE))  ## failure, because f raises no error
+checkException(fun(TRUE))   ## passes fine
+## checkException(fun(FALSE))  ## failure, because f raises no error
 
 }
 
