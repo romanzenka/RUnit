@@ -52,14 +52,6 @@ isValidTestSuite <- function(testSuite)
   return(TRUE)
 }
 
-
-
-
-
-## -------- SECOND COMPONENT ----------------
-## The next couple of functions are responsible
-## for finding and executing the test functions.
-
 .setUp <- function() {
   ##@bdescr
   ##  Internal Function.
@@ -119,8 +111,16 @@ isValidTestSuite <- function(testSuite)
   .testLogger$isFailure <<- FALSE
   .testLogger$checkNo <<- 0
 
+  ## safe execution of setup function
+  res <- try(setUpFunc())
+  if (inherits(res, "try-error")) {
+    message <- paste("Error executing .setUp before",funcName, ":", geterrmessage())
+    .testLogger$addError(testFuncName=paste(".setUp (before ", funcName, ")", sep=""),
+                         errorMsg=message)
+    return()
+  }
+
   ## ordinary test function execution:
-  setUpFunc()
   timing <- try(system.time(func()))
   if (inherits(timing, "try-error")) {
     if(.testLogger$isFailure) {
@@ -135,7 +135,16 @@ isValidTestSuite <- function(testSuite)
   else {
     .testLogger$addSuccess(testFuncName=funcName, secs=round(timing[3], 2))
   }
-  tearDownFunc()
+
+  ## safe execution of tearDown function
+  res <- try(tearDownFunc())
+  if (inherits(res, "try-error")) {
+    message <- paste("Error executing .tearDown after",funcName, ":", geterrmessage())
+    .testLogger$addError(testFuncName=paste(".tearDown (after ", funcName, ")", sep=""),
+                         errorMsg=message)
+    return()
+  }
+
   return()
 }
 
@@ -161,9 +170,9 @@ isValidTestSuite <- function(testSuite)
   ##  catch syntax errors in test case file
   res <- try(source(absTestFileName, local=TRUE))
   if (inherits(res, "try-error")) {
-    message <- paste("Syntax error in ",absTestFileName,":",geterrmessage())
-    .testLogger$addError(funcName=absTestFileName,
-                        msg=message)
+    message <- paste("Error while sourcing ",absTestFileName,":",geterrmessage())
+    .testLogger$addError(testFuncName=absTestFileName,
+                        errorMsg=message)
     return()
   }
 
@@ -194,7 +203,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
 
   oldErrorHandler <- getOption("error")
   ## initialize TestLogger
-  assign(".testLogger", newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
+  assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
 
   ## main loop
   if(isValidTestSuite(testSuites)) {
