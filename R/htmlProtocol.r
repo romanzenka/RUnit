@@ -19,6 +19,7 @@
 
 printHTMLProtocol <- function(testData,
                               fileName = "",
+                              separateFailureList = TRUE,
                               traceBackCutOff=9) {
 
   ##@bdescr
@@ -80,9 +81,6 @@ printHTMLProtocol <- function(testData,
   errorStyle <- "color:red"
 
 
-
-
-
   title <- paste("RUNIT TEST PROTOCOL", date(), sep="--")
 
   ## title
@@ -126,7 +124,7 @@ printHTMLProtocol <- function(testData,
   writeHtmlSep(htmlFile=fileName)
 
   ## error table
-  if(errInfo$nErr > 0) {
+  if(separateFailureList && (errInfo$nErr > 0)) {
     writeHtmlSection("Errors", 3, htmlFile=fileName)
     writeBeginTable(c("Test suite : test function", "message"),
                     htmlFile=fileName,
@@ -157,7 +155,7 @@ printHTMLProtocol <- function(testData,
   }
 
   ## failure table
-  if(errInfo$nFail > 0) {
+  if(separateFailureList && (errInfo$nFail > 0)) {
     writeHtmlSection("Failures", 3, htmlFile=fileName)
     writeBeginTable(c("Test suite : test function", "message"),
                     htmlFile=fileName,
@@ -225,7 +223,11 @@ printHTMLProtocol <- function(testData,
         writeBeginTag("ul", htmlFile=fileName)
         for(testFileName in testFileNames) {
           writeBeginTag("li", htmlFile=fileName)
-          pr("Test file:", testFileName)
+          writeLink(target=testFileName,
+                    name=paste("Test file:", testFileName),
+                    htmlFile=fileName)
+
+
           testFuncNames <- names(res[[testFileName]])
           if(length(testFuncNames) == 0) {
             pr("no test functions")
@@ -237,18 +239,24 @@ printHTMLProtocol <- function(testData,
               writeBeginTag("li", htmlFile=fileName)
               testFuncInfo <- res[[testFileName]][[testFuncName]]
               anchorName <- createTestFuncRef(tsName, testFileName, testFuncName)
-              writeBeginTag("a", para=paste("name=\"", anchorName, "\"", sep=""), htmlFile=fileName)
+              writeBeginTag("a", para=paste("name=\"", anchorName, "\"", sep=""),
+                            htmlFile=fileName)
               if(testFuncInfo$kind == "success") {
                 pr(paste(testFuncName, ":", " ... OK (", testFuncInfo$time, " seconds)", sep=""))
                 writeEndTag("a", htmlFile=fileName)
               }
               else {
                 if(testFuncInfo$kind == "error") {
-                  pr(paste(testFuncName, ": ERROR !! ", sep=""))
+                  ## pr(paste(testFuncName, ": ERROR !! ", sep=""))
+                  writeBeginTag("u", para=paste("style", errorStyle, sep="="), htmlFile=fileName)
+                  writeRaw(paste(testFuncName, ": ERROR !!  ", sep=""), htmlFile=fileName)
+                  writeEndTag("u", htmlFile=fileName)
                   writeEndTag("a", htmlFile=fileName)
                 }
                 else if (testFuncInfo$kind == "failure") {
-                  pr(paste(testFuncName, ": FAILURE !! (check number ", testFuncInfo$checkNo, ")", sep=""))
+                  writeBeginTag("u", para=paste("style", errorStyle, sep="="), htmlFile=fileName)
+                  writeRaw(paste(testFuncName, ": FAILURE !! (check number ", testFuncInfo$checkNo, ")  ", sep=""), htmlFile=fileName)
+                  writeEndTag("u", htmlFile=fileName)
                   writeEndTag("a", htmlFile=fileName)
                 }
                 else {
