@@ -5,16 +5,15 @@
 %
 %\VignetteIndexEntry{RUnit primer}
 %\VignetteKeywords{Unit Testing, Code Inspection, Programming}
-%\VignetteDepends{}
+%\VignetteDepends{methods, splines}
 %\VignettePackage{RUnit}
 \documentclass[12pt, a4paper]{article}
 
-\usepackage{amsmath,pstricks}
+%\usepackage{amsmath,pstricks}
 \usepackage{hyperref}
 %\usepackage[authoryear,round]{natbib}
 
-%\textwidth=6.2in
-%\textheight=8.5in
+
 %\parskip=.3cm
 \oddsidemargin=.1in
 \evensidemargin=.1in
@@ -76,7 +75,7 @@ particular, the approach described in \cite{beck} has turned out to be
 very successful, leading -- among others -- to the popular JUnit
 library for Java \cite{junit}, which has
 been ported to many other languages (see \cite{xp} for an extensive list of testing
-frameworks for all kinds of languages). Accordingly, the RUnit package is our
+frameworks for all kinds of languages). Accordingly, the RUnit package (available at sourceforge \cite{runit-sf}) is our
 version of  porting JUnit to R, supplemented by additional
 functionality to inspect the test coverage of some function under question.
 
@@ -364,6 +363,7 @@ Here we briefly list -- in an unordered manner -- some of the avenues for future
 \bibitem{beck} http://www.xprogramming.com/testfram.htm
 \bibitem{junit} http://www.junit.org/
 \bibitem{tfg} http://www.xprogramming.com/xpmag/testFirstGuidelines.htm
+\bibitem{runit-sf} https://sourceforge.net/projects/runit/
 \end{thebibliography}
 
 \end{document}
