@@ -26,6 +26,7 @@ newTestLogger <- function(useOwnErrorHandler) {
   ## private data:
   ## -----------------------
   testData <- list()
+  class(testData) <- "RUnitTestData"
   currentTestSuiteName <- NULL
   currentSourceFileName <- NULL
   currentTraceBack <- NULL
@@ -155,10 +156,15 @@ newTestLogger <- function(useOwnErrorHandler) {
 
 ## tools to handle the testData listlistlist
 getErrors <- function(testData) {
-  ret <- list(errors=0, failures=0)
+  if(class(testData) != "RUnitTestData") {
+    stop("getErrors needs an object of class 'RUnitTestData' as argument.")
+  }
+  ret <- list(nErr=0, nFail=0, nTestFunc=0)
   for(i in seq(length=length(testData))) {
-    ret$errors <- ret$errors + testData[[i]]$nErr
-    ret$failures <- ret$failures + testData[[i]]$nFail
+    ret$nErr <- ret$nErr + testData[[i]]$nErr
+    ret$nFail <- ret$nFail + testData[[i]]$nFail
+    ret$nTestFunc <- ret$nTestFunc + testData[[i]]$nTestFunc
   }
   return(ret)
 }
+
