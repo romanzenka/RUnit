@@ -17,12 +17,19 @@
 
 ##  $Id$
 
-defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.r$", testFuncRegexp="^test.+")
+defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.r$",
+                            testFuncRegexp="^test.+")
 {
   ##@bdescr
   ##  Convenience functions to handle test suites
   ##@edescr
-
+  ##
+  ##@in  name : [character]
+  ##@in  dirs : [character]
+  ##@in  testFileRegexp : [character]
+  ##@in  testFuncRegexp : [character]
+  ##@ret : [RUnitTestSuite] S3 class (list) object, ready for test runner
+  
   ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,
@@ -34,6 +41,14 @@ defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.r$", testFunc
 
 isValidTestSuite <- function(testSuite)
 {
+  ##@bdescr
+  ##  Helper function
+  ##  checks 'RUnitTestSuite' class object features
+  ##@edescr
+  ##
+  ##@in   testSuite : [RUnitTestSuite] S3 class (list) object, input object for test runner
+  ##@ret  : [logical] TRUE if testSuite is valid
+  
   if(!identical(class(testSuite), "RUnitTestSuite"))
   {
     return(FALSE)
@@ -42,15 +57,20 @@ isValidTestSuite <- function(testSuite)
   {
     return(FALSE)
   }
-  for(i in 1:length(testSuite))
+  for(i in seq(along=testSuite))
   {
     if(!is.character(testSuite[[i]]))
     {
       return(FALSE)
     }
   }
+  if (!file.exists(testSuite[["dirs"]]))
+  {
+    return(FALSE)
+  }
   return(TRUE)
 }
+
 
 .setUp <- function() {
   ##@bdescr
@@ -78,15 +98,18 @@ isValidTestSuite <- function(testSuite)
 }
 
 
-
 .executeTestCase <- function(funcName, envir, setUpFunc, tearDownFunc)
 {
   ##@bdescr
   ##  Internal Function.
   ##  Execute individual test case, record logs and change state of global TestLogger object.
   ##@edescr
-  ##@in  funcName : [character] name of test case function
-
+  ##
+  ##@in  funcName     : [character] name of test case function
+  ##@in  envir        : [environment]
+  ##@in  setUpFunc    : [function]
+  ##@in  tearDownFunc : [function]
+  
   ##  write to stdout for logging
 
 
@@ -222,7 +245,16 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   return(ret)
 }
 
+
 runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+") {
+  ##@bdescr
+  ##  Convenience function.
+  ##@edescr
+  ##
+  ##@in  absFileName : [character] complete file name of test cases code file
+  ##@in  useOwnErrorHandler : [logical] if TRUE RUnits error handler will be used
+  ##@in  testFuncRegexp : [character]
+  
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
   dn <- dirname(absFileName)
