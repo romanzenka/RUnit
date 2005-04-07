@@ -20,141 +20,167 @@
 
 includeTracker <- function(fbody)
 {
-
+  ##@bdescr
+  ##  Internal function
+  ##
+  ##@edescr
+  
   ## get the signature
-  sig <- fbody[1];
+  sig <- fbody[1]
 
 
-  ## get the block structure (important for if, for, while, else with one line);
-  block <- sapply(fbody[-1],function(x)regexpr("[^ ]",x)[1],USE.NAMES=FALSE)
+  ## get the block structure (important for if, for, while, else with one line)
+  block <- sapply(fbody[-1],function(x) regexpr("[^ ]",x)[1], USE.NAMES=FALSE)
 
   ## vector of keywords
-  loopKW <- c("for|while|repeat");
+  loopKW <- c("for|while|repeat")
 
 
   ## list of keywords
-  kwOpen <- c("for","while","repeat","if","else");
-  kwEnd <- c("else");
+  kwOpen <- c("for","while","repeat","if","else")
+  kwEnd <- c("else")
 
   ## keyword at begin
-  kwGrep <- paste("(",paste(kwOpen,sep="",collapse="|"),")",sep="");
+  kwGrep <- paste("(",paste(kwOpen,sep="",collapse="|"),")",sep="")
 
 
   oneLiner <- function(code)
   {
+    ##@bdescr
+    ##  utility
+    ##  search a caracter vector ie. the vector of lines of a function body
+    ##  for block structures e.g. for|while|repeat|if|else { } code block
+    ##@edescr
+    ##
+    ##@in  code : [character] vector of function body code lines
+    ##@ret      : [logical] vector of length of code, indication which are one line control blocks
+    
     return(sapply(code,
                   function(line)
                   {
-                    opBr <- grep(paste("^[ ]*",kwGrep," .*[ ]+$",sep=""),line);
+                    opBr <- grep(paste("^[ ]*",kwGrep," .*[ ]+$",sep=""),line)
                     if(length(opBr) > 0)
                     {
-                      return(TRUE);
+                      return(TRUE)
                     }
-                    return(FALSE);
+                    return(FALSE)
                   },USE.NAMES=FALSE))
   }
 
   
   
-
   ## set Brackets
   setBrackets <- function(potLine,block,env)
   {
-
-    oBr <- character(length(potLine));
-    clBr <- character(length(potLine));
+    ##@bdescr
+    ##
+    ##@edescr
+    ##
+    ##@in  potLine : [character] code text line
+    ##@in  block   : [integer] vector
+    ##@in  env     : [logical]
+    ##@ret  : [list] with mathing element vectors: openBr & clodeBr
     
-    lineIdx <- 1;
+    oBr <- character(length(potLine))
+    clBr <- character(length(potLine))
+    
+    lineIdx <- 1
     while(lineIdx < length(potLine))
     {
       if(potLine[lineIdx] && !(potLine[lineIdx+1]))
       {
-        oBr[lineIdx] <- "{";
+        oBr[lineIdx] <- "{"
         if (!env[lineIdx+1])
         {
-          clBr[lineIdx+2] <- paste(clBr[lineIdx+2],"}");
+          clBr[lineIdx+2] <- paste(clBr[lineIdx+2],"}")
         }
         else
         {
-          bbl <- block[lineIdx];
-          endBlockIdx <- min(which((bbl >= block) & ((1:length(block)) > lineIdx)));
-          clBr[endBlockIdx] <- paste(clBr[endBlockIdx],"}");
+          bbl <- block[lineIdx]
+          endBlockIdx <- min(which((bbl >= block) & ((1:length(block)) > lineIdx)))
+          clBr[endBlockIdx] <- paste(clBr[endBlockIdx],"}")
         }
       }
       if(potLine[lineIdx] && (potLine[lineIdx+1]))
       {
-        oBr[lineIdx] <- "{";
-        bbl <- block[lineIdx];
-        endBlockIdx <- min(which((bbl >= block) & ((1:length(block)) > lineIdx)));
-        clBr[endBlockIdx] <- paste(clBr[endBlockIdx],"}");
+        oBr[lineIdx] <- "{"
+        bbl <- block[lineIdx]
+        endBlockIdx <- min(which((bbl >= block) & ((1:length(block)) > lineIdx)))
+        clBr[endBlockIdx] <- paste(clBr[endBlockIdx],"}")
       }
-      lineIdx <- lineIdx+1;
+      lineIdx <- lineIdx + 1
     }
-    return(list(openBr=oBr, closeBr=clBr));
+    return(list(openBr=oBr, closeBr=clBr))
   }
 
   ## check for new environments
   env <- sapply(fbody[-1],
                 function(code)
                 {
-                  envIdx <- grep("{$",code);
+                  envIdx <- grep("\\{$",code)
                   if(length(envIdx) > 0)
                   {
-                    return(TRUE);
+                    return(TRUE)
                   }
-                  return(FALSE);
-                },USE.NAMES=FALSE);
+                  return(FALSE)
+                },USE.NAMES=FALSE)
   
   ## check the block structure
-  block <- sapply(fbody[-1],function(x)regexpr("[^ ]",x)[1],USE.NAMES=FALSE);
+  block <- sapply(fbody[-1],function(x)regexpr("[^ ]",x)[1],USE.NAMES=FALSE)
 
   ## is 4 a convention or a rule?
-  block <- (block %/% 4)+1;
+  block <- (block %/% 4) + 1
 
   ## check for if's, while's, etc. without new environment
-  ol <- oneLiner(fbody[-1]);
+  ol <- oneLiner(fbody[-1])
 
   ## create brackets for new environments
-  br <- setBrackets(ol,block,env);
+  br <- setBrackets(ol,block,env)
 
   ## create new Code
-  newCode <- paste(as.vector(rbind(br$closeBr,fbody[-1],br$openBr)));
-  newCode <- newCode[newCode != ""];
+  newCode <- paste(as.vector(rbind(br$closeBr,fbody[-1],br$openBr)))
+  newCode <- newCode[newCode != ""]
 
   ## include the breakpoint function
   bpVec <- sapply(newCode,
                  function(line)
                  {
-                   nobp <- grep("^[ ]*(else |{|})",line);
+                   nobp <- grep("^[ ]*(else |\\{|\\})",line)
                    if(length(nobp) == 0)
                    {
-                     return("track$bp();");
+                     return("track$bp();")
                    }
-                   return("");
-                 },USE.NAMES=FALSE);
+                   return("")
+                 },USE.NAMES=FALSE)
 
-  for(i in 1:length(bpVec))
+  for(i in seq(along=bpVec))
   {
-    bpVec[i] <- gsub("\\(\\)",paste("(",i,")",sep=""),bpVec[i]);
+    bpVec[i] <- gsub("\\(\\)",paste("(",i,")",sep=""),bpVec[i])
   }
   
   ## create the mainpulated body of the function
-  newBody <- paste(bpVec,newCode);
+  newBody <- paste(bpVec,newCode)
 
   ## return signature and body
-  return(list(modFunc=c(sig,newBody),newSource = newCode));
+  return(list(modFunc=c(sig,newBody),newSource = newCode))
 }
 
 
 
 tracker <- function()
 {
-
+  ##@bdescr
+  ##
+  ##
+  ##@edescr
+  ##
+  ##@ret  : [list] OO object with functions addFunc, getSourcee, init, bp, getTrackInfo
+  
   ## object for information
-  run <- list();
+  run <- list()
 
   ## current function index
-  fIdx <- 0;
+  fIdx <- 0
 
   ## old time
   oldTime <- NULL;
@@ -209,45 +235,51 @@ tracker <- function()
   
   init <- function()
   {
-    run <<- list();
-    fIdx <<- 0;
+    run <<- list()
+    fIdx <<- 0
   }
 
   bp <- function(nr)
   {
-    run[[fIdx]]$run[nr]<<- run[[fIdx]]$run[nr]+1;
+    run[[fIdx]]$run[nr]<<- run[[fIdx]]$run[nr] + 1
 
     ## cumulative processing time
     if(!is.null(oldTime))
     {
-      dtime <-  proc.time()[1]- oldTime;
-      run[[fIdx]]$time[nr] <<- run[[fIdx]]$time[nr] + dtime;
+      dtime <-  proc.time()[1]- oldTime
+      run[[fIdx]]$time[nr] <<- run[[fIdx]]$time[nr] + dtime
     }
 
-    oldTime <<- proc.time()[1];
+    oldTime <<- proc.time()[1]
     ## graph
     if(oldSrcLine != 0)
     { 
 
-      run[[fIdx]]$graph[oldSrcLine,nr] <<- run[[fIdx]]$graph[oldSrcLine,nr]+1;
+      run[[fIdx]]$graph[oldSrcLine,nr] <<- run[[fIdx]]$graph[oldSrcLine,nr] + 1
     }
 
     ## store the old line
-    oldSrcLine <<- nr;
+    oldSrcLine <<- nr
   }
 
   getSource <- function(nr)
   {
-    return(run[[nr]]$src);
+    return(run[[nr]]$src)
   }
   
   return(list(addFunc=addFunc,getSource=getSource,init=init,bp=bp,getTrackInfo=getTrackInfo))
 }
 
+
 inspect <- function(expr)
 {
-
-
+  ##@bdescr
+  ##
+  ##
+  ##@edescr
+  ##
+  ##@in  expr : [call]
+  
   ## getting the call and his parameter
   fCall <- as.character(substitute(expr));
 
@@ -268,67 +300,75 @@ inspect <- function(expr)
                       {
                         if(exists(x,envir=sys.parent(sys.parent())))
                         {                        
-                          varSig <- is(get(x,envir=sys.parent(sys.parent())))[1];
+                          varSig <- is(get(x,envir=sys.parent(sys.parent())))[1]
                         }
                         else
                         {
-                          varSig <- is(eval(parse(text=x)))[1];
+                          varSig <- is(eval(parse(text=x)))[1]
                         }
-                        return(varSig);
-                      },USE.NAMES=FALSE);
+                        return(varSig)
+                      },USE.NAMES=FALSE)
 
     
     ## we have to check for missing arguments
-    formalArg <- names(formals(getGeneric(fCall[1])));
+    formalArg <- names(formals(getGeneric(fCall[1])))
 
     ## number of missing arguments
-    nrMissing <- length(formalArg) - length(selType);
+    nrMissing <- length(formalArg) - length(selType)
     if(nrMissing > 0)
     {
       ## check for ...
-      ellipseIdx <- which(formalArg=="...");
+      ellipseIdx <- which(formalArg=="...")
     
       if(length(ellipseIdx) != 0)
       {
-        selType <- c(selType,rep("missing",nrMissing -1 ));
+        selType <- c(selType,rep("missing",nrMissing -1 ))
       }
       else
       {
-        selType <- c(selType,rep("missing",nrMissing));
+        selType <- c(selType,rep("missing",nrMissing))
       }
     }
     ## select function
-    selFunc <- selectMethod(fname,selType);
+    selFunc <- selectMethod(fname,selType)
 
     ## deparse the function
-    fbody <- deparse(selFunc@.Data,width.cutoff=500);
+    fbody <- deparse(selFunc@.Data,width.cutoff=500)
 
     ## create an identifier for the generic function
-    fNameId <- paste("S4",fname,paste(selFunc@defined@.Data,collapse="/"),sep="/");
+    fNameId <- paste("S4",fname,paste(selFunc@defined@.Data,collapse="/"),sep="/")
   }
   else
   {
     ## deparse the function
-    fbody <- deparse(get(fname),width.cutoff=500);
-
+    fbody <- try(deparse(get(fname),width.cutoff=500))
+    if (inherits(fbody, "try-error")) {
+      ##  in case the function is defined
+      ##  in the test case file
+      fbody <- try(deparse(get(fname, envir=sys.parent()), width.cutoff=500))
+      if (inherits(fbody, "try-error")) {
+        stop("function not found.")
+      }
+    }
+    
     ## create an identifier for the generic function
-    fNameId <- paste("R/",fname,sep="");
+    fNameId <- paste("R/",fname,sep="")
   }  
 
 
  
   
   ## generate the new body of the function
-  newFunc <- includeTracker(fbody);
-  track$addFunc(fNameId,newFunc$newSource,callExpr);
+  newFunc <- includeTracker(fbody)
+  track$addFunc(fNameId,newFunc$newSource,callExpr)
 
   ## build the test function
-  eval(parse(text=c("testFunc <- ",newFunc$modFunc)),envir=sys.frame());
+  eval(parse(text=c("testFunc <- ",newFunc$modFunc)),envir=sys.frame())
 
   ## create function call
-  newFunCall <- paste("testFunc(",paste(fCall[-1],collapse=","),")",sep="");
+  newFunCall <- paste("testFunc(",paste(fCall[-1],collapse=","),")",sep="")
 
-  parsedFunc <- try(parse(text=newFunCall));
+  parsedFunc <- try(parse(text=newFunCall))
 
   ## check for an error
   if(!inherits(parsedFunc,"try-error"))
@@ -340,13 +380,13 @@ inspect <- function(expr)
   {
     ## no parsing possible
     ## simple call without tracking
-    res <- expr;
+    res <- expr
   }
 
 
   ## do here some error checking
   
-  return(res);
+  return(res)
 }
 
 
