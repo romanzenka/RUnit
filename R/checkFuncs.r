@@ -81,23 +81,23 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
 }
 
 
-checkTrue <- function(a, msg)
+checkTrue <- function(expr, msg)
 {
   ##@bdescr
   ## checks whether or not something is true
   ##@edescr
   ##
-  ##@in a   : [expression] the logical expression to be checked to be TRUE
-  ##@in msg : [character|TRUE] optional message to further identify and document the call
+  ##@in expr : [expression] the logical expression to be checked to be TRUE
+  ##@in msg  : [character|TRUE] optional message to further identify and document the call
   ##
-  ##@ret    : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
+  ##@ret     : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
 
-  ##  allow named logical argument a
-  a <- eval(a)
+  ##  allow named logical argument expr
+  a <- eval(expr)
   names(a) <- NULL
   
   if (!identical(a, TRUE)) {
@@ -138,11 +138,17 @@ checkException <- function(expr, msg)
 }
 
 
-
 DEACTIVATED <- function(msg="")
 {
   ##@bdescr
-  ## checks whether or not something is true
+  ##  Convenience function, for maintaining test suites.
+  ##  If placed in an existing test case call
+  ##  the test will be executed normally until (so all code will be checked and
+  ##  errors or failures reported as usual) occurance of the call
+  ##  after which execution will leave the test case.
+  ##  An entry for a seperate table in the log will be added
+  ##  for this test case.
+  ##
   ##@edescr
   ##@in a   : [expression] the logical expression to be checked to be TRUE
   ##@in msg : [character|TRUE] optional message to further identify and document the call
