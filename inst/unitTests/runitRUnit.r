@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003, 2004, 2005  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 ##  $Id$
 
 
-cat("\n\nRUnit test cases for 'RUnit' functions\n\n")
+cat("\n\nRUnit test cases for 'RUnit:check' functions\n\n")
 
 
 testRUnit.checkEquals <- function()
@@ -85,4 +85,11 @@ testRUnit.checkException <- function()
   checkException( checkEqualsNumeric( 24, 24, tol="dummy"))
 
   
+}
+
+
+testRUnit.DEACTIVATED <- function()
+{
+
+  checkException( DEACTIVATED())
 }
