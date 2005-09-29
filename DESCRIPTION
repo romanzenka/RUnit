@@ -2,7 +2,7 @@ Package:      RUnit
 Version:      0.4.4
 Date:         2005/08/30
 Title:        R Unit test framework
-Author:       Matthias Burger <matthias.burger@epigenomics.com>, Klaus Juenemann <klaus.juenemann@epigenomics.com>, Thomas Koenig <thomas.koenig@epigenomics.com>
+Author:       Matthias Burger <matthias.burger@epigenomics.com>, Klaus Juenemann <k.junemann@gmx.net>, Thomas Koenig <thomas.koenig@epigenomics.com>
 Maintainer:   Matthias Burger <matthias.burger@epigenomics.com>
 SaveImage:    yes
 Depends:      R (>= 1.9.0), methods (>= 1.9.0)
