@@ -29,7 +29,8 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
   ##@in b         : [ANY] the second object to be compared
   ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
   ##@in msg : [character|TRUE] an optional message to further identify and document the call
-
+  ##
+  ##@codestatus : testing
 
   if(!is.numeric(tolerance)) {
     stop("tolerance has to be a numeric value")
@@ -60,7 +61,11 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
   ##@in b         : [ANY] the second object to be compared
   ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
   ##@in msg : [character|TRUE] an optional message to further identify and document the call
-
+  ##
+  ##@ret     : [logical] TRUE, if objects a and b are equal w.r.t. specified numerical tolerance, else a stop signal is issued 
+  ##
+  ##@codestatus : testing
+  
   if(!is.numeric(tolerance)) {
     stop("tolerance has to be a numeric value")
   }
@@ -91,7 +96,9 @@ checkTrue <- function(expr, msg)
   ##@in msg  : [character|TRUE] optional message to further identify and document the call
   ##
   ##@ret     : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
-
+  ##
+  ##@codestatus : testing
+  
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
@@ -121,7 +128,11 @@ checkException <- function(expr, msg)
   ##@edescr
   ##@in func : [parameterless function] the function to be checked
   ##@in msg  : [character|TRUE] an optional message to further identify and document the call
-
+  ##
+  ##@ret     : [logical] TRUE, if evaluation of the expression results in a 'try-error', else a stop signal is issued 
+  ##
+  ##@codestatus : testing
+  
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
@@ -152,7 +163,8 @@ DEACTIVATED <- function(msg="")
   ##@edescr
   ##@in a   : [expression] the logical expression to be checked to be TRUE
   ##@in msg : [character|TRUE] optional message to further identify and document the call
-
+  ##
+  ##@codestatus : testing
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$setDeactivated(paste(msg, "\n", sep=""))
