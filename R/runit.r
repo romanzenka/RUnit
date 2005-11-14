@@ -29,6 +29,8 @@ defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.r$",
   ##@in  testFileRegexp : [character]
   ##@in  testFuncRegexp : [character]
   ##@ret : [RUnitTestSuite] S3 class (list) object, ready for test runner
+  ##
+  ##@codestatus : untested
   
   ret <- list(name=name,
               dirs=dirs,
@@ -48,6 +50,8 @@ isValidTestSuite <- function(testSuite)
   ##
   ##@in   testSuite : [RUnitTestSuite] S3 class (list) object, input object for test runner
   ##@ret  : [logical] TRUE if testSuite is valid
+  ##
+  ##@codestatus : untested
   
   if(!identical(class(testSuite), "RUnitTestSuite"))
   {
@@ -65,7 +69,7 @@ isValidTestSuite <- function(testSuite)
       return(FALSE)
     }
   }
-  if (!file.exists(testSuite[["dirs"]]))
+  if (!all(file.exists(testSuite[["dirs"]])))
   {
     return(FALSE)
   }
@@ -81,7 +85,9 @@ isValidTestSuite <- function(testSuite)
   ##  Need to replace this default with a new function definition.
   ##  Function cannot take arguments and does not have a return value.
   ##@edescr
-
+  ##
+  ##@codestatus : internal
+  
   return()
 }
 
@@ -94,7 +100,9 @@ isValidTestSuite <- function(testSuite)
   ##  Need to replace this default with a new function definition.
   ##  Function cannot take arguments and does not have a return value.
   ##@edescr
-
+  ##
+  ##@codestatus : internal
+  
   return()
 }
 
@@ -110,6 +118,9 @@ isValidTestSuite <- function(testSuite)
   ##@in  envir        : [environment]
   ##@in  setUpFunc    : [function]
   ##@in  tearDownFunc : [function]
+  ##@ret              : [NULL]
+  ##
+  ##@codestatus : internal
   
   ##  write to stdout for logging
 
@@ -177,7 +188,9 @@ isValidTestSuite <- function(testSuite)
   ##
   ##@in absTestFileName : [character] the absolute name of the file to test
   ##@in testFuncRegexp : [character] a regular expression identifying the names of test functions
-
+  ##
+  ##@codestatus : internal
+  
   .testLogger$setCurrentSourceFile(absTestFileName)
   if (!file.exists(absTestFileName)) {
     message <- paste("Test case file ", absTestFileName," not found.")
@@ -217,6 +230,17 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##@ret                : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : untested
+  
+  ##  preconditions
+  if (!is.logical(useOwnErrorHandler)) {
+    stop("argument 'useOwnErrorHandler' has to be of type logical.")
+  }
+  if (length(useOwnErrorHandler) != 1) {
+    stop("argument 'useOwnErrorHandler' has to be of length 1.")
+  }
+  if (is.na(useOwnErrorHandler)) {
+    stop("argument 'useOwnErrorHandler' may not contain NA.")
+  }
   
   oldErrorHandler <- getOption("error")
   ## initialize TestLogger
@@ -262,10 +286,13 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^t
   ##
   ##@codestatus : untested
   
+  ##  preconditions
+  ##  all error checking and hanling is delegated to function runTestSuite
+  
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
   dn <- dirname(absFileName)
   ts <- defineTestSuite(name=nn, dirs=dn, testFileRegexp=paste("^", fn, "$", sep=""),
                         testFuncRegexp=testFuncRegexp)
-  return(runTestSuite(ts))
+  return(runTestSuite(ts, useOwnErrorHandler=useOwnErrorHandler))
 }
