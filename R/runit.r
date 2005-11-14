@@ -61,6 +61,7 @@ isValidTestSuite <- function(testSuite)
   {
     if(!is.character(testSuite[[i]]))
     {
+      
       return(FALSE)
     }
   }
@@ -213,8 +214,10 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##
   ##@in  testSuites     : [list] list of test suite lists
   ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler
-  ##@ret                :
-
+  ##@ret                : [list] 'RUnitTestData' S3 class object
+  ##
+  ##@codestatus : untested
+  
   oldErrorHandler <- getOption("error")
   ## initialize TestLogger
   assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
@@ -226,7 +229,8 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   for (i in seq(length=length(testSuites))) {
     testSuite <- testSuites[[i]]
     if(!isValidTestSuite(testSuite)) {
-      stop("Invalid test suite. Test run aborted.")
+      errMsg <- paste("Invalid test suite",testSuite$name,". Test run aborted.")
+      stop(errMsg)
     }
     .testLogger$setCurrentTestSuite(testSuite)
     testFiles <- list.files(testSuite$dirs,
@@ -254,6 +258,9 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^t
   ##@in  absFileName : [character] complete file name of test cases code file
   ##@in  useOwnErrorHandler : [logical] if TRUE RUnits error handler will be used
   ##@in  testFuncRegexp : [character]
+  ##@ret                : [list] 'RUnitTestData' S3 class object
+  ##
+  ##@codestatus : untested
   
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
