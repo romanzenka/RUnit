@@ -23,6 +23,10 @@ cat("\n\nRUnit test cases for 'RUnit:check' functions\n\n")
 
 testRUnit.checkEquals <- function()
 {
+  ##@bdescr
+  ## test case for function checkEquals of class: none
+  ##@edescr
+
   checkTrue( TRUE)
   checkException( checkTrue(FALSE))
   
@@ -41,6 +45,9 @@ testRUnit.checkEquals <- function()
 
 testRUnit.checkEqualsNumeric <- function()
 {
+  ##@bdescr
+  ## test case for function checkEqualsNumeric of class: none
+  ##@edescr
 
   checkTrue( checkEqualsNumeric( 9,9))
   checkException( checkEqualsNumeric( 9, 10))
@@ -50,6 +57,10 @@ testRUnit.checkEqualsNumeric <- function()
 
 testRUnit.checkTrue <- function()
 {
+  ##@bdescr
+  ## test case for function checkTrue of class: none
+  ##@edescr
+
   checkException( checkTrue( FALSE))
   checkEquals( checkTrue( TRUE), TRUE)
 
@@ -74,7 +85,10 @@ testRUnit.checkTrue <- function()
 
 testRUnit.checkException <- function()
 {
-
+  ##@bdescr
+  ## test case for function checkException of class: none
+  ##@edescr
+  
   checkException( checkTrue( FALSE))
   checkException( checkTrue( ))
   checkException( checkEquals( ))
@@ -90,6 +104,99 @@ testRUnit.checkException <- function()
 
 testRUnit.DEACTIVATED <- function()
 {
+  ##@bdescr
+  ## test case for function DEACTIVATED of class: none
+  ##@edescr
 
   checkException( DEACTIVATED())
+}
+
+
+testRUnit.isValidTestSuite <- function()
+{
+  ##@bdescr
+  ## test case for function isValidTestSuite of class: none
+  ##@edescr
+  
+  ##  correct working
+  testSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+  checkTrue( isValidTestSuite(testSuite))
+  
+  ##  error handling
+  ##  has to be S3 class 'RUnitTestSuite'
+  testSuiteFail <- testSuite
+  class(testSuiteFail) <- "NotUnitTestSuite"
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+  
+  ##  expecting list elements
+  testSuiteFail <- testSuite
+  testSuiteFail[["dirs"]] <- NULL
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+  
+  ##  has to be character
+  testSuiteFail <- testSuite
+  testSuiteFail[["name"]] <- list()
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+ 
+  testSuiteFail <- testSuite
+  testSuiteFail[["dirs"]] <- list()
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+  
+  testSuiteFail <- testSuite
+  testSuiteFail[["testFileRegexp"]] <- list()
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+  
+  testSuiteFail <- testSuite
+  testSuiteFail[["testFuncRegexp"]] <- list()
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+  
+  
+  ##  director has to exist
+  testSuiteFail <- testSuite
+  testSuiteFail[["dirs"]] <- "doesNotExist"
+  checkTrue( !isTRUE(isValidTestSuite(testSuiteFail)))
+}
+  
+
+testRUnit.runTestFile <- function()
+{
+  ##@bdescr
+  ## test case for function runTestFile of class: none
+  ##@edescr
+
+  testFile <- file.path(system.file("examples", package="RUnit"), "correctTestCase.r")
+  checkTrue( file.exists(testFile))
+  
+  ##res <- runTestFile(testFile)
+  
+  ##  error handling
+  ##  useOwnErrorHandler
+  ##  type logical
+  checkException( runTestFile(testFile, useOwnErrorHandler=integer(1)))
+}
+
+
+testRUnit.runTestSuite <- function()
+{
+  ##@bdescr
+  ## test case for function runTestSuite of class: none
+  ##@edescr
+
+  testSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+
+  ##res <- runTestSuite(testSuite)
+  
+  ##  error handling
+  ##
+  ##  useOwnErrorHandler
+  ##  type logical
+  checkException( runTestSuite(tS, useOwnErrorHandler=integer(1)))
+  ##  length 1
+  checkException( runTestSuite(tS, useOwnErrorHandler=logical(0)))
+  checkException( runTestSuite(tS, useOwnErrorHandler=logical(2)))
+  checkException( runTestSuite(tS, useOwnErrorHandler=as.logical(NA)))
+  
+  ##  testSuite
+  
+
 }
