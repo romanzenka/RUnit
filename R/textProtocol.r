@@ -256,3 +256,83 @@ summary.RUnitTestData <- function(object, ...)
   printTextProtocol(object, ...)
 }
 
+execTime <- function(object, ...) {
+  UseMethod("execTime")
+}
+
+
+execTime.default <- function(object, ...) {
+  NextMethod("execTime")
+}
+
+
+execTime.RUnitTestData <- function(object, ...)
+{
+
+  ##@bdescr
+  ##  Generic summary method
+  ##@edescr
+  ##
+  ##@in  object : [RUnitTestData] S3 class object
+
+  ##  init return object
+  retMatrix <- matrix(NA, ncol=3, nrow=0)
+  colnames(retMatrix) <- c("test", "status", "timing")
+  
+  ## loop over all test suites
+  for(tsName in names(object)) {
+    
+  if(length(object[[tsName]]$dirs) == 0) {
+    stop("No directories !")
+
+  } else {
+    tsList <- object[[tsName]]
+    testFileNames <- names(tsList$sourceFileResults)
+    if(length(testFileNames) == 0) {
+      cat("\n no test files")
+    }
+    ## loop over all source files
+    for(testFileName in testFileNames) {
+      
+      ##res <- tsList$sourceFileResults
+      testFuncNames <- names(tsList$sourceFileResults[[testFileName]])
+      if(length(testFuncNames) > 0) {
+        cat("\n---------------------------")
+        cat("\nTest file:", testFileName)
+        
+        ## loop over all test functions in the test file
+        for(testFuncName in testFuncNames) {
+          testFuncInfo <- tsList$sourceFileResults[[testFileName]][[testFuncName]]
+          if(testFuncInfo$kind == "success") {
+            cat("\n ", testFuncName, ":", " ... OK (",
+                testFuncInfo$time, " seconds)", sep="")
+            retMatrix <- rbind(retMatrix, c(testFuncName, "success", testFuncInfo$time))
+          }
+          else {
+            if(testFuncInfo$kind == "error") {
+              cat("\n ", testFuncName, ": ERROR !! ", sep="")
+              retMatrix <- rbind(retMatrix, c(testFuncName, "error", NA))
+            }
+            else if (testFuncInfo$kind == "failure") {
+              cat("\n ", testFuncName, ": FAILURE !! (check number ",
+                  testFuncInfo$checkNum, ")", sep="")
+              retMatrix <- rbind(retMatrix, c(testFuncName, "failure", NA))
+            }
+            else if (testFuncInfo$kind == "deactivated") {
+              cat("\n ", testFuncName, ": DEACTIVATED, ", nl=FALSE)
+              retMatrix <- rbind(retMatrix, c(testFuncName, "deactivated", NA))
+            }
+            else {
+              cat("\n ", testFuncName, ": unknown error kind", sep="")
+              retMatrix <- rbind(retMatrix, c(testFuncName, "unknown error", NA))
+            }
+            
+            
+          }
+        }
+      }
+    }
+  }
+}
+  return(retMatrix)
+}
