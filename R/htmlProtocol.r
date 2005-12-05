@@ -419,11 +419,32 @@ printHTMLProtocol <- function(testData,
 
 
   ver <- cbind(unlist(version))
-  colnames(ver) <- ""
-  pr("\n\n --------------------------------\n")
-  write.table(ver, sep="\t", quote=FALSE, append=TRUE,
-              col.names=FALSE, file=fileName)
+  
+  ##  add host name
+  ver <- rbind(ver, Sys.getenv("HOST"))
+  rownames(ver)[dim(ver)[1]] <- "host"
+  colnames(ver) <- "Value"
 
+  ##  compiler
+  rhome <- Sys.getenv("R_HOME")
+  makeconfFile <- file.path(rhome, "etc", "Makeconf")
+  
+  gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
+                       intern=TRUE)
+  gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
+
+  if (length(gccVersion) > 0) {
+    ver <- rbind(ver, gccVersion)
+    rownames(ver)[dim(ver)[1]] <- "gcc"
+  }
+  
+  writeHtmlTable(ver,
+                 htmlFile=fileName,
+                 border=0,
+                 width="80%",
+                 append=TRUE)
+  
+  
   ## finish html document
   writeHtmlEnd(htmlFile=fileName)
 }
