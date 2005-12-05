@@ -26,8 +26,10 @@ writeRaw <- function(htmlStr,htmlFile,append=TRUE)
   ##@in htmlStr  : [character] text
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
-  cat(htmlStr,file=htmlFile,append=append);
+  ##@ret         : [logical] TRUE if execution completes
+  
+  cat(htmlStr,file=htmlFile,append=append)
+  invisible(TRUE)
 }
 
 writeRawCR <- function(htmlStr,htmlFile,append=TRUE)
@@ -38,9 +40,11 @@ writeRawCR <- function(htmlStr,htmlFile,append=TRUE)
   ##@in htmlStr  : [character] text
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw(htmlStr,htmlFile,append);
-  cat("\n",file=htmlFile,append=TRUE);
+  cat("\n",file=htmlFile,append=TRUE)
+  invisible(TRUE)
 }
 
 writeTitle <- function(htmlStr,htmlFile,append=TRUE)
@@ -51,6 +55,8 @@ writeTitle <- function(htmlStr,htmlFile,append=TRUE)
   ##@in htmlStr  : [character] title
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("<title>",htmlFile,append);
   writeRaw(htmlStr,htmlFile);
   writeRaw("</title>\n",htmlFile);
@@ -63,7 +69,8 @@ writeBeginHead <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("<head>",htmlFile,append);
 }
 
@@ -74,7 +81,8 @@ writeEndHead <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("</head>\n",htmlFile,append);
 }
 
@@ -86,7 +94,8 @@ writeBeginHtml <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("<html>",htmlFile,append);
 }
 
@@ -97,7 +106,8 @@ writeEndHtml <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("</html>\n",htmlFile,append);
 }
 
@@ -108,7 +118,8 @@ writeBeginBody <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("<body>",htmlFile,append);
 }
 
@@ -119,7 +130,8 @@ writeEndBody <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw("</body>\n",htmlFile,append);
 }
 
@@ -132,7 +144,8 @@ writeBeginTag <- function(htmlTag,htmlFile,para="",append=TRUE)
   ##@in htmlFile : [character] name of the html file
   ##@in para     : [character] parameters as string
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   if(para =="")
   {
     writeRaw(paste("<",htmlTag,">",sep=""),htmlFile,append);
@@ -152,7 +165,8 @@ writeEndTag <- function(htmlTag,htmlFile,append=TRUE)
   ##@in htmlTag  : [character] name of the tag
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRaw(paste("</",htmlTag,">",sep=""),htmlFile,append);
 }
 
@@ -163,8 +177,11 @@ writeCR <- function(htmlFile,append=TRUE)
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
-  cat("\n",file=htmlFile,append=append);
+  ##@ret         : [logical] TRUE if execution completes
+  ##@ret         : [logical] TRUE if execution completes
+  
+  cat("\n",file=htmlFile,append=append)
+  invisible(TRUE)
 }
 
 writeBeginTable <- function(header,htmlFile,border=1,
@@ -180,25 +197,36 @@ writeBeginTable <- function(header,htmlFile,border=1,
   ##@in border   : [integer] border of table
   ##@in width    : [character] width of table
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
 
   tablePara <- paste("border=\"",border,"\" width=\"",width,"\"",sep="")
-  writeRawCR(paste("<table ",tablePara," >",sep=""),htmlFile,append);
-  writeBeginTag("tr",htmlFile);
+  writeRawCR(paste("<table ",tablePara," >",sep=""),htmlFile,append)
 
-  for(i in 1:length(header)) {
-    para <- ""
-    if(!is.null(columnWidth)) {
-      para = paste("width=\"", columnWidth[i], "\"", sep="")
+  ##  if header is provided
+  if (length(header) > 0) {
+    writeBeginTag("tr",htmlFile)
+
+    
+    for(i in seq(along=header)) {
+      para <- ""
+      if(!is.null(columnWidth)) {
+        if (length(columnWidth) == length(header)) {
+          para = paste("width=\"", columnWidth[i], "\"", sep="")
+        } else {
+          ##  recycle first
+          para = paste("width=\"", columnWidth[1], "\"", sep="")
+        }
+      }
+      writeBeginTag("th",htmlFile, para=para)
+      writeRaw(header[i],htmlFile)
+      writeEndTag("th",htmlFile)
+      writeCR(htmlFile)
     }
-    writeBeginTag("th",htmlFile, para=para);
-    writeRaw(header[i],htmlFile);
-    writeEndTag("th",htmlFile);
-    writeCR(htmlFile);
+    
+    writeEndTag("tr",htmlFile,append)
   }
-
-  writeEndTag("tr",htmlFile,append);
-  writeCR(htmlFile);
+  
+  writeCR(htmlFile)
 }
 
 writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
@@ -211,13 +239,14 @@ writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
   ##@in bgcolor  : [character] color for table cells
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeBeginTag("tr",htmlFile);
   if(length(bgcolor) == 1)
   {
     bgcolor <- rep(bgcolor,length(row));
   }
-  for(i in 1:length(row))
+  for(i in seq(along=row))
   {
     if(bgcolor[i] == "")
     {
@@ -240,13 +269,14 @@ writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
 writeLink <- function(target,name,htmlFile,append=TRUE)
 {
   ##@bdescr
-  ## write a link
+  ##  write a link
   ##@bdescr
   ##@in target   : [character] target of the link
   ##@in name     : [character] name of the target
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeBeginTag("a",htmlFile,paste("href=\"",target,"\"",sep=""),append=append);
   writeRaw(name,htmlFile,append=TRUE);
   writeEndTag("a",htmlFile,append=TRUE);
@@ -254,6 +284,13 @@ writeLink <- function(target,name,htmlFile,append=TRUE)
 
 writeEndTable <- function(htmlFile,append=TRUE)
 {
+  ##@bdescr
+  ##  
+  #@bdescr
+  ##@in htmlFile : [character] name of the html file
+  ##@in append   : [logical] append the html code
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeEndTag("table",htmlFile,append);
   writeCR(htmlFile);
 }
@@ -261,11 +298,12 @@ writeEndTable <- function(htmlFile,append=TRUE)
 writeHtmlHeader <- function(header,htmlFile)
 {
   ##@bdescr
-  ## write a HTML table
+  ## write a HTML file header
   ##@bdescr
   ##@in header   : [character] title of the document
   ##@in htmlFile : [character] name of the link
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRawCR("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"",htmlFile,FALSE);
   writeRawCR("\"http://www.w3.org/TR/html4/transitional.dtd\">",htmlFile);
   writeBeginHtml(htmlFile);
@@ -281,7 +319,8 @@ writeHtmlEnd <- function(htmlFile)
   ## write end of html code
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeEndBody(htmlFile);
   writeEndHtml(htmlFile);
 }
@@ -292,9 +331,11 @@ writeHtmlSep <- function(htmlFile)
   ## write horizontal seperator
   ##@bdescr
   ##@in htmlFile : [character] name of the html file
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeRawCR("<hr>",htmlFile);
 }
+
 
 writeImage <- function(img,htmlFile,append=TRUE)
 {
@@ -304,10 +345,12 @@ writeImage <- function(img,htmlFile,append=TRUE)
   ##@in img :      [character] name of the image file
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   writeBeginTag("img",htmlFile,para=paste("src=\"",img,"\"",sep=""),append);
   writeEndTag("img",htmlFile);
 }
+
 
 writeHtmlSection <- function(title,sec,htmlFile,append=TRUE)
 {
@@ -318,7 +361,8 @@ writeHtmlSection <- function(title,sec,htmlFile,append=TRUE)
   ##@in sec      : [integer] size of title (between 1-6)
   ##@in htmlFile : [character] name of the html file
   ##@in append   : [logical] append the html code
-
+  ##@ret         : [logical] TRUE if execution completes
+  
   secTag <- paste("h",sec,sep="")
   writeBeginTag(secTag,htmlFile,append);
   writeRaw(title,htmlFile,append);
@@ -326,3 +370,45 @@ writeHtmlSection <- function(title,sec,htmlFile,append=TRUE)
   writeCR(htmlFile,append);
 }
 
+
+writeHtmlTable <- function(dataFrame, htmlFile, border=1,
+                           width="100%", append=TRUE)
+{
+  ##@bdescr
+  ##  writes a data frame to a HTML table 
+  ##@bdescr
+  ##
+  ##@in dataFrame : [data frame] size of title (between 1-6)
+  ##@in htmlFile  : [character] name of the html file
+  ##@in border    : [integer] 1 (default) table borders will be shown
+  ##@in width     : [character] width of table
+  ##@in append    : [logical] if TRUE append the tabel to an existing HTML file
+  ##@ret          : [logical] TRUE if execution completed
+  ##
+  ##@codestatus   : untested
+
+  header <- NULL
+  colNames <- colnames(dataFrame)
+  if (!is.null(colNames)) {
+    if (length(colNames) == dim(dataFrame)[2]) {
+      header <- colNames
+    } else {
+      ##  don't write column names
+      header <- NULL
+    }
+  }
+
+  rowNames <- rownames(dataFrame)
+  if (!is.null(rowNames)) {
+    header <- c("Name", header)
+    dataFrame <- cbind(rowNames, dataFrame)
+  }
+  writeBeginTable(header, htmlFile, border=border,
+                  width=width, append=append,
+                  columnWidth=NULL)
+  
+  for (ti in 1:dim(dataFrame)[1]) {
+    writeTableRow(dataFrame[ti, ], htmlFile, append=TRUE, bgcolor="")
+  }
+  writeEndTable(htmlFile,append=TRUE)
+}
