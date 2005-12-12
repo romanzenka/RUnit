@@ -421,7 +421,7 @@ printHTMLProtocol <- function(testData,
   ver <- cbind(unlist(version))
   
   ##  add host name
-  ver <- rbind(ver, Sys.getenv("HOST"))
+  ver <- rbind(ver, Sys.info()["nodename"])
   rownames(ver)[dim(ver)[1]] <- "host"
   colnames(ver) <- "Value"
 
