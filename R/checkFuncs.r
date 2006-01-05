@@ -50,6 +50,7 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
   }
 }
 
+
 checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 {
   ##@bdescr
@@ -73,7 +74,9 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
-  res <- all.equal.numeric(a,b, tolerance=tolerance, ...)
+  ##  R 2.3.0: changed behaviour of all.equal
+  ##  strip attributes before comparing current and target
+  res <- all.equal.numeric(as.vector(a), as.vector(b), tolerance=tolerance, ...)
   if (!identical(res, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
