@@ -1,21 +1,23 @@
 \name{checkFuncs}
 \alias{checkEquals}
 \alias{checkEqualsNumeric}
+\alias{checkIdentical}
 \alias{checkTrue}
 \alias{checkException}
 \alias{DEACTIVATED}
 \title{RUnit check functions}
 
 \usage{
-checkEquals(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
-checkEqualsNumeric(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
+checkEquals(target, current, msg, tolerance = .Machine$double.eps^0.5, ...)
+checkEqualsNumeric(target, current, msg, tolerance = .Machine$double.eps^0.5, ...)
+checkIdentical(target, current, msg)
 checkTrue(expr, msg)
 checkException(expr, msg)
 DEACTIVATED(msg)
 }
 
 \arguments{
-  \item{a, b}{two objects to be compared (should not be S4 class objects).}
+  \item{current, target}{two objects to be compared (should not be S4 class objects).}
   \item{msg}{an optional message to document a check and to facilitate
     the identification of a possible failure. The message only appears
     as text in the test protocol, it is not further used in any of the check functions.}
@@ -39,6 +41,9 @@ DEACTIVATED(msg)
   \code{checkEqualsNumeric} works just like \code{checkEquals} except
   that it invokes \code{all.equal.numeric} instead of \code{all.equal}
 
+  \code{checkIdentical} is a convenience wrapper around identical using
+  the error loggin mechanism or RUnit.
+  
   \code{checkTrue} uses the function \code{identical} to check if the expression
   provided as first argument evaluates to \code{TRUE}. If not, an error is
   generated and the failure is reported to the test logger such that it
