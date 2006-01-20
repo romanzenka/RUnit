@@ -8,8 +8,6 @@
 ## initialization of classes, namespace, ...
 ##
 ##
-## Dependencies
-## =====================================
 ##
 ##
 ## Version
@@ -28,6 +26,7 @@ export(".setUp",
        "checkEquals",
        "checkEqualsNumeric",
        "checkException",
+       "checkIdentical",
        "DEACTIVATED",
        "defineTestSuite",
        "getErrors",
