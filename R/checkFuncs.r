@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -18,17 +18,17 @@
 ##  $Id$
 
 
-checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
+checkEquals <- function(target, current, msg="", tolerance = .Machine$double.eps^0.5, ...)
 {
   ##@bdescr
   ## checks if two objects are equal, thin wrapper around 'all.equal'
   ## with tolerance one can adjust to and allow for numerical imprecission
 
   ##@edescr
-  ##@in a         : [ANY] one thing to be compared
-  ##@in b         : [ANY] the second object to be compared
+  ##@in target    : [ANY] one thing to be compared
+  ##@in current   : [ANY] the second object to be compared
   ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
-  ##@in msg : [character|TRUE] an optional message to further identify and document the call
+  ##@in msg       : [character] an optional message to further identify and document the call
   ##
   ##@codestatus : testing
 
@@ -38,12 +38,12 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
-  res <- all.equal(a,b, tolerance=tolerance, ...)
-  if (!identical(res, TRUE)) {
+  result <- all.equal(target, current, tolerance=tolerance, ...)
+  if (!identical(result, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(res, collapse="\n"))
+    stop(paste(paste(result, collapse="\n"), msg))
   }
   else {
     return(TRUE)
@@ -51,19 +51,18 @@ checkEquals <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
 }
 
 
-checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, ...)
+checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$double.eps^0.5, ...)
 {
   ##@bdescr
   ## checks if two objects are equal, thin wrapper around 'all.equal.numeric'
   ## with tolerance one can adjust to and allow for numerical imprecission
-
   ##@edescr
-  ##@in a         : [ANY] one thing to be compared
-  ##@in b         : [ANY] the second object to be compared
+  ##@in target    : [ANY] one thing to be compared
+  ##@in current   : [ANY] the second object to be compared
   ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
-  ##@in msg : [character|TRUE] an optional message to further identify and document the call
+  ##@in msg       : [character] an optional message to further identify and document the call
   ##
-  ##@ret     : [logical] TRUE, if objects a and b are equal w.r.t. specified numerical tolerance, else a stop signal is issued 
+  ##@ret          : [logical] TRUE, if objects 'target' and 'current' are equal w.r.t. specified numerical tolerance, else a stop signal is issued 
   ##
   ##@codestatus : testing
   
@@ -76,12 +75,12 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
   }
   ##  R 2.3.0: changed behaviour of all.equal
   ##  strip attributes before comparing current and target
-  res <- all.equal.numeric(as.vector(a), as.vector(b), tolerance=tolerance, ...)
-  if (!identical(res, TRUE)) {
+  result <- all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...)
+  if (!identical(result, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(res, collapse="\n"))
+    stop(paste(paste(result, collapse="\n"), msg))
   }
   else {
     return(TRUE)
@@ -89,14 +88,46 @@ checkEqualsNumeric <- function(a, b, msg, tolerance = .Machine$double.eps^0.5, .
 }
 
 
-checkTrue <- function(expr, msg)
+checkIdentical <- function(target, current, msg="")
+{
+  ##@bdescr
+  ## checks if two objects are exactly identical, thin convenience wrapper around 'identical'
+  ##
+  ##@edescr
+  ##@in target   : [ANY] one onject to be compared
+  ##@in current  : [ANY] second object to be compared
+  ##@in msg      : [character] an optional message to further identify and document the call
+  ##
+  ##@ret         : [logical] TRUE, if objects 'target' and 'current' are identical
+  ##
+  ##@codestatus : testing
+  
+  if(exists(".testLogger", envir=.GlobalEnv)) {
+    .testLogger$incrementCheckNum()
+  }
+  
+  ##  strip attributes before comparing current and target
+  result <- identical(target, current)
+  if (!isTRUE(result)) {
+    if(exists(".testLogger", envir=.GlobalEnv)) {
+      .testLogger$setFailure()
+    }
+    stop(paste(paste(result, collapse="\n"), msg))
+  }
+  else {
+    return(TRUE)
+  }
+}
+
+
+checkTrue <- function(expr, msg="")
 {
   ##@bdescr
   ## checks whether or not something is true
   ##@edescr
   ##
   ##@in expr : [expression] the logical expression to be checked to be TRUE
-  ##@in msg  : [character|TRUE] optional message to further identify and document the call
+  ##@in msg  : [character] optional message to further identify and document the call
   ##
   ##@ret     : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
   ##
@@ -107,14 +138,14 @@ checkTrue <- function(expr, msg)
   }
 
   ##  allow named logical argument expr
-  a <- eval(expr)
-  names(a) <- NULL
+  result <- eval(expr)
+  names(result) <- NULL
   
-  if (!identical(a, TRUE)) {
+  if (!identical(result, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop("Test not TRUE.")
+    stop(paste("Test not TRUE.\n", msg))
   }
   else {
     return(TRUE)
@@ -122,7 +153,7 @@ checkTrue <- function(expr, msg)
 }
 
 
-checkException <- function(expr, msg)
+checkException <- function(expr, msg="")
 {
   ##@bdescr
   ## checks if a function call creates an error. The passed function must be parameterless.
@@ -130,7 +161,7 @@ checkException <- function(expr, msg)
   ## 'checkException(function() func(args...))'
   ##@edescr
   ##@in func : [parameterless function] the function to be checked
-  ##@in msg  : [character|TRUE] an optional message to further identify and document the call
+  ##@in msg  : [character] an optional message to further identify and document the call
   ##
   ##@ret     : [logical] TRUE, if evaluation of the expression results in a 'try-error', else a stop signal is issued 
   ##
@@ -144,7 +175,7 @@ checkException <- function(expr, msg)
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop("Error not generated as expected.")
+    stop(paste("Error not generated as expected.\n", msg))
   }
   else {
     return(TRUE)
@@ -165,12 +196,12 @@ DEACTIVATED <- function(msg="")
   ##
   ##@edescr
   ##@in a   : [expression] the logical expression to be checked to be TRUE
-  ##@in msg : [character|TRUE] optional message to further identify and document the call
+  ##@in msg : [character] optional message to further identify and document the call
   ##
   ##@codestatus : testing
 
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$setDeactivated(paste(msg, "\n", sep=""))
   }
-  stop()
+  stop(msp)
 }
