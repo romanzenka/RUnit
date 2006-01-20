@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004, 2005  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ testRUnit.checkEquals <- function()
   ##@edescr
 
   checkTrue( TRUE)
-  checkException( checkTrue(FALSE))
+
   
   checkTrue( checkEquals(9,9))
   
@@ -40,6 +40,16 @@ testRUnit.checkEquals <- function()
 
   checkTrue( checkEquals( expression(2), expression(2)))
   checkTrue( checkEquals( list(100), list(100)))
+  
+  sysTime <- as.POSIXct(Sys.time())
+  checkEquals( sysTime, sysTime)
+  
+  ##  check exception
+  checkException( checkTrue(FALSE))
+  
+  ##  nested type not supported
+  sysTime <- as.POSIXct(Sys.time())
+  checkException( checkEquals( list(a=2, list(time=sysTime)), list(a=2, time=list(sysTime))))
 }
 
 
@@ -50,8 +60,105 @@ testRUnit.checkEqualsNumeric <- function()
   ##@edescr
 
   checkTrue( checkEqualsNumeric( 9,9))
+  rvec <- rnorm(132)
+  checkTrue( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec, 12, 11)))
+  checkTrue( checkEqualsNumeric( rvec, rvec))
+
+  ##  check exception
+  ##  numeric difference
   checkException( checkEqualsNumeric( 9, 10))
+  checkException( checkEqualsNumeric( list(9), list(10)))
+  checkException( checkEqualsNumeric( matrix(9), matrix(10)))
+  rvec2 <- rnorm(132)
+  checkException( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec2, 12, 11)))
+
+  ##  type not supported
+  checkException( checkEqualsNumeric( list(rvec), list(rvec)))
+}
+
+
+testRUnit.checkIdentical <- function()
+{
+  ##@bdescr
+  ## test case for function checkIdentical of class: none
+  ##@edescr
+
+  checkIdentical( TRUE, TRUE)
+  checkIdentical( FALSE, FALSE)
+
+  checkIdentical( as.integer(2), as.integer(2))
+  checkIdentical( as.character(2), as.character(2))
+  checkIdentical( as.complex(2), as.complex(2))
+  checkIdentical( as.numeric(2), as.numeric(2))
+  checkIdentical( as.expression("2+4"), as.expression("2+4"))
+  checkIdentical( as.expression(2+4), as.expression(2+4))
+
+  sysTime <- as.POSIXlt(Sys.time())
+  checkIdentical( sysTime, sysTime)
+
+  ##  S3 objects (ie. lists with attributes)
+  ##  from ?lm Example
+  ctl <- c(4.17,5.58,5.18,6.11,4.50,4.61,5.17,4.53,5.33,5.14)
+  trt <- c(4.81,4.17,4.41,3.59,5.87,3.83,6.03,4.89,4.32,4.69)
+  group <- gl(2,10,20, labels=c("Ctl","Trt"))
+  weight <- c(ctl, trt)
+  lm.D9 <- lm(weight ~ group)
+  checkIdentical( lm.D9, lm(weight ~ group))
+
+
+  ##  S4 objects
+  if (isTRUE(require(methods))) {
+    setClass("track",
+             representation(x="numeric", y="numeric"),
+             where=.GlobalEnv)
+    on.exit(removeClass("track", where=.GlobalEnv))
+
+    s4Obj <- try(new("track"))
+    checkIdentical( s4Obj, new("track"))
+    rm(s4Obj)
+  }
+
   
+  ##  exception handling
+  ##  type mismatches
+  checkException( checkIdentical( as.integer(2), as.numeric(2)))
+  checkException( checkIdentical( as.integer(2), as.character(2)))
+  checkException( checkIdentical( as.integer(2), as.list(2)))
+  checkException( checkIdentical( as.integer(2), as.complex(2)))
+  checkException( checkIdentical( as.integer(2), as.expression(2)))
+
+  ##  value mismatches
+  checkException( checkIdentical( as.integer(2), as.integer(3)))
+  checkException( checkIdentical( as.character(2), as.character(3)))
+  checkException( checkIdentical( as.complex(2), as.complex(3)))
+  checkException( checkIdentical( as.numeric(2), as.numeric(3)))
+  checkException( checkIdentical( as.expression("2+4"), as.expression("2+3")))
+
+  sysTime <- as.POSIXlt(Sys.time())
+
+  checkException( checkIdentical( sysTime, as.POSIXlt(Sys.time(), tz="GMT")))
+
+  ##  S3 objects (ie. lists with attributes)
+  ##  from ?lm Example
+ 
+
+  lm.D9base <- lm(weight ~ group - 1)
+  checkException( checkIdentical( lm.D9base, lm.D9))
+
+  ##  S4 objects
+  if (isTRUE(require(methods))) {
+    setClass("track2",
+             representation(x="numeric", y="numeric"),
+             prototype(x=as.numeric(1:23), y=as.numeric(23:1)),
+             where=.GlobalEnv)
+    on.exit(removeClass("track2", where=.GlobalEnv))
+
+    s4Obj <- try(new("track2"))
+    s4ObjDiff <- s4Obj
+    s4ObjDiff@y <- s4ObjDiff@x
+    checkException( checkIdentical( s4Obj, s4ObjDiff))
+  }
+
 }
 
 
