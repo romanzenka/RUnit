@@ -18,25 +18,36 @@
 ##  $Id$
 
 
-checkEquals <- function(target, current, msg="", tolerance = .Machine$double.eps^0.5, ...)
+checkEquals <- function(target, current, msg="",
+                        tolerance = .Machine$double.eps^0.5, checkNames=TRUE, ...)
 {
   ##@bdescr
   ## checks if two objects are equal, thin wrapper around 'all.equal'
   ## with tolerance one can adjust to and allow for numerical imprecission
 
   ##@edescr
-  ##@in target    : [ANY] one thing to be compared
-  ##@in current   : [ANY] the second object to be compared
-  ##@in tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
-  ##@in msg       : [character] an optional message to further identify and document the call
+  ##@in  target    : [ANY] one thing to be compared
+  ##@in  current   : [ANY] the second object to be compared
+  ##@in  msg       : [character] an optional message to further identify and document the call
+  ##@in  tolerance : [numeric] directly passed to 'all.equal', see there for further documentation
+  ##@in  checkNames: [logical] iff TRUE do not strip names attributes from current and target prior to the comparison
+  ##@ret           : [logical] TRUE iff check was correct
   ##
   ##@codestatus : testing
 
+  
   if(!is.numeric(tolerance)) {
     stop("tolerance has to be a numeric value")
   }
+  if (length(tolerance) != 1) {
+    stop("tolerance has to be a scalar")
+  }
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
+  }
+  if (!isTRUE(checkNames)) {
+    names(target)  <- NULL
+    names(current) <- NULL
   }
   result <- all.equal(target, current, tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
