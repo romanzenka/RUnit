@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 ##  $Id$
 
 
-includeTracker <- function(fbody)
+includeTracker <- function(fbody, track=track)
 {
   ##@bdescr
   ##  Internal function
@@ -170,11 +170,19 @@ includeTracker <- function(fbody)
 tracker <- function()
 {
   ##@bdescr
-  ##
-  ##
+  ##  initialization of the central tracking object
+  ##  which stores all information related to inspection results and code execution structure
+  ##  defines accessor functions
+  ##   - addFunc (fId,src,callExpr): add specified function to the track list
+  ##   - getSource(nr): get the source code (character) for function nr on track list
+  ##   - init
+  ##   - bp
+  ##   - getTrackInfo
   ##@edescr
   ##
   ##@ret  : [list] OO object with functions addFunc, getSourcee, init, bp, getTrackInfo
+  ##
+  ##@codestatus : untested
   
   ## object for information
   run <- list()
@@ -190,7 +198,21 @@ tracker <- function()
   
   addFunc <- function(fId,src,callExpr)
   {
+    ##@bdescr
+    ##
+    ## accessor function
+    ##@edescr
+    ##
+    ##@in  fId      : [character] function name
+    ##@in  src      : [character] source code character vector
+    ##@in  callExpr : []
+    ##@ret          : []
 
+    ##  preconditions
+    if( length(fId) != 1) {
+      stop("fId must be one character string: function name")
+    }
+    
     isThere <- which(fId == names(run));
 
     if(length(isThere) == 1)
@@ -229,18 +251,53 @@ tracker <- function()
 
   getTrackInfo <- function()
   {
+    ##@bdescr
+    ##
+    ##  accessor function
+    ##  returns the main inspection result list with
+    ##  elements
+    ##   - src
+    ##   - run
+    ##   - time
+    ##   - graph
+    ##   - nrow
+    ##   - ncol
+    ##   - nrRuns
+    ##   - funCall
+    ##@edescr
+    ##
+    ##@ret  : [list] (see description above)
+
+    
     return(run);
   }
   
   
   init <- function()
   {
+    ##@bdescr
+    ##
+    ##  initalisation function
+    ##  sets/resets variables run and fIdx
+    ##@edescr
+    ##
+    ##@ret  : [NULL] used for their side effects
+    
     run <<- list()
     fIdx <<- 0
   }
 
+  
   bp <- function(nr)
   {
+    ##@bdescr
+    ##
+    ##  accessor function
+    ##@edescr
+    ##
+    ##@in   : [integer] index, function run number
+    ##@ret  : [NULL] used for their side effects
+    
     run[[fIdx]]$run[nr]<<- run[[fIdx]]$run[nr] + 1
 
     ## cumulative processing time
@@ -262,8 +319,17 @@ tracker <- function()
     oldSrcLine <<- nr
   }
 
+  
   getSource <- function(nr)
   {
+    ##@bdescr
+    ##
+    ##  accessor function
+    ##  returns the source code as character string
+    ##@edescr
+    ##
+    ##@in   : [integer] index, function run number
+    ##@ret  : [character] string, source code
     return(run[[nr]]$src)
   }
   
@@ -271,14 +337,22 @@ tracker <- function()
 }
 
 
-inspect <- function(expr)
+inspect <- function(expr, track=track)
 {
   ##@bdescr
+  ##  inspector function
+  ##  an attempt is made to parse the expression or function
+  ##  insert track info statements to be used for subsequent
+  ##  code execution structure displays
   ##
-  ##
+  ##  can handle functions aswell as generics
   ##@edescr
   ##
-  ##@in  expr : [call]
+  ##@in  expr  : [call]
+  ##@in  track : [list] tracker object
+  ##@ret       : [expression|ANY] either the unevaluated expression of the function or the result of the function call
+  ##
+  ##@codestatus : testing
   
   ## getting the call and his parameter
   fCall <- as.character(substitute(expr));
@@ -359,7 +433,7 @@ inspect <- function(expr)
  
   
   ## generate the new body of the function
-  newFunc <- includeTracker(fbody)
+  newFunc <- includeTracker(fbody, track=track)
   track$addFunc(fNameId,newFunc$newSource,callExpr)
 
   ## build the test function
