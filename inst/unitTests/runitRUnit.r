@@ -289,14 +289,23 @@ testRUnit.runTestSuite <- function()
   ## test case for function runTestSuite of class: none
   ##@edescr
 
-  testSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+  testSuiteTest <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
 
-  ##res <- runTestSuite(testSuite)
+  checkTrue( isValidTestSuite(testSuiteTest))
+
+  ##  this call has to be executed in new environment
+  ##res <- runTestSuite(testSuiteTest)
+  ##
+  ##  FIXME: does not work as intended
+  #testEnv <- new.env()
+  #assign("res", runTestSuite(testSuiteTest), envir=testEnv)
+  #checkTrue( is(get("res", envir=testEnv), "RUnitTestData"))
   
   ##  error handling
   ##
   ##  useOwnErrorHandler
   ##  type logical
+  tS <- testSuiteTest
   checkException( runTestSuite(tS, useOwnErrorHandler=integer(1)))
   ##  length 1
   checkException( runTestSuite(tS, useOwnErrorHandler=logical(0)))
