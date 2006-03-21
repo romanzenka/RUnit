@@ -32,16 +32,16 @@ foo <- function(x) {
 
 testRUnit.inspect <- function() {
 
-  DEACTIVATED("envir issue: Error in inspect(foo(10)) : Object \"track\" not found.")
+  ##DEACTIVATED("envir issue: Error in inspect(foo(10)) : Object \"track\" not found.")
   ## the name track is necessary
-  track <- tracker()
+  track <<- tracker()
   
   ## initialize the tracker
   track$init()
   
   ## inspect the function
   ## res will collect the result of calling foo
-  res <- inspect(foo(10))
+  res <- inspect(foo(10), track=track)
   checkEquals( res, 5050)
 
 }
@@ -49,16 +49,17 @@ testRUnit.inspect <- function() {
 
 testRUnit.getTrackInfo <- function() {
 
-  DEACTIVATED("envir issue: Error in inspect(foo(10)) : Object \"track\" not found.")
   ## the name track is necessary
-  track <- tracker()
+  track <<- tracker()
   
   ## initialize the tracker
   track$init()
   
   ## inspect the function
+  checkTrue( exists("foo"))
+  
   ## res will collect the result of calling foo
-  res <- inspect(foo(10))
+  res <- inspect(foo(10), track=track)
   checkEquals( res, 5050)
 
   ## get the tracked function call info
