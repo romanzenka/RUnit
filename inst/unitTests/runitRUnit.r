@@ -205,7 +205,8 @@ testRUnit.checkException <- function()
   checkException( checkEqualsNumeric( 24))
   checkException( checkEqualsNumeric( 24, 24, tol="dummy"))
 
-  
+  checkException( stop("with message"), silent=FALSE)
+  checkException( stop("wo message"), silent=TRUE)
 }
 
 
