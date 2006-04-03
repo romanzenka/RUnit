@@ -164,17 +164,18 @@ checkTrue <- function(expr, msg="")
 }
 
 
-checkException <- function(expr, msg="")
+checkException <- function(expr, msg="", silent=FALSE)
 {
   ##@bdescr
   ## checks if a function call creates an error. The passed function must be parameterless.
   ## If you want to check a function with arguments, call it like this:
   ## 'checkException(function() func(args...))'
   ##@edescr
-  ##@in func : [parameterless function] the function to be checked
-  ##@in msg  : [character] an optional message to further identify and document the call
+  ##@in  func   : [parameterless function] the function to be checked
+  ##@in  msg    : [character] an optional message to further identify and document the call
+  ##@in  silent : [logical] passed on to try, iff TRUE error messages will be suppressed 
   ##
-  ##@ret     : [logical] TRUE, if evaluation of the expression results in a 'try-error', else a stop signal is issued 
+  ##@ret        : [logical] TRUE, if evaluation of the expression results in a 'try-error', else a stop signal is issued 
   ##
   ##@codestatus : testing
   
@@ -182,7 +183,7 @@ checkException <- function(expr, msg="")
     .testLogger$incrementCheckNum()
   }
 
-  if (!inherits(try(eval(expr, envir = parent.frame())), "try-error")) {
+  if (!inherits(try(eval(expr, envir = parent.frame()), silent=silent), "try-error")) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
