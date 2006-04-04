@@ -52,7 +52,7 @@ track$init()
 
 ##  inspect the function
 ##  res is the result of foo
-res <- inspect(foo(10))
+res <- inspect(foo(10), track=track)
 
 ##  get the tracking info
 resTrack <- track$getTrackInfo()
