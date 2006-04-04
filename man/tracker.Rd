@@ -69,11 +69,11 @@ track$init()
 
 ##  inspect the function
 ##  resFoo1 will contain the result of calling foo(50)
-resFoo1 <- inspect(foo(50))
+resFoo1 <- inspect(foo(50), track=track)
 
-resFoo2 <- inspect(foo(20))
+resFoo2 <- inspect(foo(20), track=track)
 
-resBar1 <- inspect(bar(30))
+resBar1 <- inspect(bar(30), track=track)
 
 ##  get the tracked function call info for all inspect calls
 resTrack <- track$getTrackInfo()
