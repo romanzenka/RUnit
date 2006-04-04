@@ -3,11 +3,12 @@
 \title{Track the executed code lines of a function or method.}
 
 \usage{
-  inspect(expr)
+  inspect(expr, track=track)
 }
 
 \arguments{
   \item{expr}{Any R function or methods call.}
+  \item{track}{list object, as returned by a call to \code{tracker}.}
 }
 
 \description{
@@ -53,7 +54,7 @@ track$init()
 
 ## inspect the function
 ## res will collect the result of calling foo
-res <- inspect(foo(10))
+res <- inspect(foo(10), track=track)
 
 ## get the tracked function call info
 resTrack <- track$getTrackInfo()
