@@ -1,0 +1,273 @@
+2006-04-04  burger
+
+	* man/inspect.Rd: updated inspect call and argument documentation
+
+2006-04-04  burger
+
+	* man/printHTML.trackinfo.Rd: updated inspect call
+
+2006-04-04  burger
+
+	* man/tracker.Rd: updated inspect calls
+
+2006-04-04  burger
+
+	* inst/doc/RUnit.Rnw: updated inspect calls, added some line to
+	  recomendations
+
+2006-04-03  burger
+
+	* tests/runitRUnit.r: checkException: silent added to checks
+
+2006-04-03  burger
+
+	* R/checkFuncs.r: checkException: argument silent added
+
+2006-04-03  burger
+
+	* man/checkFuncs.Rd: checkException, checkEquals documentation
+	  updated
+
+2006-04-03  burger
+
+	* DESCRIPTION: patch level 0.4.11: checkException arg added
+
+2006-04-03  burger
+
+	* inst/examples/runitfoo.r: example function
+
+2006-03-21  burger
+
+	* tests/runitRUnit.r: unsuccessful attempt to extend runTestSuite
+	  test case
+
+2006-03-21  burger
+
+	* R/runit.r: isValidTestSuite: error message texts added
+
+2006-03-21  burger
+
+	* R/inspector.r: inspect, and includeTracker have new argument
+	  track, which defaults to track for consitency; API docu enhanced
+	  and extended
+
+2006-03-21  burger
+
+	* tests/runitInspect.r: reactivated both test cases after changes
+	  to inspect, and includeTracker
+
+2006-03-21  burger
+
+	* DESCRIPTION: patch level 0.4.10
+
+2006-03-07  burger
+
+	* R/checkFuncs.r: checkEquals: new compatibility argument to allow
+	  to workaround stricter all.equal checks; tolerance precondtion
+	  added
+
+2006-03-07  burger
+
+	* DESCRIPTION: patch level 0.4.9: checkEquals has new compatibility
+	  argument
+
+2006-01-20  burger
+
+	* tests/runitRUnit.r: checkIdentical added; checkEquals test case
+	  extended
+
+2006-01-20  burger
+
+	* man/checkFuncs.Rd: checkIdentical added; arguments a,b, renamed
+	  consitent with all.equal
+
+2006-01-20  burger
+
+	* R/checkFuncs.r: checkIdentical added; msg argument default added;
+	  msg added to stop calls; arguments a,b, renamed consitent with
+	  all.equal
+
+2006-01-20  burger
+
+	* NAMESPACE: checkIdentical added
+
+2006-01-20  burger
+
+	* DESCRIPTION: patch version 0.4.8: checkIdentical added
+
+2006-01-05  burger
+
+	* R/checkFuncs.r: checkEqualsNumeric: update to be compatible with
+	  R 2.3.0
+
+2006-01-05  burger
+
+	* DESCRIPTION: patch level 0.4.7: update for checkEqualsNumeric to
+	  be compattible with R 2.3.0
+
+2005-12-12  burger
+
+	* DESCRIPTION: patch level 0.4.6
+
+2005-12-12  burger
+
+	* R/htmlProtocol.r: replaced HOST query by supposedly platform
+	  independent Sys.info variant
+
+2005-12-05  burger
+
+	* R/htmlProtocol.r: system info table format changed
+
+2005-12-05  burger
+
+	* R/html.r: writeHtmlTable added; API tags updated
+
+2005-11-21  burger
+
+	* DESCRIPTION: patch level 0.5.0 added - temporary - dependency on
+	  EpiR.base (arrayTemplate class)
+
+2005-11-21  burger
+
+	* R/zzz.r: class & method init currently required arrayTemplate and
+	  thus relies on EpiR.base FIXME: remove dependency on EpiR.base
+	  once design has matured
+
+2005-11-21  burger
+
+	* R/Logger.r: first exploration
+
+2005-11-21  burger
+
+	* R/textProtocol.r: added execTime S3 method
+
+2005-11-21  burger
+
+	* R/: TestFileResult.r, TestFunctionResult.r, TestResultMethods.r,
+	  TestSuiteResult.r, TestFileResultMethods.r,
+	  TestSuiteResultMethods.r: first prototype
+
+2005-11-21  burger
+
+	* R/TestResultClass.r: first prototype: virtual base class: the
+	  mother of all test results
+
+2005-11-14  burger
+
+	* DESCRIPTION: patch level 0.4.5 improvements to error detection in
+	  runTestSuite & new test cases
+
+2005-11-14  burger
+
+	* tests/runitRUnit.r: added isValidTestSuite, runTestFile, and
+	  runTestSuite test cases added test case description
+
+2005-11-14  burger
+
+	* R/runit.r: runTestSuite: added preconditions runTestFile: pass on
+	  error handler flag
+
+2005-11-14  burger
+
+	* inst/examples/correctTestCase.r: used for unit test cases
+
+2005-11-14  burger
+
+	* R/runit.r: added codestatus API tag runTestSuite: modified error
+	  msg
+
+2005-11-14  burger
+
+	* R/checkFuncs.r: added codestatus API tag, set to testing
+
+2005-10-27  burger
+
+	* .cvsignore: initial commit ignaore eclipse project file
+
+2005-09-29  burger
+
+	* DESCRIPTION: changed Klaus email address
+
+2005-09-29  burger
+
+	* inst/doc/Makefile: initial commit: utility
+
+2005-08-30  burger
+
+	* DESCRIPTION: patch level 0.4.4: changed maintainer
+
+2005-04-07  burger
+
+	* tests/runitInspect.r: added & deactivated 2 test cases:
+	  environment issues to be addressed by Thomas
+
+2005-04-07  burger
+
+	* tests/runitRUnit.r: DEACTIVATED test added
+
+2005-04-07  burger
+
+	* R/inspector.r: includeTracker: modifed regexp in grep to comply
+	  to R 2.1.0; removed semi-colons; added docu tags
+
+2005-04-07  burger
+
+	* R/checkFuncs.r: checkTrue: argument renmaed to match docu: R
+	  2.1.0 CMD check issue
+
+2005-04-07  burger
+
+	* R/runit.r: isValidTestSuite: added check on folder existance;
+	  docu tags added
+
+2005-04-07  burger
+
+	* R/testLogger.r: setDeactivated: added handling of msg with string
+	  length > 1; docu extended
+
+2005-04-07  burger
+
+	* DESCRIPTION: patch level 0.4.2: fixed R 2.1.0 inspect regexp
+	  problem
+
+2005-02-02  kjuen
+
+	* R/: htmlProtocol.r, textProtocol.r: the protocol now doesn't
+	  mention test files that do not contain any test functions
+
+2005-01-17  kjuen
+
+	* R/htmlProtocol.r: minor formatting modifications
+
+2004-12-13  burger
+
+	* R/checkFuncs.r: checkTrue: had to add explicit eval to ensure the
+	  argument gets evaluated before attempting to set the names
+	  attribute to NULL
+
+2004-12-13  burger
+
+	* man/checkFuncs.Rd: updated help text for checkTrue
+
+2004-12-13  burger
+
+	* R/checkFuncs.r, tests/runitRUnit.r: checkTrue: extended: correct
+	  handling of named logical arguments
+
+2004-12-13  burger
+
+	* DESCRIPTION: patch level 0.4.2: corrected deficient checkTrue
+
+2004-11-29  burger
+
+	* DESCRIPTION: patch level: 0.4.1: http URL mapped
+
+2004-11-29  kjuen
+
+	* R/htmlProtocol.r, man/textProtocol.Rd: 'testFileToLinkMap'
+	  parameter added to the printHTMLProtocol function added
+
+2004-09-30  kjuen
+
+	* inst/doc/: RUnit.Rnw, RUnit.pdf: typos fixed
+
