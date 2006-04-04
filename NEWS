@@ -2,13 +2,43 @@
         **************************************************
         * 
         *
-        *	       RUnit
+        *       RUnit
         *
         * 
         *
         **************************************************
 
 
+Changes in RUnit 0.4.11
+    o   checkException: argument silent added to allow to suppress
+        error messages emitted by the failing function
+    o   inspect: added argument track, which _has_ to be provided
+        at each invocation to avoid recursive default argument
+        reference call errors (experimental: subject to change if this
+        leads to new incompatibilities)
+
+Changes in RUnit 0.4.9
+    o   checkEquals has new compatibility argument checkNames
+
+Changes in RUnit 0.4.8
+    o   checkIdentical added, to allow to check for exact identity
+
+Changes in RUnit 0.4.7
+    o   update for checkEqualsNumeric to be compattible with R 2.3.0
+
+Changes in RUnit 0.4.5
+    o   improvements to error detection in runTestSuite
+
+Changes in RUnit 0.4.4
+    o   chaged maintainer
+
+Changes in RUnit 0.4.2
+    o   checkTrue: corrected handling of named logical arguments
+
+Changes in RUnit 0.4.1
+    o   printHTMLProtocol has new parameter 'testFileToLinkMap'
+        to allow to provide a function to add dynamically generated
+        URLs for each test case file, e.g. for use with CVSweb
 
 Changes in RUnit 0.4.0
 
