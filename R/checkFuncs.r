@@ -170,6 +170,9 @@ checkException <- function(expr, msg="", silent=FALSE)
   ## checks if a function call creates an error. The passed function must be parameterless.
   ## If you want to check a function with arguments, call it like this:
   ## 'checkException(function() func(args...))'
+  ##
+  ##  adding argument silent was suggested by Seth Falcon <sfalcon@fhcrc.org>
+  ##  who provided a patch.
   ##@edescr
   ##@in  func   : [parameterless function] the function to be checked
   ##@in  msg    : [character] an optional message to further identify and document the call
