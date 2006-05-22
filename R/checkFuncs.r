@@ -218,5 +218,5 @@ DEACTIVATED <- function(msg="")
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$setDeactivated(paste(msg, "\n", sep=""))
   }
-  stop(msp)
+  stop(msg)
 }
