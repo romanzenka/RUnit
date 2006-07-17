@@ -32,8 +32,8 @@
                   "\nCheck your library installation path.\n")
   require(methods) || stop(errMsg)
 
- 
-  cat(paste("\n RUnit loaded.\n"))
+  runitVersion <- packageDescription("RUnit", fields="Version")
+  cat(paste("\n RUnit", runitVersion,"loaded.\n"))
 }
 
 
@@ -54,7 +54,8 @@
                   "\nCheck your library installation path.\n")
   require(methods) || stop(errMsg)
 
-  cat(paste("\n RUnit loaded.\n"))
+  runitVersion <- packageDescription("RUnit", fields="Version")
+  cat(paste("\n RUnit", runitVersion,"loaded.\n"))
 }
 
 
