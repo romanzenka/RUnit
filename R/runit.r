@@ -17,7 +17,7 @@
 
 ##  $Id$
 
-defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.r$",
+defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.[rR]$",
                             testFuncRegexp="^test.+")
 {
   ##@bdescr
