@@ -24,6 +24,10 @@
   ## TestLogger is an object based on the 'closure trick'. It has the task
   ## to store, administrate and print the test protocol.
   ##@edescr
+  ##@in  useOwnErrorHandler  : [logical] 
+  ##@ret                     : [list]
+  ##
+  ##@codestatus : internal
 
   ## private data:
   ## -----------------------
