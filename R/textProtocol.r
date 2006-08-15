@@ -107,7 +107,7 @@ printTextProtocol <- function(testData,
   pr("***********************************************")
   if(length(testData) == 0) {
     pr("no test cases :-(")
-    return()
+    return(invisible(TRUE))
   }
 
   errInfo <- getErrors(testData)
