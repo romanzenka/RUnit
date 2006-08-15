@@ -8,6 +8,15 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.13
+    o   allow the RNG to be set by the user via new arguments 'rngKind' and 'rngNormalKind' to 
+        functions defineTestSuite and runTestFile (patch by Seth Falcon)
+    o   fixed exit status: RNG kind was left changed after runTestSuite execution in user workspace
+    o   email contact address modified
+
+Changes in RUnit 0.4.12
+    o   allow *.R test case file extension (suggested by Gregor Gorjanc)
+    o   fixed code typo in example vignette (spotted by Gregor Gorjanc)
 
 Changes in RUnit 0.4.11
     o   checkException: argument silent added to allow to suppress
