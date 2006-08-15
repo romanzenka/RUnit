@@ -34,6 +34,9 @@ printTextProtocol <- function(testData,
   ##@in  separateFailureList : [logical] if TRUE (default) add a failure list
   ##@in  showDetails         : [logical] if TRUE (default) add detailed trackbacks for each error incurred
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
+  ##@ret                     : [logical] TRUE if execution completed wo error
+  ##
+  ##@codestatus : testing
 
   ##  preconditions
   if (!is(testData, "RUnitTestData"))
@@ -146,8 +149,10 @@ printTextProtocol <- function(testData,
 
 
   ## if no details are required, we are done.
-  if(!showDetails) return()
-
+  if(!showDetails) {
+    return(invisible(TRUE))
+  }
+  
   pr("\n\n\nDetails")
 
   ## loop over all test suites
@@ -223,6 +228,9 @@ printTextProtocol <- function(testData,
       }
     }
   }
+
+  ##  return type  
+  return(invisible(TRUE))
 }
 
 
@@ -232,8 +240,12 @@ print.RUnitTestData <- function(x, ...)
   ##  Generic print method
   ##@edescr
   ##
-  ##@in  x : [RUnitTestData] S3 class object
-
+  ##@in  x   : [RUnitTestData] S3 class object
+  ##@in  ... : [ANY] currently ignored
+  ##@ret     : [NULL]
+  ##
+  ##@codestatus : untested
+  
   errInfo <- getErrors(x)
   cat("Number of test functions:", errInfo$nTestFunc, "\n")
   if(errInfo$nDeactivated > 0) {
@@ -241,6 +253,7 @@ print.RUnitTestData <- function(x, ...)
   }
   cat("Number of errors:", errInfo$nErr, "\n")
   cat("Number of failures:", errInfo$nFail, "\n")
+  
 }
 
 
@@ -252,7 +265,11 @@ summary.RUnitTestData <- function(object, ...)
   ##@edescr
   ##
   ##@in  object : [RUnitTestData] S3 class object
-
+  ##@in  ...    : [ANY]
+  ##@ret        : [logical] return valof from printTextProtocol
+  ##
+  ##@codestatus : untested
+  
   printTextProtocol(object, ...)
 }
 
