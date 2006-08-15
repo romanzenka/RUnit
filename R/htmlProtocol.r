@@ -26,7 +26,7 @@ printHTMLProtocol <- function(testData,
   ##@bdescr
   ##  Report generator
   ##  Extracts the log information stored in the 'RUnitTestData' test run object
-  ##  and generates a well formated output.
+  ##  and generates a well formated HTML output.
   ##@edescr
   ##
   ##@in  testData            : [RUnitTestData] S3 class object
@@ -34,6 +34,9 @@ printHTMLProtocol <- function(testData,
   ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to be displayed
   ##@in  testFileToLinkMap   : [function] a function transforming the full name of the test file to a link location
+  ##@ret                     : [logical] TRUE if execution completed wo error
+  ##
+  ##@codestatus : testing
   
   ## --------------------------------
   ##  CHECK OF INPUT DATA
@@ -153,7 +156,7 @@ printHTMLProtocol <- function(testData,
 
   if(length(testData) == 0) {
     writeP(" no test cases :-(")
-    return()
+    return(invisible(TRUE))
   }
   ## basic Info
   errInfo <- getErrors(testData)
@@ -447,4 +450,6 @@ printHTMLProtocol <- function(testData,
   
   ## finish html document
   writeHtmlEnd(htmlFile=fileName)
+
+  return(invisible(TRUE))
 }
