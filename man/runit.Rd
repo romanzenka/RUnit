@@ -6,10 +6,10 @@
 \title{Definition and execution of RUnit test suites.}
 
 \usage{
-defineTestSuite(name, dirs, testFileRegexp="^runit.+\\.r$", testFuncRegexp="^test.+")
+defineTestSuite(name, dirs, testFileRegexp="^runit.+\\.[rR]$", testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
 isValidTestSuite(testSuite)
 runTestSuite(testSuites, useOwnErrorHandler=TRUE)
-runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
+runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
 }
 
 \arguments{
@@ -17,6 +17,8 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+")
   \item{dirs}{Vector of absolute directory names where to look for test files.}
   \item{testFileRegexp}{Regular expression for test files.}
   \item{testFuncRegexp}{Regular expression for test functions.}
+  \item{rngKind}{name of a valid RNG version (see \code{\link[base]{RNGkind}}).}
+  \item{rngNormalKind}{name of a valid rnorm RNG version (see \code{\link[base]{RNGkind}}).}
   \item{testSuite}{A single object of class test suite.}
   \item{testSuites}{A single object of class test suite or a list of
     test suite objects.}
