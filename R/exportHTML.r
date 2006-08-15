@@ -18,7 +18,7 @@
 ##  $Id$
 
 
-plotConnection.trackInfo <- function(con,pngfile,...)
+plotConnection.trackInfo <- function(con, pngfile, ...)
 {
   ##@bdescr
   ##  create a plot displaying the execution flow as a graph
@@ -27,8 +27,10 @@ plotConnection.trackInfo <- function(con,pngfile,...)
   ##@in  con     : [matrix] counts of execution calls for previous functions
   ##@in  pngfile : [character] string specifying the full path & file name of the
   ##               plot file (PNG) to be generate
+  ##@ret         : [NULL] used for its side effect
   ##
-  
+  ##@codestatus : untested
+
   ## experimental 2nd order connections
   ## color for arrows
   color <- c("black","lightgreen","green","lightblue","blue","orangered","red")
@@ -150,7 +152,9 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
   ##@in  trackInfo : [list] trackInfo object
   ##@in  baseDir   : [character] string specifying the full path to the root directory to hold the HTML pages
   ##
-  
+  ##
+  ##@codestatus :  
+   
   ##  preconditions
   if (!is.list(trackInfo))
   {
@@ -167,7 +171,7 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
   }
 
   
-  path <- paste(baseDir,"/results",sep="");
+  path <- file.path(baseDir,"results")
   if (!file.exists(path))
   {
     ok <- dir.create(path)
@@ -176,7 +180,7 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
       stop(paste("could not create", path) )
     }
   }
-  htmlFile <- paste(path,"/index.html",sep="");
+  htmlFile <- file.path(path,"index.html")
 
   ## create index.html
   writeHtmlHeader("Overview",htmlFile);
@@ -208,7 +212,7 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
 
     ## write function name
     writeBeginTag("td",htmlFile);
-    writeLink(paste("./res",i,".html",sep=""),funcName,htmlFile)
+    writeLink(file.path(".", paste("res",i,".html",sep="")), funcName, htmlFile)
     writeEndTag("td",htmlFile);    
     writeCR(htmlFile);
 
@@ -247,13 +251,13 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
   ## create result pages
   for(i in seq(along=trackInfo))
   {
-    absGraphImg <- paste(path,"/con",i,".png",sep="");
-    absGraphFile <- paste(path,"/con",i,".html",sep="");
-    relGraphImg <- paste("./con",i,".png",sep="");
-    relGraphFile <- paste("./con",i,".html",sep="");
-    relHTMLFile <- paste("res",i,".html",sep="");
+    absGraphImg  <- file.path(path, paste("con",i,".png",sep=""))
+    absGraphFile <- file.path(path, paste("con",i,".html",sep=""))
+    relGraphImg  <- file.path(".", paste("con",i,".png",sep=""))
+    relGraphFile <- file.path(".", paste("con",i,".html",sep=""))
+    relHTMLFile  <- file.path(".", paste("res",i,".html",sep=""))
 
-    htmlFile <- paste(path,"/res",i,".html",sep="");
+    htmlFile <- file.path(path, paste("res",i,".html",sep=""))
     ## begin result page
     writeHtmlHeader("Result",htmlFile);
 
@@ -321,7 +325,6 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
     
   }
   
+  return()
 }
-
-
 
