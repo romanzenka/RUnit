@@ -17,25 +17,33 @@
 
 ##  $Id$
 
-defineTestSuite <- function(name, dirs, testFileRegexp="^runit.+\\.[rR]$",
-                            testFuncRegexp="^test.+")
+defineTestSuite <- function(name, dirs, 
+                            testFileRegexp="^runit.+\\.[rR]$",
+                            testFuncRegexp="^test.+",
+                            rngKind="Marsaglia-Multicarry",
+                            rngNormalKind="Kinderman-Ramage")
 {
   ##@bdescr
   ##  Convenience functions to handle test suites
   ##@edescr
   ##
-  ##@in  name : [character]
-  ##@in  dirs : [character]
-  ##@in  testFileRegexp : [character]
-  ##@in  testFuncRegexp : [character]
-  ##@ret : [RUnitTestSuite] S3 class (list) object, ready for test runner
+  ##@in  name           : [character] test suite title used in protocol
+  ##@in  dirs           : [character] vector of paths to search for test case files
+  ##@in  testFileRegexp : [character] regular expression string to match file names
+  ##@in  testFuncRegexp : [character] regular expression string to match test case functions within all test case files
+  ##@in  rngKind        : [character] name of the RNG version, see RNGversion()
+  ##@in  rngNormalKind  : [character] name of the RNG version for the rnorm, see RNGversion()
+  ##@ret                : [RUnitTestSuite] S3 class (list) object, ready for test runner
   ##
-  ##@codestatus : untested
+  ##@codestatus : testing
   
   ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,
-              testFuncRegexp=testFuncRegexp)
+              testFuncRegexp=testFuncRegexp,
+              rngKind=rngKind,
+              rngNormalKind=rngNormalKind)
+
   class(ret) <- "RUnitTestSuite"
   return(ret)
 }
@@ -49,7 +57,7 @@ isValidTestSuite <- function(testSuite)
   ##@edescr
   ##
   ##@in   testSuite : [RUnitTestSuite] S3 class (list) object, input object for test runner
-  ##@ret  : [logical] TRUE if testSuite is valid
+  ##@ret            : [logical] TRUE if testSuite is valid
   ##
   ##@codestatus : testing
   
@@ -58,7 +66,8 @@ isValidTestSuite <- function(testSuite)
     warning(paste("'testSuite' object is not of class 'RUnitTestSuite'."))
     return(FALSE)
   }
-  if(!setequal(names(testSuite), c("name", "dirs", "testFileRegexp", "testFuncRegexp")))
+  if(!setequal(names(testSuite), c("name", "dirs", "testFileRegexp", "testFuncRegexp",
+                                   "rngKind", "rngNormalKind")))
   {
     warning("'testSuite' object does not conform to S3 class definition.")
     return(FALSE)
@@ -75,6 +84,18 @@ isValidTestSuite <- function(testSuite)
   if (!all(file.exists(testSuite[["dirs"]])))
   {
     warning(paste("specifed directory",testSuite[["dirs"]],"not found."))
+    return(FALSE)
+  }
+  
+  ##  RNGkind has an internal list of valid names which cannot be accessed
+  ##  programatically. Furthermore, users can define their own RNG and select that one
+  ##  so we have to leave it to RNGkind() to check if the arguments are valid.
+  if (length(testSuite[["rngKind"]]) != 1) {
+    warning(paste("specifed 'rngKind' may only contain exatly one name."))
+    return(FALSE)
+  }
+  if (length(testSuite[["rngNormalKind"]]) != 1) {
+    warning(paste("specifed 'rngNormalKind' may only contain exatly one name."))
     return(FALSE)
   }
   return(TRUE)
@@ -223,17 +244,19 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##@bdescr
   ## This is the main function of the runit framework. It finds all the relevant
   ## test files and triggers all the required action. At the end it creates a test
-  ## protocol file. Very importantly, the random number generator is set to standard
-  ## method before each file is sourced. This garantees that each test case can rely
-  ## on the default, even if the random number generator is being reconfigured in some
-  ## test case.
+  ## protocol file. 
+  ## IMPORTANT to note, the random number generator is (re-)set to the default
+  ## methods specifed in defineTestSuite() before each new test case file is sourced. 
+  ## This garantees that each test case can rely
+  ## on the default, even if the random number generator version is being reconfigured in some
+  ## test case file(s).
   ##@edescr
   ##
-  ##@in  testSuites     : [list] list of test suite lists
+  ##@in  testSuites         : [list] list of test suite lists
   ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler
-  ##@ret                : [list] 'RUnitTestData' S3 class object
+  ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
-  ##@codestatus : untested
+  ##@codestatus : testing
   
   ##  preconditions
   if (!is.logical(useOwnErrorHandler)) {
@@ -245,6 +268,11 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   if (is.na(useOwnErrorHandler)) {
     stop("argument 'useOwnErrorHandler' may not contain NA.")
   }
+  
+  
+  ##  record RNGkind and reinstantiate on exit
+  rngDefault <- RNGkind()
+  on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]))
   
   oldErrorHandler <- getOption("error")
   ## initialize TestLogger
@@ -266,7 +294,8 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
                             full.names=TRUE)
     for(testFile in testFiles) {
       ## set a standard random number generator.
-      RNGkind(kind="Marsaglia-Multicarry", normal.kind="Kinderman-Ramage")
+      RNGkind(kind=testSuite$rngKind, normal.kind=testSuite$rngNormalKind)
+      
       .sourceTestFile(testFile, testSuite$testFuncRegexp)
     }
   }
@@ -278,17 +307,20 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
 }
 
 
-runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+") {
+runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, 
+                        testFuncRegexp="^test.+",
+                        rngKind="Marsaglia-Multicarry",
+                        rngNormalKind="Kinderman-Ramage") {
   ##@bdescr
   ##  Convenience function.
   ##@edescr
   ##
-  ##@in  absFileName : [character] complete file name of test cases code file
+  ##@in  absFileName        : [character] complete file name of test cases code file
   ##@in  useOwnErrorHandler : [logical] if TRUE RUnits error handler will be used
-  ##@in  testFuncRegexp : [character]
-  ##@ret                : [list] 'RUnitTestData' S3 class object
+  ##@in  testFuncRegexp     : [character]
+  ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
-  ##@codestatus : untested
+  ##@codestatus : testing
   
   ##  preconditions
   ##  all error checking and hanling is delegated to function runTestSuite
@@ -296,7 +328,11 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^t
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
   dn <- dirname(absFileName)
-  ts <- defineTestSuite(name=nn, dirs=dn, testFileRegexp=paste("^", fn, "$", sep=""),
-                        testFuncRegexp=testFuncRegexp)
+  ts <- defineTestSuite(name=nn, dirs=dn, 
+                        testFileRegexp=paste("^", fn, "$", sep=""),
+                        testFuncRegexp=testFuncRegexp,
+                        rngKind=rngKind,
+                        rngNormalKind=rngNormalKind)
+                        
   return(runTestSuite(ts, useOwnErrorHandler=useOwnErrorHandler))
 }
