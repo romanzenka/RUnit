@@ -220,6 +220,29 @@ testRUnit.DEACTIVATED <- function()
 }
 
 
+testRUnit.defineTestSuite <- function()
+{
+  ##@bdescr
+  ## test case for function defineTestSuite of class: none
+  ##@edescr
+  
+  ##  correct working
+  testSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), 
+                               testFileRegexp="correctTestCase.r")
+  
+  ##  this also works for S3 objects
+  checkTrue( inherits(testSuite, "RUnitTestSuite"))
+  checkTrue( is.list(testSuite))
+  checkTrue( all(c("name", "dirs", "testFileRegexp", "testFuncRegexp",
+                   "rngKind", "rngNormalKind") %in% names(testSuite)))
+  checkTrue( isValidTestSuite(testSuite))
+  
+  
+  ##  error handling
+  
+}
+
+
 testRUnit.isValidTestSuite <- function()
 {
   ##@bdescr
