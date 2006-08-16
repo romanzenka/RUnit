@@ -42,13 +42,13 @@ For our code development we have utilized the described system with great benefi
 The importance of software testing can hardly be overrated. This
 is all the more true for interpreted languages where not even a compiler
 checks the basic consistency of a program. Nonetheless, testing is
-often perceived more as a burden than a help  by the
+often perceived more as a burden than a help by the
 programmer. Therefore it is necessary to provide tools that make the
-task  of testing as simple and systematic as possible. The key goal of
+task of testing as simple and systematic as possible. The key goal of
 such a testing framework should be to promote the creation and
 execution of test cases to become an integral part of the software
 development process. Experience shows that such a permanently repeated
-code - test - simplify  cycle leads to faster and more successful
+code - test - simplify cycle leads to faster and more successful
 software development than the usually futile attempt to add test cases
 once the software is largely finished. This line of thought has been
 pushed furthest by the Extreme Programming
@@ -166,6 +166,8 @@ defined through naming conventions, store whether or not the test
 succeeded in a central logger object and finally write a test protocol
 that allows to precisely identify the problems.
 
+{\bf Note, that RUnit - by default - sets the version for normal, and all other RNGs to 'Kinderman-Ramage', and 'Marsaglia-Multicarry', respectively. If you like to change these defaults please see {\tt ?defineTestSuite} for argument 'rngNormalKind' and 'rngKind'.}
+
 As an example consider a function that converts centigrade to
 Fahrenheit:
 \begin{Sinput}
@@ -184,10 +186,12 @@ The default naming convention for test functions in the RUnit package is {\tt te
 Before running the test function it is necessary to create a test suite which is a collection of test functions and files relating to one topic. One could, for instance, create one test suite for one R package. A test suite is just a list containing a name, an array of absolute directories containing the locations of the test files, a regular expression identifying the test files and a regular expression identifying the test functions. In our example assume that the test function is located in a file {\tt runitc2f.r} located in a directory {\tt /foo/bar/}. To create the corresponding test suite we can use a helper function:
 \begin{Sinput}
 testsuite.c2f <- defineTestSuite("c2f",
-                 dirs=paste(path.package(package="RUnit"),
-                            "examples",sep="/"),
-                 testFileRegexp="^runit.+\\.r",
-                 testFuncRegexp="^test.+")
+                 dirs = file.path(path.package(package="RUnit"),
+                            "examples"),
+                 testFileRegexp = "^runit.+\\.r",
+                 testFuncRegexp = "^test.+",
+                 rngKind = "Marsaglia-Multicarry",
+                 rngNormalKind = "Kinderman-Ramage")
 \end{Sinput}
 All that remains is to run the test suite and print the test protocol:
 \begin{Sinput}
@@ -197,8 +201,8 @@ printTextProtocol(testResult)
 The resulting test protocol should be self explanatory and can also be printed as HTML version. See the online help for further information.
 Note that for executing just one test file there is also a shortcut in order to make test case execution as easy as possible:
  \begin{Sinput}
-runTestFile(paste(path.package(package="RUnit"),
-            "examples/runitc2f.r",sep="/"))
+runTestFile(file.path(path.package(package="RUnit"),
+            "examples/runitc2f.r"))
 \end{Sinput}
 
 The creation and execution of test suites can be summarized by the following recipe:
@@ -231,7 +235,7 @@ which are then executed directly before and after each test function. This can, 
 \subsection{R Code Inspection}
 \label{subsection:RCodeInspection}
 The Code Inspector is an additional tool for checking detailed test case coverage and getting profiling information.
-It records how often a code line will be executed and we use that information for improving our test cases, because we can detect not executed code lines.
+It records how often a code line will be executed. We utilize this information for improving our test cases, because we can identify code lines not executed by the current test case code.
 The Code Inspector is able to handle S4 methods.
 During the development of the Code Inspector, we noticed, that the syntax of R is very flexible.
 Because our coding philosophy has an emphasis of maintenance and a clear style, we developed style guides for our R coding.
@@ -296,9 +300,9 @@ The tracking results will received by tr\$getResult().
 With {\tt printHTML} the result of the tracking process will be presented as HTML pages.
 
 \subsubsection{Technical Details}
-The general idea for the code tracking was to modify the source code of the function.
-Therefore, we used the parse and deparse functions and the capability of R to generate functions on runtime.
-To track the function we tried to include in every code line a hook.
+The general idea for the code tracking is to modify the source code of the function.
+Therefore, we use the {\tt parse} and {\tt deparse} functions and the capability of R to generate functions on runtime.
+To track the function we try to include a hook in every code line.
 That hook calls a function of the tracked object.
 The information of the tracking will be stored in the closure of the tracking object (actually a function).
 Because the R parser allows very nested expressions, we didn't try to modify every R expression.
@@ -355,7 +359,8 @@ The problem is the \textit{else} branch, that cannot be modified in the current 
 \section{Future Development Ideas}
 Here we briefly list -- in an unordered manner -- some of the avenues for future development we or someone interested in this package could take:
 \begin{itemize}
-\item{extend the {\tt checkEquals} function to handle complex S4 class objects correctly in comparisons.}
+\item{extend the {\tt checkEquals} function to handle complex S4 class objects correctly in comparisons. To this end R core has modified check.equal to handle S4 objects.}
+\item{reimplement the internal structures stroing the test suite as well as the test result data as S4 classes.}
 \item{record all warnings generated during the execution of a test function.}
 \item{add tools to create test cases automatically. This is a research project but -- given the importance of testing -- worth the effort. See \cite{junit} for various approaches in other languages.}
 \item{improve the export of test suite execution data e.g.\ by adding XML data export support.}
