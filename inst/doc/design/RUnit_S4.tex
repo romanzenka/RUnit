@@ -1,0 +1,123 @@
+%% -----------------------------------------------------------------------------
+%% 
+%% 
+%% RUnit S4 class layout 
+%%
+%% $Id$
+%%
+%% Copyright (c) 2006  Epigenomics AG Berlin - All rights reserved
+%% THIS IS PROPRIETARY SOURCE CODE of Epigenomics AG Berlin
+%%
+%% -----------------------------------------------------------------------------
+%%
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{epsfig}
+
+%opening
+\title{RUnit S4 Class Layout}
+\author{Matthias Burger, and Thomas K\"onig}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Proposal for S4 classes for the RUnit package.
+The intended scope of new/refactored functionality to be covered by the re-design is as
+follows:
+\begin{itemize}
+\item internal representation of TestCase/TestFileTestSuite/TestSuites 
+\item internal representation of
+      TestCase/TestFile/TestSuite/TestSuites result data
+\end{itemize}
+\end{abstract}
+
+\tableofcontents
+
+\section{Design Goals}
+
+\begin{itemize}
+
+\item interface
+\begin{itemize}
+\item all public functions should stay, have the same arguments and
+      behave as previously defined. That is the UI for defineTestSuite,
+      runTestSuite, printTextProtocol, printHtmlProtocol should not be
+      changed.
+\item run time performance should be closely monitored and should not
+      decrease by more than 15\%.
+\end{itemize}
+
+\item class hierarchy
+\begin{itemize}
+\item simple in the implementation
+\item flexible in usage
+\item use Array concept
+\item allow/implement clusterApply distribution on nodes/recombination
+      of results to one result object
+\item compatible to S-PLUS 7 (if feasibile)
+\end{itemize}
+
+\end{itemize}
+
+
+\section{Class Description}
+
+\subsection{TestSuite}
+This class records the relevant information to setup and execute a
+test case runner. It stores the directory paths to consider, the
+regular expression defining the test case files and test case
+functions to execute, and the RNG methods to use as default.
+
+\subsection{TestLogger}
+Container class used by the test case runner (runTestSuite or
+idirectly runTestFile) to record all intermediate test execution
+details. In particular it contains the slot TestResultData as the 'top
+level' class object recording all test case execution results.
+
+\subsection{TestResultData}
+'Top level' class object storing the test case execution results as a
+hierarchy: TestSuits -> TestSuite -> SourceFile -> TestCase.
+
+\subsection{TestSuiteTestResultData}
+Container class for test case execution results for one complete test
+suite (usually one package or one type (ie platform) of integration
+tests). {\tt TestSuiteTestResultDataArray} derived from abstract {\tt
+Array} class to store several test suite result objects.
+
+
+\subsection{SourceFileTestResultData}
+Container class for test case execution results for one test
+case file (usually tests for one class or one project - for a given platform -
+integration test)
+tests). {\tt SourceFileTestResultDataArray} derived from abstract {\tt
+Array} class to store several test file result objects. 
+
+
+\subsection{TestCaseTestResultData}
+Container class for test case execution results for one test
+case. {\tt TestCaseTestResultDataArray} derived from abstract {\tt
+Array} class to store several test case result objects. 
+
+
+\subsection{Array}
+Abstract base class for all containers of identical class objects,
+implemented for convenience to provide all methods and the template
+constructor for derived classes in one class.
+
+\subsection{InspectTracker}
+To be discussed: should we also refactor and rewrite the inspect and
+tracker mechanism to make use of S4 classes and hiearchies?
+\clearpage
+
+\section{Class Diagram}
+\begin{center}
+\begin{figure}[htb]
+\epsfig{file=RUnit_S4, width=\textwidth}
+%\includegraphics[RUnit_S4]{width=6, height=7}
+\caption{RUnit S4 class diagram (test case setup and execution only).}
+\end{figure}
+\end{center}
+
+\end{document}
