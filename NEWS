@@ -8,6 +8,10 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.14
+    o   stated all package dependencies in DESCRIPTION, required for R
+        2.4.0 compatibility
+    
 Changes in RUnit 0.4.13
     o   allow the RNG to be set by the user via new arguments 'rngKind' and 'rngNormalKind' to 
         functions defineTestSuite and runTestFile (patch by Seth Falcon)
