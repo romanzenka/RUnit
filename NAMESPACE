@@ -20,7 +20,13 @@
 import(utils)
 import(methods)
 
-export(".setUp",
+
+##  alphabetic order
+export(newSourceFileTestResultData,
+       newTestCaseTestResultData,
+       newTestResultData,
+       newTestSuiteTestResultData,
+       ".setUp",
        ".tearDown",
        "checkTrue",
        "checkEquals",
@@ -41,3 +47,20 @@ export(".setUp",
        "summary.RUnitTestData",
        "tracker")
 
+
+exportClasses(Array,
+              SourceFileTestResultData,
+              TestCaseTestResultData,
+              TestLogger,
+              TestResultData,
+              TestSuite,
+              TestSuiteTestResultData)
+
+
+exportMethods(clusterApply,
+              initialize,
+              isValidTestData,
+              print,
+              show,
+              testResultData,
+              verifyObject)
