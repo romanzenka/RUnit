@@ -45,7 +45,7 @@ checkEquals <- function(target, current, msg="",
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
-  if (!isTRUE(checkNames)) {
+  if (!identical(TRUE, checkNames)) {
     names(target)  <- NULL
     names(current) <- NULL
   }
@@ -119,7 +119,7 @@ checkIdentical <- function(target, current, msg="")
   
   ##  strip attributes before comparing current and target
   result <- identical(target, current)
-  if (!isTRUE(result)) {
+  if (!identical(TRUE, result)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
