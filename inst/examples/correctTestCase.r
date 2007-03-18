@@ -19,5 +19,5 @@
 test.correctTestCase <- function() {
 
   checkTrue( TRUE)
-  checkTrue( !isTRUE(FALSE))
+  checkTrue( !identical(TRUE, FALSE))
 }
