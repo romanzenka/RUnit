@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
     plot(1:10,axes=FALSE,xlab="",ylab="",main="",type="n");
     text(5,5,labels="No connection graph available");
     dev.off();
-    return(NULL);
+    return(invisible());
   }
   
   ## overall connections
@@ -139,28 +139,32 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   
   dev.off()
 
-  return(NULL)
+  return(invisible())
 }
 
 
-printHTML.trackInfo <- function(trackInfo,baseDir=".")
+printHTML <- function(object, ...) UseMethod("printHTML")
+
+printHTML.default <- function(object, ...) NextMethod("printHTML")
+
+printHTML.trackInfo <- function(object, baseDir=".")
 {
   ##@bdescr
   ##  create a HTML representation of the TrackInfo object data
   ##@edescr
   ##
-  ##@in  trackInfo : [list] trackInfo object
+  ##@in  object : [list] trackInfo object
   ##@in  baseDir   : [character] string specifying the full path to the root directory to hold the HTML pages
   ##
   ##
-  ##@codestatus :  
+  ##@codestatus :  untested
    
   ##  preconditions
-  if (!is.list(trackInfo))
+  if (!is(object, "trackInfo"))
   {
-    stop("argument 'trackInfo' has to be a list of class 'trackInfo'.")
+    stop("argument 'object' has to be a list of class 'trackInfo'.")
   }
-
+  
   if (!is.character(baseDir))
   {
     stop("argument 'baseDir' has to be of type 'character'.")
@@ -182,13 +186,15 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
   }
   htmlFile <- file.path(path,"index.html")
 
+  footerString <- paste("RUnit ", packageDescription("RUnit", fields="Version"), as.character(Sys.time()))
+  
   ## create index.html
-  writeHtmlHeader("Overview",htmlFile);
+  writeHtmlHeader("RUnit Code Inspection - Overview",htmlFile);
   writeHtmlSection("Overview",2,htmlFile);
-  writeBeginTable(c("categ.","Name","signature"),htmlFile)
-  for(i in seq(along=trackInfo))
+  writeBeginTable(c("Categ.","Name","Signature"),htmlFile)
+  for(i in seq(along=object))
   {
-    funcID <- strsplit(names(trackInfo)[i],"/")[[1]];
+    funcID <- strsplit(names(object)[i],"/")[[1]];
     funcCat <- funcID[1]
     funcName <- funcID[2]
     if(length(funcID) > 2)
@@ -203,7 +209,7 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
 
     writeBeginTag("tr",htmlFile);
     writeCR(htmlFile);
-
+    
     ## write function category
     writeBeginTag("td",htmlFile);
     writeRaw(funcCat,htmlFile);
@@ -212,7 +218,7 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
 
     ## write function name
     writeBeginTag("td",htmlFile);
-    writeLink(file.path(".", paste("res",i,".html",sep="")), funcName, htmlFile)
+    writeLink(file.path(".", paste("result",i,".html",sep="")), funcName, htmlFile)
     writeEndTag("td",htmlFile);    
     writeCR(htmlFile);
 
@@ -223,8 +229,9 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
     writeCR(htmlFile);
     writeEndTag("tr",htmlFile);
   }
-  writeEndTable(htmlFile);
-  writeHtmlEnd(htmlFile);
+  writeEndTable(htmlFile)
+  writeRaw(footerString, htmlFile)
+  writeHtmlEnd(htmlFile)
 
 
   writeLinkRef <- function(htmlFile,leftLink,leftName,rightLink,rightName)
@@ -249,17 +256,18 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
   }
   
   ## create result pages
-  for(i in seq(along=trackInfo))
+  for(i in seq(along=object))
   {
     absGraphImg  <- file.path(path, paste("con",i,".png",sep=""))
     absGraphFile <- file.path(path, paste("con",i,".html",sep=""))
     relGraphImg  <- file.path(".", paste("con",i,".png",sep=""))
     relGraphFile <- file.path(".", paste("con",i,".html",sep=""))
-    relHTMLFile  <- file.path(".", paste("res",i,".html",sep=""))
+    relHTMLFile  <- file.path(".", paste("result",i,".html",sep=""))
 
-    htmlFile <- file.path(path, paste("res",i,".html",sep=""))
+    htmlFile <- file.path(path, paste("result",i,".html",sep=""))
+
     ## begin result page
-    writeHtmlHeader("Result",htmlFile);
+    writeHtmlHeader("RUnit Code Inspection - Result",htmlFile);
 
 
     writeLinkRef(htmlFile,"index.html","index",relGraphFile,"graph");
@@ -267,16 +275,16 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
     writeHtmlSep(htmlFile);
     writeHtmlSection("Result",2,htmlFile);
 
-    funcName <- strsplit(names(trackInfo)[i],"/")[[1]][2]; 
-    writeRaw("Function:",htmlFile);
+    funcName <- strsplit(names(object)[i],"/")[[1]][2]; 
+    writeRaw("Function: ",htmlFile);
     writeBeginTag("b",htmlFile);
     writeRaw(funcName,htmlFile);
     writeEndTag("b",htmlFile);
     writeCR(htmlFile);
 
-    writeRaw("Runs:",htmlFile);
+    writeRaw("Runs: ",htmlFile);
     writeBeginTag("b",htmlFile);
-    writeRaw(trackInfo[[i]]$nrRuns,htmlFile);
+    writeRaw(object[[i]]$nrRuns,htmlFile);
     writeEndTag("b",htmlFile);
     writeCR(htmlFile);
 
@@ -284,9 +292,9 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
     writeCR(htmlFile);
 
     writeBeginTable(c("line","code","calls","time"),htmlFile)
-    for(j in seq(along=trackInfo[[i]]$src))
+    for(j in seq(along=object[[i]]$src))
     {
-      srcLine <- trackInfo[[i]]$src[j]
+      srcLine <- object[[i]]$src[j]
       leadingSpaceNr <- attr(regexpr("^( )*",srcLine),"match.length")
       if(leadingSpaceNr > 0)
       {
@@ -294,7 +302,7 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
          srcLine <- paste(paste(rep("&ensp;",leadingSpaceNr),collapse=""),
                           srcLine,collapse="",sep="")
       }
-      if(trackInfo[[i]]$run[j] > 0)
+      if(object[[i]]$run[j] > 0)
       {
         bgcolor <- "#00D000"
       }
@@ -302,29 +310,32 @@ printHTML.trackInfo <- function(trackInfo,baseDir=".")
       {
         bgcolor <- "#D00000"
       }
-      writeTableRow(c(j,srcLine,trackInfo[[i]]$run[j],round(trackInfo[[i]]$time[j],2)),
+      writeTableRow(c(j,srcLine,object[[i]]$run[j],round(object[[i]]$time[j],2)),
                     htmlFile,bgcolor=bgcolor)
     }
 
     writeEndTable(htmlFile)
     writeHtmlSep(htmlFile)
     writeLinkRef(htmlFile,"index.html","index",relGraphFile,"graph")
-
+    writeHtmlSep(htmlFile)
+    writeRaw(footerString, htmlFile)
     writeHtmlEnd(htmlFile)
-    
-    plotConnection.trackInfo(trackInfo[[i]]$graph,absGraphImg)
-    writeHtmlHeader("Connection",absGraphFile)
+
+    ##  Conncetion plot
+    plotConnection.trackInfo(object[[i]]$graph,absGraphImg)
+    writeHtmlHeader("RUnit Code Inspection - Connection Graph",absGraphFile)
     writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function")
     writeHtmlSep(absGraphFile)
-    writeHtmlSection("Connection",2,absGraphFile)
+    writeHtmlSection("Connection Graph",2,absGraphFile)
     writeImage(relGraphImg,absGraphFile)
     writeCR(absGraphFile)
     writeHtmlSep(absGraphFile)
     writeLinkRef(absGraphFile,"index.html","index",relHTMLFile,"Function")
+    writeRaw(footerString, absGraphFile)
     writeHtmlEnd(absGraphFile)
     
   }
   
-  return()
+  return(invisible())
 }
 
