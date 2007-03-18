@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -24,17 +24,21 @@ includeTracker <- function(fbody, track=track)
   ##  Internal function
   ##
   ##@edescr
+  ##
+  ##@in  fbody  : [character] vector of code lines of function to track
+  ##@in  track  : [trackInfo] list
+  ##@ret        : [list] with elements list(modFunc=c(sig,newBody),newSource = newCode)
+  ##
+  ##@codestatus : internal
   
   ## get the signature
   sig <- fbody[1]
-
 
   ## get the block structure (important for if, for, while, else with one line)
   block <- sapply(fbody[-1],function(x) regexpr("[^ ]",x)[1], USE.NAMES=FALSE)
 
   ## vector of keywords
   loopKW <- c("for|while|repeat")
-
 
   ## list of keywords
   kwOpen <- c("for","while","repeat","if","else")
@@ -48,7 +52,7 @@ includeTracker <- function(fbody, track=track)
   {
     ##@bdescr
     ##  utility
-    ##  search a caracter vector ie. the vector of lines of a function body
+    ##  search a character vector ie. the vector of lines of a function body
     ##  for block structures e.g. for|while|repeat|if|else { } code block
     ##@edescr
     ##
@@ -66,7 +70,6 @@ includeTracker <- function(fbody, track=track)
                     return(FALSE)
                   },USE.NAMES=FALSE))
   }
-
   
   
   ## set Brackets
@@ -76,10 +79,10 @@ includeTracker <- function(fbody, track=track)
     ##
     ##@edescr
     ##
-    ##@in  potLine : [character] code text line
+    ##@in  potLine : [character] vector of code text line(s)
     ##@in  block   : [integer] vector
-    ##@in  env     : [logical]
-    ##@ret  : [list] with mathing element vectors: openBr & clodeBr
+    ##@in  env     : [logical] vector
+    ##@ret         : [list] with matching element vectors: openBr & clodeBr
     
     oBr <- character(length(potLine))
     clBr <- character(length(potLine))
@@ -178,6 +181,7 @@ tracker <- function()
   ##   - init
   ##   - bp
   ##   - getTrackInfo
+  ##   - isValidTrackInfo
   ##@edescr
   ##
   ##@ret  : [list] OO object with functions addFunc, getSourcee, init, bp, getTrackInfo
@@ -185,8 +189,9 @@ tracker <- function()
   ##@codestatus : untested
   
   ## object for information
-  run <- list()
-
+  trackInfo <- list()
+  class(trackInfo) <- "trackInfo"
+  
   ## current function index
   fIdx <- 0
 
@@ -205,46 +210,50 @@ tracker <- function()
     ##
     ##@in  fId      : [character] function name
     ##@in  src      : [character] source code character vector
-    ##@in  callExpr : []
-    ##@ret          : []
-
+    ##@in  callExpr : [character] function call
+    ##@ret          : [NULL] returns invisible, used for its side effects
+    ##
+    ##  codestatus : internal
+    
     ##  preconditions
     if( length(fId) != 1) {
       stop("fId must be one character string: function name")
     }
     
-    isThere <- which(fId == names(run));
+    isThere <- which(fId == names(trackInfo));
 
     if(length(isThere) == 1)
     {
+      ##  already in tracking list
       fIdx <<- isThere
     }
     else
     {
       fIdx <<- fIdx +1;
-      newFuncInfo <- list(src=src,run=integer(length(src)),time=numeric(length(src)),
+      newFuncInfo <- list(src=src,
+                          run=integer(length(src)),
+                          time=numeric(length(src)),
                           graph=matrix(0,nrow=length(src),ncol=length(src)),
-                          nrRuns=as.integer(0),funcCall=callExpr);
-      if(fIdx==1)
-      {
-        
-        run <<- list(newFuncInfo);
-      }
-      else
-      {
-        run <<- append(run,list(newFuncInfo));
-      }
+                          nrRuns=as.integer(0),
+                          funcCall=callExpr)
+
+      ##  append strips class attribute
+      trackInfo <- append(trackInfo,list(newFuncInfo));
       
-      names(run)[fIdx] <<- fId;
-      
+      names(trackInfo)[fIdx] <- fId;
+      class(trackInfo) <- "trackInfo"
+      ##  update global state
+      trackInfo <<- trackInfo
     }
 
     ## increment run number
-    run[[fIdx]]$nrRuns <<- run[[fIdx]]$nrRuns + 1
+    trackInfo[[fIdx]]$nrRuns <<- trackInfo[[fIdx]]$nrRuns + 1
     
     ## initialize local variables
     oldSrcLine <<- 0;
-    oldTime <- NULL;
+    oldTime <<- NULL;
+
+    return(invisible())
   }
 
 
@@ -260,16 +269,15 @@ tracker <- function()
     ##   - run
     ##   - time
     ##   - graph
-    ##   - nrow
-    ##   - ncol
     ##   - nrRuns
     ##   - funCall
     ##@edescr
     ##
-    ##@ret  : [list] (see description above)
-
+    ##@ret  : [trackInfo] S3 class list (see description above)
+    ##
+    ##  codestatus : internal
     
-    return(run);
+    return(trackInfo);
   }
   
   
@@ -281,10 +289,16 @@ tracker <- function()
     ##  sets/resets variables run and fIdx
     ##@edescr
     ##
-    ##@ret  : [NULL] used for their side effects
+    ##@ret  : [NULL] returns invisible, used for its side effects
+    ##
+    ##  codestatus : internal
     
-    run <<- list()
-    fIdx <<- 0
+    trackInfoInit <- list()
+    class(trackInfoInit) <- "trackInfo"
+    trackInfo <<- trackInfoInit
+    fIdx <<- as.integer(0)
+    
+    return(invisible())
   }
 
   
@@ -296,27 +310,38 @@ tracker <- function()
     ##@edescr
     ##
     ##@in   : [integer] index, function run number
-    ##@ret  : [NULL] used for their side effects
+    ##@ret  : [NULL] returns invisible, used for its side effects
+    ##
+    ##  codestatus : internal
+
+    ##  preconditions
+    if (length(nr) != 1) {
+      stop("argument 'nr' has to be of length 1.")
+    }
+    if (is.na(nr)) {
+      stop("argument 'nr' may not contain missing value (NA).")
+    }
     
-    run[[fIdx]]$run[nr]<<- run[[fIdx]]$run[nr] + 1
+    trackInfo[[fIdx]]$run[nr] <<- trackInfo[[fIdx]]$run[nr] + 1
 
     ## cumulative processing time
     if(!is.null(oldTime))
     {
       dtime <-  proc.time()[1]- oldTime
-      run[[fIdx]]$time[nr] <<- run[[fIdx]]$time[nr] + dtime
+      trackInfo[[fIdx]]$time[nr] <<- trackInfo[[fIdx]]$time[nr] + dtime
     }
 
     oldTime <<- proc.time()[1]
     ## graph
     if(oldSrcLine != 0)
     { 
-
-      run[[fIdx]]$graph[oldSrcLine,nr] <<- run[[fIdx]]$graph[oldSrcLine,nr] + 1
+      trackInfo[[fIdx]]$graph[oldSrcLine,nr] <<- trackInfo[[fIdx]]$graph[oldSrcLine,nr] + 1
     }
 
     ## store the old line
     oldSrcLine <<- nr
+    
+    return(invisible())
   }
 
   
@@ -330,10 +355,77 @@ tracker <- function()
     ##
     ##@in   : [integer] index, function run number
     ##@ret  : [character] string, source code
-    return(run[[nr]]$src)
+    ##
+    ##@codestatus : untested
+    
+    ##  preconditions
+    if (length(nr) != 1) {
+      stop("argument 'nr' has to be of length 1.")
+    }
+    if (is.na(nr)) {
+      stop("argument 'nr' may not contain missing value (NA).")
+    }
+    
+    return(trackInfo[[nr]]$src)
+  }
+
+  
+  isValidTrackInfo <- function(trackInfo) {
+    ##@bdescr
+    ##  test function
+    ##  returns TRUE iff trackInfo object fullfils S3 class definition constraints
+    ##    - S3 class 'trackInfo'
+    ##    - with elements
+    ##      - src      [character] vector of function source code lines
+    ##      - run      [integer] vector of no. of times this function was called
+    ##      - time     [numeric] vector of function execution times in seconds per call
+    ##      - graph    [matrix] connection matrix (# code linbes x # of execution calls)
+    ##      - nrRuns   [integer] 
+    ##      - funcCall [character] function call
+    ##@edescr
+    ##
+    ##@in   : [trackInfo] S3 class object
+    ##@ret  : [logical] TRUE, iff object fullfils class definition constraints
+    ##
+    ##@codestatus : untested
+
+    if (!is(trackInfo,"trackInfo")) {
+      return(FALSE)
+    }
+    checkElements <- function(x) {
+      if (!all(c("src", "run", "time", "graph", "nrRuns", "funcCall") %in% names(x))) {
+        return(FALSE)
+      }
+      if (length(x[["run"]]) < 1 || any(is.na(x[["run"]])) || any(x[["run"]] < 0)) {
+        return(FALSE)
+      }
+      if (length(x[["time"]]) < 1 || any(is.na(x[["time"]])) || any(x[["time"]] < 0)) {
+        return(FALSE)
+      }
+
+      ##  TODO: graph
+
+      if (length(x[["nrRuns"]]) != 1 || is.na(x[["nrRuns"]]) || x[["nrRuns"]] < 0) {
+        return(FALSE)
+      }
+      if (length(x[["funcCall"]]) != 1 || is.na(x[["funcCall"]])) {
+        return(FALSE)
+      }
+    }
+    ok <- sapply(trackInfo, checkElements)
+    if (!all(ok)) {
+      return(FALSE)
+    }
+    
+    return(TRUE)
   }
   
-  return(list(addFunc=addFunc,getSource=getSource,init=init,bp=bp,getTrackInfo=getTrackInfo))
+  return(list(addFunc=addFunc,
+              getSource=getSource,
+              init=init,
+              bp=bp,
+              getTrackInfo=getTrackInfo,
+              isValid=isValidTrackInfo))
 }
 
 
@@ -366,8 +458,6 @@ inspect <- function(expr, track=track)
   ## check for generic function
   if(isGeneric(fname))
   { 
-
-    
     ## get type of arguments
     selType <- sapply(fCall[-1],
                       function(x)
@@ -392,7 +482,7 @@ inspect <- function(expr, track=track)
     if(nrMissing > 0)
     {
       ## check for ...
-      ellipseIdx <- which(formalArg=="...")
+      ellipseIdx <- which(formalArg == "...")
     
       if(length(ellipseIdx) != 0)
       {
@@ -404,18 +494,18 @@ inspect <- function(expr, track=track)
       }
     }
     ## select function
-    selFunc <- selectMethod(fname,selType)
+    selFunc <- selectMethod(fname, selType)
 
     ## deparse the function
-    fbody <- deparse(selFunc@.Data,width.cutoff=500)
+    fbody <- deparse(selFunc@.Data, width.cutoff=500)
 
     ## create an identifier for the generic function
-    fNameId <- paste("S4",fname,paste(selFunc@defined@.Data,collapse="/"),sep="/")
+    fNameId <- paste("S4",fname,paste(selFunc@defined@.Data, collapse="/"), sep="/")
   }
   else
   {
     ## deparse the function
-    fbody <- try(deparse(get(fname),width.cutoff=500))
+    fbody <- try(deparse(get(fname), width.cutoff=500))
     if (inherits(fbody, "try-error")) {
       ##  in case the function is defined
       ##  in the test case file
@@ -429,18 +519,16 @@ inspect <- function(expr, track=track)
     fNameId <- paste("R/",fname,sep="")
   }  
 
-
- 
   
   ## generate the new body of the function
   newFunc <- includeTracker(fbody, track=track)
-  track$addFunc(fNameId,newFunc$newSource,callExpr)
+  track$addFunc(fNameId, newFunc$newSource, callExpr)
 
   ## build the test function
   eval(parse(text=c("testFunc <- ",newFunc$modFunc)),envir=sys.frame())
 
   ## create function call
-  newFunCall <- paste("testFunc(",paste(fCall[-1],collapse=","),")",sep="")
+  newFunCall <- paste("testFunc(",paste(fCall[-1], collapse=","), ")",sep="")
 
   parsedFunc <- try(parse(text=newFunCall))
 
