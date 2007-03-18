@@ -207,6 +207,12 @@ testRUnit.checkException <- function()
 
   checkException( stop("with message"), silent=FALSE)
   checkException( stop("wo message"), silent=TRUE)
+
+  ##  R 2.5.0 devel example that failed
+  ##  minimal example provided by Seth Falcon
+  ll = list()
+  ll[[1]] = function(x) stop("died")
+  checkException( do.call(ll[[1]], list(1)))
 }
 
 
