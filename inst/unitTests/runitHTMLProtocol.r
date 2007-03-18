@@ -23,6 +23,23 @@ cat("\n\nRUnit test cases for 'HTMLProtocol' function\n\n")
 
 testRUnit.printHTMLProtocol <- function()
 {
+  ##  FIXME
+  ##  this is not safe, think about assigning .logger to new environment
+  ##  copy baseenv() .logger
+  tmp <- get(".testLogger", envir = .GlobalEnv)
+  testCaseDir <- file.path(system.file(package="RUnit"), "examples")
+  testSuiteInternal <- defineTestSuite("RUnit Self Test", testCaseDir, "correctTestCase.r")
+  testData2 <- runTestSuite(testSuiteInternal, useOwnErrorHandler=FALSE)
+
+  timeStamp <- format(Sys.time(), "%y%m%d-%H%M")
+  testProtocolFile <- file.path(tempdir(), paste(timeStamp, "test_printHTMLProtocol.html", sep="_"))
+  ret <- printHTMLProtocol(testData2, fileName=testProtocolFile)
+
+  assign(".testLogger", tmp, envir = .GlobalEnv)
+  
+  checkTrue( file.exists(testProtocolFile))
+  
+  
   ##  input argument error handling
   ##  missing 'testData' object
   checkException(printHTMLProtocol())

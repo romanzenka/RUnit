@@ -23,6 +23,21 @@ cat("\n\nRUnit test cases for 'textProtocol' function\n\n")
 
 testRUnit.printTextProtocol <- function()
 {
+  ##  copy baseenv() logger
+  tmp <- get(".testLogger", envir = .GlobalEnv)
+  testCaseDir <- file.path(system.file(package="RUnit"), "examples")
+  testSuiteInternal <- defineTestSuite("RUnit Self Test", testCaseDir, "correctTestCase.r")
+  testData2 <- runTestSuite(testSuiteInternal, useOwnErrorHandler=FALSE)
+
+  timeStamp <- format(Sys.time(), "%y%m%d-%H%M")
+  testProtocolFile <- file.path(tempdir(), paste(timeStamp, "test_printHTMLProtocol.txt", sep="_"))
+  ret <- printTextProtocol(testData2, fileName=testProtocolFile)
+
+  assign(".testLogger", tmp, envir = .GlobalEnv)
+  
+  checkTrue( file.exists(testProtocolFile))
+
+
   ##  input argument error handling
   ##  missing 'testData' object
   checkException(printTextProtocol())
