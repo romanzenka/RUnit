@@ -1,12 +1,29 @@
+%%  RUnit : A unit test framework for the R programming language
+%%  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%
+%%  This program is free software; you can redistribute it and/or modify
+%%  it under the terms of the GNU General Public License as published by
+%%  the Free Software Foundation; either version 2 of the License, or
+%%  (at your option) any later version.
+%%
+%%  This program is distributed in the hope that it will be useful,
+%%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%  GNU General Public License for more details.
+%%
+%%  You should have received a copy of the GNU General Public License
+%%  along with this program; if not, write to the Free Software
+%%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+%%  $Id$
+
 \name{tracker}
 \alias{tracker}
 
 \title{Tracking the results of the inspect process.}
 
 
-\usage{track <- tracker()
-       track$init()
-       track$getTrackInfo()
+\usage{tracker()
 }
 
 \description{
@@ -22,7 +39,23 @@
   inspection process.
 }
 
-\details{The return object is a list with the following elements.
+\section{Methods}{
+  \tabular{rll}{
+    \tab \code{init} \tab initializes the tracker environment\cr
+    \tab \code{addFunc} \tab add function to the inspect tracking list
+    (internal use)\cr
+    \tab \code{getSource} \tab return the modified source code used for during inspection 
+    the specified index (internal use)\cr
+    \tab \code{bp} \tab update tracking info for specified function
+    index (internal use)\cr
+    \tab \code{getTrackInfo} \tab return 'trackInfo' object\cr
+    \tab \code{isValid} \tab check 'trackInfo' object for conformance to
+    class contract \cr
+  }
+}
+
+\details{The 'trackInfo' S3 class object (list) has one entry for each
+function on the inspect list with the following elements:
   \item{src}{The source code of the function.}
   \item{run}{The number of executions for each line of code.}
   \item{graph}{A matrix. Each element in the matrix counts how often a
