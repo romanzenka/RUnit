@@ -11,6 +11,9 @@
 Changes in RUnit 0.4.15
     o   compatibility to R 1.9.0 as declared in DESCRIPTION: removed calls to isTRUE 
         as this was introduced only in R 2.1.0, replaced where needed by identical(TRUE, x)
+    o   fixed printHTMLProtocol: on Windows Makeconf does not exist so
+        CC compiler used by R cannot be queried this way (reported by
+        Tobias Verbeke)
 
 Changes in RUnit 0.4.14
     o   stated all package dependencies in DESCRIPTION, required for R
