@@ -431,13 +431,20 @@ printHTMLProtocol <- function(testData,
   colnames(ver) <- "Value"
 
   ##  compiler
+  ##  Linux
   rhome <- Sys.getenv("R_HOME")
-  makeconfFile <- file.path(rhome, "etc", "Makeconf")
-  
-  gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
-                       intern=TRUE)
-  gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
 
+  gccVersion <- as.character(NA)
+
+  ##  on Windows Makeconf does not exist
+  ##  OTOH I have no idea which compiler would be for R CMD INSTALL
+  ##  so we report NA
+  makeconfFile <- file.path(rhome, "etc", "Makeconf")
+  if (file.exists(makeconfFile)) {
+    gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
+                         intern=TRUE)
+    gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
+  }
   if (length(gccVersion) > 0) {
     ver <- rbind(ver, gccVersion)
     rownames(ver)[dim(ver)[1]] <- "gcc"
