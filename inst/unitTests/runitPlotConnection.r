@@ -27,6 +27,11 @@ testRUnit.plotConnection <- function()
   ## test case for function plotConnection of class: none
   ##@edescr
 
+  ##  requires X server to be available for png device
+  if (!interactive()) {
+    DEACTIVATED("plotConnection uses png device which requires X sverer to be available.")
+  }
+  
   ##  1) no counts
   conMat <- matrix(0, nrow=5, ncol=5)
   timeStamp <- format(Sys.time(), "%y%m%d-%H%M")
