@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -40,9 +40,10 @@
 
 
 .defineTestSuiteClass(where=.where)
+##  container class
+defineArrayClass("TestSuite", where=.where)
 
-
-
+.defineTestCaseClass(where=.where)
 
 .defineTestCaseTestResultDataClass(where=.where)
 ##  container class
@@ -70,8 +71,9 @@ defineArrayClass("TestSuiteTestResultData", where=.where)
 ##  method init calls
 ##
 ##  ------------------------------------
-#.defineTestSuiteMethods(where=.where)
+.defineTestSuiteMethods(where=.where)
 
+.defineTestCaseMethods(where=.where)
 
 .defineTestCaseTestResultDataMethods(where=.where)
 
@@ -79,7 +81,8 @@ defineArrayClass("TestSuiteTestResultData", where=.where)
 
 .defineTestSuiteTestResultDataMethods(where=.where)
 
-.defineTestResultDataMethods(where=.where)
+##  to be implemented
+##.defineTestResultDataMethods(where=.where)
 
 
 .defineTestLoggerMethods(where=.where)
