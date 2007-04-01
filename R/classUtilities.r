@@ -125,6 +125,7 @@ defineMethod <- function(methodName,
   ##
   ##@codestatus : internal/testing
 
+  
   ##  preconditions
   ASSERT(length(methodName) == 1, "'methodName' has to be of length 1.")
   ASSERT(is.character(methodName), "'methodName' has to be of type 'character'.")
@@ -141,7 +142,7 @@ defineMethod <- function(methodName,
   ASSERT(is.logical(addEllipse), "'addEllipse' has to be of type 'logical'.")
   ASSERT(is(setFunction,"logical"), "'setFunction' has to be of type 'logical'.")
   ASSERT(length(setFunction) == 1, "'setFunction' has to be of length 1.")
-
+  
   ## create a set function or a normal function
   if(setFunction) {
     
@@ -151,8 +152,8 @@ defineMethod <- function(methodName,
       errTxt <- paste(errTxt,"for:",methodName,"only",length(paraTypes),"found.\n")
       errTxt <- paste(errTxt,"No generic S4 replacemethod defined!\n")
       setWarning(errTxt)
-      return(NULL)
-
+      return(invisible(NULL))
+      
     } else {
       
       ## create the new method name
@@ -166,11 +167,10 @@ defineMethod <- function(methodName,
   } else {
     
     ##  change this parameter, if it is necessary (including the first)  
-    if(length(paraTypes) > 1)
-    {
+    if(length(paraTypes) > 1) {
       ## create vector for variable names
       varname <- c("obj",paste("para",1:(length(paraTypes)-1),sep=""))
-
+      
     } else {
       
       varname <- "obj"
@@ -180,9 +180,9 @@ defineMethod <- function(methodName,
   arglist <- paste(varname,collapse=",")
 
   ## create signature of S4 function
-  signat <-as.list(paraTypes)
+  signat <- as.list(paraTypes)
   names(signat) <- varname
-
+  
   
   ## check for S4 Generic
   if(.isGenericS3(methodName,where=where)) { ## check for  S3 generic
@@ -195,7 +195,7 @@ defineMethod <- function(methodName,
     errTxt <- paste(errTxt,"S3 function name :", methodName,"\n")
     errTxt <- paste(errTxt,"No generic S4 method defined!\n\n")
     setWarning(errTxt)
-    return(NULL)
+    return(invisible(NULL))
     
   } else if(!isGeneric(methodName,where=where)) {
     
@@ -205,19 +205,19 @@ defineMethod <- function(methodName,
       
       retSig <- paste(",valueClass=",valueClass,sep="")
     }
-
+    
     ## add ... at the end of the parameter list
-    if(addEllipse==TRUE) {
-      
-      arglist <- paste(arglist,",...",sep="")
+    if(identical(TRUE, addEllipse)) {
+      arglist <- paste(arglist, ",...", sep="")
     }
-    funcString<-paste("setGeneric(\"", methodName,"\",",
-                      "function(", arglist,"){\n  value <- standardGeneric(\"",
-                      methodName, "\");\n  return(value);\n}",
-                      ",useAsDefault=", as.character(useAsDefault),
-                      ",where=topenv()",
-                      retSig,
-                      ")",sep="")
+    
+    funcString <- paste("setGeneric(\"", methodName,"\",",
+                        "function(", arglist,"){\n  standardGeneric(\"",
+                        methodName, "\")\n}",
+                        ",useAsDefault=", as.character(useAsDefault),
+                        ",where=topenv()",
+                        retSig,
+                        ")",sep="")
     
     eval(parse(text=funcString),envir=where)
     
