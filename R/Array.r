@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 {
   ##@bdescr
   ## Definition of the abstract Array class
-  ## used as container class.
+  ## used as container class for arrays of S4 objects of the same class. 
   ##@edescr
   ##
   ##@class : [Array]
@@ -30,6 +30,9 @@
   ##@slot  data        : [list]
   ##@slot  valid       : [logical]
 
+  if (.GLOBAL$getDebug()) {  
+    cat(".defineArrayClass ... ")
+  }
   
   ## base class for array template classes
   setClass("Array",
@@ -39,9 +42,12 @@
            prototype=prototype(valid = TRUE,
              data=list()),
            validity = NULL,
-           sealed   = TRUE,
+           sealed   = .GLOBAL$getSealed(),
            where    = where
            )
-
+  
+  if (.GLOBAL$getDebug()) {
+    cat("o.k.\n")
+  }
 }
 
