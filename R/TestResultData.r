@@ -42,7 +42,7 @@
                           testData="TestSuiteTestResultDataArray"),
            prototype(), 
            validity = NULL,
-           sealed   = TRUE,
+           sealed   = .GLOBAL$getSealed(),
            where    = where)
 
   if (.GLOBAL$getDebug()) {

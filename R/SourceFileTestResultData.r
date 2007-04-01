@@ -64,7 +64,7 @@
                      testFileRegexp = "^runit.+\\.[rR]$",
                      testFuncRegexp = "^test.+"),
            validity = NULL,
-           sealed   = TRUE,
+           sealed   = .GLOBAL$getSealed(),
            where    = where)
   
   if (.GLOBAL$getDebug()) {
