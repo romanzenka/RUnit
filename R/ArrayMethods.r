@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -80,11 +80,13 @@ setNames.Array <- function(obj, value)
   ##@in  value : [character vector] names of slot 'data'
   ##@ret       : [Array] class object
   ##
-  ##@codestatus : untested
-  
-  ASSERT (is(value, "character"), "value has to be of type 'character'.")
+  ##@codestatus : testing
+
+  ##  preconditions
   ASSERT( length(value) == getLength(obj),
-         "value has to be of same length as the Array object.")
+         "'value' has to be of same length as the Array object.")
+  ASSERT( !any(is.na(value)), "'value' may not contain NA(s).")
+  
   names(obj@data) <- value
 
   return(obj)
@@ -111,7 +113,7 @@ getLength.Array <- function(obj)
 }
 
 
-setElement.Array <- function(x,i,j,...,value)
+setElement.Array <- function(x,i,j, ...,value)
 {
   ##@bdescr
   ##  replacement method
@@ -142,10 +144,10 @@ setElement.Array <- function(x,i,j,...,value)
 }
 
 
-getElementByInteger.Array <- function(x,i,j,drop=FALSE,...)
+getElementByInteger.Array <- function(x,i,j,drop=FALSE, ...)
 {
   ##@bdescr
-  ##  gets an element by an integer index (as the name of the function said)
+  ##  returns an element selected by an integer index
   ##@edescr
   ##
   ##@class    : [Array]
@@ -154,7 +156,9 @@ getElementByInteger.Array <- function(x,i,j,drop=FALSE,...)
   ##@in  i    : [integer] row index
   ##@in  drop : [logical] not yet used (!)
   ##@ret      : [ANY] an element of the array
-
+  ##
+  ##@codestatus : testing
+  
   if (!missing(j)) {
     setFatalError("[i,j] not allowed for Array objects.")
   }
@@ -175,7 +179,7 @@ getElementByInteger.Array <- function(x,i,j,drop=FALSE,...)
 }
 
 
-getElementByLogical.Array <-  function(x,i,j,drop=FALSE,...){
+getElementByLogical.Array <-  function(x,i,j,drop=FALSE, ...) {
   ##@bdescr
   ## gets an element by a logical index (as the name of the function said)
   ##@edescr
@@ -186,7 +190,9 @@ getElementByLogical.Array <-  function(x,i,j,drop=FALSE,...){
   ##@in  i    : [integer] row index
   ##@in  drop : [logical] not yet used (!)
   ##@ret      : [ANY] an element of the array
-
+  ##
+  ##@codestatus : testing
+  
   if (!missing(j)) {
     setFatalError("[i,j] not allowed for Array objects.")
   }
@@ -201,7 +207,7 @@ getElementByLogical.Array <-  function(x,i,j,drop=FALSE,...){
 }
 
 
-getElementByNumeric.Array <- function(x,i,j,drop=FALSE,...)
+getElementByNumeric.Array <- function(x,i,j,drop=FALSE, ...)
 {
   ##@bdescr
   ## gets an element by an numeric index (as the name of the function said)
@@ -213,7 +219,9 @@ getElementByNumeric.Array <- function(x,i,j,drop=FALSE,...)
   ##@in  i    : [integer] row index
   ##@in  drop : [logical] not yet used (!)
   ##@ret      : [ANY] an element of the array
-
+  ##
+  ##@codestatus : testing
+  
   if (!missing(j)) {
     setFatalError("[i,j] not allowed for Array objects.")
   }
@@ -234,7 +242,7 @@ getElementByNumeric.Array <- function(x,i,j,drop=FALSE,...)
 }
 
 
-getElementByCharacter.Array <- function(x,i,j,drop=FALSE,...)
+getElementByCharacter.Array <- function(x,i,j,drop=FALSE, ...)
 {
   ##@bdescr
   ## get an array element by character (as the name of the function said)
@@ -247,7 +255,7 @@ getElementByCharacter.Array <- function(x,i,j,drop=FALSE,...)
   ##@in  drop : [logical] not yet used (!)
   ##@ret      : [ANY] returns an array element
   ##
-  ##@codestatus : 
+  ##@codestatus : testing
   
   if (!missing(j)) {
     setFatalError("[i,j] not allowed for Array objects.")
@@ -284,7 +292,7 @@ getElementByCharacter.Array <- function(x,i,j,drop=FALSE,...)
 }
 
 
-setElement.Checked.Value.Array <- function(x,i,j,...,value)
+setElement.Checked.Value.Array <- function(x,i,j, ...,value)
 {
   ##@bdescr
   ##  accessor method
@@ -300,7 +308,9 @@ setElement.Checked.Value.Array <- function(x,i,j,...,value)
   ##@in  i     : [integer|character]
   ##@in  value : [ANY]
   ##@ret       : [Array] object of class '*Array' with new asignment commited
-
+  ##
+  ##@codestatus : testing
+  
   if (!missing(j)) {
     setFatalError("[i,j]<- not allowed for Array objects.")
   }
@@ -325,7 +335,7 @@ setElement.Checked.Value.Array <- function(x,i,j,...,value)
     ## get the type of the array elements
     arrayType <- gsub("Array$","",is(x)[1]);
     
-    ASSERT(is(value,arrayType),"Type error in Array");
+    ASSERT(is(value,arrayType),"Type error in 'Array' class object.");
     
     ## check for absolut equal names
     if(is(i,"character")){
@@ -400,7 +410,7 @@ applyFun.Array <- function(obj,para1, ...)
   }
 
   ## check for equal length
-  ## R removes elements of with NULL
+  ## R removes elements containing NULL
   if(length(res) == objLength) {
     
     names(res) <- getNames(obj)
@@ -430,7 +440,7 @@ applyFun2.Array <- function(obj,para1,para2, ...)
   objLength <- getLength(obj)
   para1Length <- getLength(para1)
   
-  ASSERT(objLength == para1Length, "Arrays must have the same length")
+  ASSERT(objLength == para1Length, "Arrays must have the same length.")
   
   ## create result vector
   res <- vector(mode="list",length=objLength)
@@ -535,6 +545,11 @@ concat.Array <- function(obj,para1) {
   ##
   ##@codestatus : testing
 
+  ##  preconition
+  ASSERT( identical(is(obj), is(para1)),
+         paste("objects to combine have to be of same formal class.\n",
+               "Current objects have class ",is(obj)[1]," and ", is(para1)[1], ".", sep=""))
+
   ## append the data slot
   obj@data <- c(obj@data,para1@data)
   
@@ -555,7 +570,7 @@ pushBack.Array <- function(obj,value){
   ##
   ##@codestatus : testing
 
-  obj@data <- c(obj@data,list(value))
+  obj@data <- c(obj@data, list(value))
   
   return(obj)
 }
@@ -598,37 +613,48 @@ isEqual.Array <- function(obj, para1) {
 ##  4) print/validate methods
 ##
 ##  -------------------------
-printObject.Array <- function(x)
-{
+showObject.Array <- function(object) {
   ##@bdescr
-  ##  generic print method
+  ## 
   ##@edescr
   ##
   ##@class    : [Array]
   ##
-  ##@in  x   : [Array] object of class 'Array'
-  ##@ret     : [Array] returned invisible
+  ##@in   object : [Array] the object on which to invoke this method
+  ##@ret         : [NULL] returned invisible
   ##
-  ##@codestatus : testing
-  
-  msg <- paste("An object of class '",is(x)[1],"':",sep="")
-  cat("\n",msg,sep="")
-  cat("\n", rep("-", nchar(msg)),sep="")
-  cat("\n provides")
-  cat("\n Slot 'valid': ", x@valid)
-  cat("\n Slot 'data':\n")
-  objLength <- getLength(x)
-  if (objLength > 0) {
-    for(i in 1:objLength) {
-      
-      res <- print(x@data[[i]])
-    }
-    
-  } else {
-    
-    cat("empty\n")
+  ##@codestatus : untested
+
+  objSlotNames <- slotNames(object)
+  for (si in objSlotNames) {
+    cat("\n slot ",si," [",class(slot(object, si)),"]:\n",sep="")
+    show(slot(object, si))
   }
+  cat("\n")
   
+  return(invisible())
+}
+
+
+printObject.Array <- function(x) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [Array]
+  ##
+  ##@in   x   : [Array] the object on which to invoke this method
+  ##@ret      : [Array] returned invisible
+  ##
+  ##@codestatus : untested
+
+  className <- class(x)
+  cat("\nAn object of type",className)
+  cat("\n-----------------",rep("-", length=nchar(className)),sep="")
+  cat("\n  contains:\n")
+
+  show(x)
+
   return(invisible(x))
 }
 
@@ -669,7 +695,6 @@ verifyObject.Array <- function(obj)
   ##@edescr
 
   if (.GLOBAL$getDebug()) {
-    
     cat(".defineArrayMethods ... ")
   }
 
@@ -682,15 +707,15 @@ verifyObject.Array <- function(obj)
   defineMethod("isValid", c("Array"), isValid.Array, where=where)
 
   defineMethod("getLength", "Array", getLength.Array, where = where)
-  ##  operator for get by numeric mask
+  ##  operator for get by numeric
   setMethod("[",signature=signature("Array","numeric"),
             getElementByNumeric.Array, where = where)
   
-  ##  operator for get by character mask
+  ##  operator for get by character
   setMethod("[",signature=signature("Array","character"),
             getElementByCharacter.Array, where = where)
 
-  ##  operator for get by integer mask
+  ##  operator for get by integer
   setMethod("[",signature=signature("Array","integer"),
             getElementByInteger.Array, where = where)
   
@@ -698,7 +723,7 @@ verifyObject.Array <- function(obj)
   setMethod("[",signature=signature("Array","logical"),
             getElementByLogical.Array, where = where)
 
-  ##  register this replace function
+  ##  replace function
   setReplaceMethod("[",c("Array"),setElement.Checked.Value.Array,
                    where = where)
 
@@ -723,16 +748,18 @@ verifyObject.Array <- function(obj)
 
   defineMethod("isEqual", c("Array", "Array"), isEqual.Array,
                where = where)
-
+  ## combine arrays of same type
+  defineMethod("concat", c("Array", "Array"), concat.Array,
+               where = where)
   
   ##  4) print/validate methods
+  defineMethod("show",  c("Array"), showObject.Array, where=where)
   setMethod("print",  signature("Array"), printObject.Array, where=where)
   defineMethod("verifyObject", c("Array"), verifyObject.Array, where=where)
 
 
   
   if (.GLOBAL$getDebug()) {
-    
     cat("o.k.\n")
   }
 }
@@ -752,8 +779,8 @@ verifyObject.Array <- function(obj)
   ##  does not return anything, called for its side effects
   ##@edescr
   ##
-  ##@in className : [character]
-  ##@in type      : [character]
+  ##@in className : [character] defined as "<type>Array"
+  ##@in type      : [character] class name prefix, i.e. "<type>Array"
   ##@in where     : [environment]
   ##
   ##@codestatus : internal
@@ -779,7 +806,7 @@ verifyObject.Array <- function(obj)
            prototype(valid = TRUE), 
            contains = as.character("Array"),
            validity = NULL,
-           sealed   = TRUE,
+           sealed   = .GLOBAL$getSealed(),
            where    = where)
   
   if (.GLOBAL$getDebug()) {
@@ -792,13 +819,16 @@ verifyObject.Array <- function(obj)
   ##
   ##  method definitions
   ##   
+
+  if (.GLOBAL$getDebug()) {
+    cat("  .define",className,"Methods ... ",sep="")
+  }
   
   ##  define method for verifyObject
   defineMethod("verifyObject", signature(className), function(obj) {
 
     ##  call parent method
-    ok <- callNextMethod()  
-    if (!ok) {
+    if (!callNextMethod()) {
       setError("validation for parent class failed.")
       return(FALSE)
     }
@@ -837,10 +867,8 @@ verifyObject.Array <- function(obj)
                where = where)
 
 
-  ## print method
-  setMethod("print", signature(className), printObject.Array,
-            where = where)
-
+  defineMethod("applyFun", c(className, className,"function", "missing"),
+               applyFun2.Array, where=where)
   ## combine arrays of same type
   defineMethod("concat",signature(className,className),concat.Array,
             where = where)
@@ -848,7 +876,10 @@ verifyObject.Array <- function(obj)
   ## append an element at the end of the array
   defineSetMethod("pushBack", c(className,type), 
                 pushBack.Array, where=where)
-  
+
+  if (.GLOBAL$getDebug()) {
+    cat("  o.k.\n")
+  }
 }
 
 
