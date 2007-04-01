@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2006 Matthias Burger, Thomas Koenig
+##  Copyright (C) 2006-2007 Matthias Burger, Thomas Koenig, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
   ##@slot  name        : [character] test suite name 
   ##@slot  dir         : [character]  
   ##@slot  deactivated : [logical]  
-  ##@slot  failed      : [logical]  
+  ##@slot  failure     : [logical]  
   ##@slot  error       : [logical]  
   ##@slot  execTime    : [integer]  
 
@@ -46,15 +46,15 @@
            representation(name        = "character",
                           dir         = "character",
                           deactivated = "logical",
-                          failed      = "logical",
+                          failure     = "logical",
                           error       = "logical",
                           execTime    = "integer"),
            prototype(deactivated = as.logical(FALSE),
-                     failed      = as.logical(FALSE),
+                     failure     = as.logical(FALSE),
                      error       = as.logical(FALSE),
                      execTime    = as.integer(NA)),
            validity = NULL,
-           sealed   = TRUE,
+           sealed   = .GLOBAL$getSealed(),
            where    = where)
 
   if (.GLOBAL$getDebug()) {
