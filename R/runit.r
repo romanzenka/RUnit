@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -243,13 +243,13 @@ isValidTestSuite <- function(testSuite)
 runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ##@bdescr
   ## This is the main function of the runit framework. It finds all the relevant
-  ## test files and triggers all the required action. At the end it creates a test
-  ## protocol file. 
+  ## test files and triggers all the required actions. At the end it creates a test
+  ## protocol data object. 
   ## IMPORTANT to note, the random number generator is (re-)set to the default
   ## methods specifed in defineTestSuite() before each new test case file is sourced. 
-  ## This garantees that each test case can rely
+  ## This garantees that each new test case set defined together in on file can rely
   ## on the default, even if the random number generator version is being reconfigured in some
-  ## test case file(s).
+  ## previous test case file(s).
   ##@edescr
   ##
   ##@in  testSuites         : [list] list of test suite lists
