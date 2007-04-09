@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -27,29 +27,177 @@ testRUnit.checkEquals <- function()
   ## test case for function checkEquals of class: none
   ##@edescr
 
-  checkTrue( TRUE)
-
+  ##  integer
+  x <- 1:10
+  checkEquals(x, x)
+  ##  return value
+  checkTrue( checkEquals(x, x))
+  namedInt <- 1:10
+  names(namedInt) <- letters[namedInt]
+  checkEquals(namedInt, namedInt)
+  checkEquals(namedInt, x, checkNames=FALSE)
   
-  checkTrue( checkEquals(9,9))
+  ##  numeric
+  checkEquals(9,9)
+  checkEquals( numeric(1), numeric(1))
+  checkEquals( 0.01, 0.02, tol=0.01)
+  tmp <- c(0.01, NA, 0.02, Inf, -Inf, NaN, 1.0)
+  checkEquals( tmp, tmp, tol=0.01)
   
-  checkTrue( checkEquals( numeric(1), numeric(1)))
-  checkTrue( checkEquals( character(1), character(1)))
+  ##  complex
+  checkEquals(complex(0), complex(0))
+  checkEquals(complex(2), complex(2))
+  checkEquals(complex(2, imaginary=1), complex(2, imaginary=1))
 
-  checkTrue( checkEquals( matrix(1, 3,5), matrix(1, 3,5)))
-  checkTrue( checkEquals( matrix(1, 5000,5), matrix(1, 5000,5)))
+  ##  character
+  checkEquals( character(1), character(1))
 
-  checkTrue( checkEquals( expression(2), expression(2)))
-  checkTrue( checkEquals( list(100), list(100)))
+  ##  matrix
+  checkEquals( matrix(1, 3,5), matrix(1, 3,5))
+  checkEquals( matrix(1, 50000,5), matrix(1, 50000,5),
+              "large matrix not identified as equal")
+
+  ##  language
+  checkEquals( expression(2), expression(2))
+  checkEquals( call("mean", "median"), call("mean", "median"))
+
+  ##  formula
+  simpleForm <- x ~ 1
+  checkEquals( simpleForm, simpleForm,
+              "simple formula not identified as equal")
+  compForm <- y ~ x + y + x*y + offset(x)
+  checkEquals( compForm, compForm,
+              "formula not identified as equal")
   
+  ##  factor
+  alphaFac <- factor(letters)
+  checkEquals( alphaFac, alphaFac,
+              "factor not identified as equal")
+  
+  ##  list
+  checkEquals( list(100), list(100))
+  checkEquals( list(100), list(100), tol=1)
+  alphaList <- seq(along=letters)
+  names(alphaList) <- letters
+  checkEquals( alphaList, alphaList)
+  checkEquals( alphaList, alphaList, checkNames=FALSE)
+  ##  example from ?glm
+  counts <- c(18,17,15,20,10,20,25,13,12)
+  outcome <- gl(3,1,9)
+  treatment <- gl(3,3)
+  lmFit <- glm(counts ~ outcome + treatment, family=poisson())
+  checkEquals( lmFit, lmFit, checkNames=FALSE)
+  checkEquals( lmFit, lmFit)
+  lmFitUnnamed <- lmFit
+  names(lmFitUnnamed) <- NULL
+  checkEquals( lmFit, lmFitUnnamed, checkNames=FALSE)
+  
+  ##  POSIXct
   sysTime <- as.POSIXct(Sys.time())
   checkEquals( sysTime, sysTime)
+
+  ##  raw
+  checkEquals( raw(14), raw(14))
+  namedRaw <-  as.raw(1:14)
+  names(namedRaw) <- letters[1:14]
+  checkEquals( namedRaw, namedRaw)
+
+  ##  S4 objects
+  if (identical(TRUE, require(methods))) {
+    setClass("track",
+             representation(x="numeric", y="numeric"),
+             where=.GlobalEnv)
+    on.exit(removeClass("track", where=.GlobalEnv))
+    
+    s4Obj <- try(new("track"))
+    s4Obj@x <- 1:10
+    s4Obj@y <- 10:1
+    checkEquals( s4Obj, s4Obj)
+
+    ##  S4 class containing S4 class slot
+    setClass("trackPair",
+             representation(track1 = "track",
+                            track2 = "track"),
+             where=.GlobalEnv)
+    ##  add=TRUE available only for R > 2.4.1
+    #on.exit(removeClass("track", where=.GlobalEnv), add=TRUE)
+
+    tPair <- new("trackPair")
+    tPair@track1 <- s4Obj
+    tPair@track2 <- s4Obj
+    checkEquals( tPair, tPair)
+  }
+
   
-  ##  check exception
-  checkException( checkTrue(FALSE))
+  ##  exception handling
+  checkException( checkEquals(1 , 1, tol=FALSE))
+  checkException( checkEquals(1 , 1, tol=numeric(0)))
+  checkException( checkEquals(1 , 1, tol=numeric(2)))
+
+  ##  integer
+  namedInt <- 1:9
+  names(namedInt) <- letters[namedInt]
+  checkException( checkEquals( namedInt, 1:9))
+  
+  ##  numeric
+  checkException( checkEquals( 8, 9))
+  checkException( checkEquals( 0.01, 0.02, tol=0.009))
+  
+  ##  complex
+  checkException( checkEquals(complex(0), complex(1)))
+  checkException( checkEquals(complex(1), complex(2)))
+  checkException( checkEquals(complex(2, imaginary=1), complex(2, imaginary=0)))
+  checkException( checkEquals(complex(2, real=1, imaginary=1), complex(2, real=1, imaginary=0)))
+  checkException( checkEquals(complex(2, real=1, imaginary=1), complex(2, real=0, imaginary=1)))
+  checkException( checkEquals(complex(2, real=1, imaginary=1), complex(2, real=0, imaginary=0)))
+
+  ##  character
+  named <- character(1)
+  names(named) <- "name"
+  checkException( checkEquals( character(1), named))
+
+  ##  formula
+  checkException( checkEquals( lmFit, lmFitUnnamed))
+  lmFitInter <- glm(counts ~ outcome * treatment, family=poisson())
+  checkException( checkEquals( lmFitInter, lmFit))
+  
+  ##  factor
+  alphaFacRecoded <- factor(alphaFac, labels=as.character(seq(along=levels(alphaFac))))
+  checkException( checkEquals(alphaFacRecoded, alphaFac))
+  
+  ##  list
+  checkException( checkEquals( list(1), list("1"=1)))
+  checkException( checkEquals( list(), list("1"=1)))
+  checkException( checkEquals( list(list(), list(list()), list(list(list()))),
+                              list(list(), list(list()), list(list(list(), list())))))
+
+
+  ##  POSIXct
+  checkException( checkEquals(as.POSIXct(Sys.time()), as.POSIXct("2007-04-04 16:00:00")))
+  checkException( checkEquals(as.POSIXlt(Sys.time()), as.POSIXlt("2007-04-04 16:00:00")))
   
   ##  nested type not supported
   sysTime <- as.POSIXct(Sys.time())
   checkException( checkEquals( list(a=2, list(time=sysTime)), list(a=2, time=list(sysTime))))
+
+  ##  raw
+  checkException( checkEquals(raw(1), raw(2)))
+  checkException( checkEquals(raw(1E5), raw(100001)))
+  
+  checkException( checkEquals(as.raw(1:1000), as.raw(c(1:99,-1,101:1000))))
+
+  ##  S4 objects
+  if (identical(TRUE, require(methods))) {
+    ##  class defined above
+    s4Obj <- new("track")
+    s4Obj@x <- 1:10
+    checkException( checkEquals( s4Obj, new("track")))
+
+    tPair <- new("trackPair")
+    tPair@track1 <- s4Obj
+    checkException( checkEquals( tPair, new("trackPair")))
+  }
+
 }
 
 
@@ -60,11 +208,17 @@ testRUnit.checkEqualsNumeric <- function()
   ##@edescr
 
   checkTrue( checkEqualsNumeric( 9,9))
+  checkTrue( checkEqualsNumeric( 9.1,9.2, tol=0.1))
+  x <- 1:10
+  attributes(x) <- list(dummy="nonsense")
+  checkTrue( checkEqualsNumeric( x, x))
+  checkTrue( checkEqualsNumeric( 1:10, x, check.attributes=FALSE))
+  
   rvec <- rnorm(132)
   checkTrue( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec, 12, 11)))
   checkTrue( checkEqualsNumeric( rvec, rvec))
 
-  ##  check exception
+  ##  exception handling
   ##  numeric difference
   checkException( checkEqualsNumeric( 9, 10))
   checkException( checkEqualsNumeric( list(9), list(10)))
@@ -72,6 +226,7 @@ testRUnit.checkEqualsNumeric <- function()
   rvec2 <- rnorm(132)
   checkException( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec2, 12, 11)))
 
+  
   ##  type not supported
   checkException( checkEqualsNumeric( list(rvec), list(rvec)))
 }
@@ -84,6 +239,8 @@ testRUnit.checkIdentical <- function()
   ##@edescr
 
   checkIdentical( TRUE, TRUE)
+  ##  return value
+  checkTrue( checkIdentical( TRUE, TRUE))
   checkIdentical( FALSE, FALSE)
 
   checkIdentical( as.integer(2), as.integer(2))
@@ -168,19 +325,22 @@ testRUnit.checkTrue <- function()
   ## test case for function checkTrue of class: none
   ##@edescr
 
-  checkException( checkTrue( FALSE))
+
   checkEquals( checkTrue( TRUE), TRUE)
 
   ##  named arguments
   namedArg <- TRUE
   names(namedArg) <- "Yes"
   checkEquals( checkTrue( namedArg), TRUE)
-  
+
+
+  ##  errorr handling
   namedArg <- FALSE
   names(namedArg) <- "No"
   checkException( checkTrue( namedArg))
-
-
+  
+  checkException( checkTrue( FALSE))
+  
   ##  incorrect length
   checkException( checkTrue( c(TRUE, TRUE)))
   checkException( checkTrue( c(FALSE, TRUE)))
@@ -195,7 +355,7 @@ testRUnit.checkException <- function()
   ##@bdescr
   ## test case for function checkException of class: none
   ##@edescr
-  
+
   checkException( checkTrue( FALSE))
   checkException( checkTrue( ))
   checkException( checkEquals( ))
@@ -213,6 +373,24 @@ testRUnit.checkException <- function()
   ll = list()
   ll[[1]] = function(x) stop("died")
   checkException( do.call(ll[[1]], list(1)))
+
+  ##  S4 objects
+  if (identical(TRUE, require(methods))) {
+    setClass("track2",
+             representation(x="numeric", y="numeric"),
+             prototype(x=as.numeric(1:23), y=as.numeric(23:1)),
+             where=.GlobalEnv)
+    on.exit(removeClass("track2", where=.GlobalEnv))
+
+    s4Obj <- try(new("track2"))
+    checkException( slot(s4Obj, "z"))
+    checkException( slot(s4Obj, "z") <- 1:10)
+  
+    ##  missing method argument
+    ##  coerce(from, to)
+    checkException( coerce(s4Obj))
+  }
+  
 }
 
 
@@ -223,6 +401,7 @@ testRUnit.DEACTIVATED <- function()
   ##@edescr
 
   checkException( DEACTIVATED())
+  checkException( DEACTIVATED("some message"))
 }
 
 
@@ -307,6 +486,8 @@ testRUnit.runTestFile <- function()
   ##res <- runTestFile(testFile)
   
   ##  error handling
+  ##  all argument checks delegated to runTestSuite so no need for comprehensive check here
+  ##  check if any argument check is reached/performed
   ##  useOwnErrorHandler
   ##  type logical
   checkException( runTestFile(testFile, useOwnErrorHandler=integer(1)))
