@@ -31,20 +31,16 @@ includeTracker <- function(fbody, track=track)
   ##
   ##@codestatus : internal
   
-  ## get the signature
+  ##  get the signature
   sig <- fbody[1]
 
-  ## get the block structure (important for if, for, while, else with one line)
+  ##  get the block structure (important for if, for, while, else with one line)
   block <- sapply(fbody[-1],function(x) regexpr("[^ ]",x)[1], USE.NAMES=FALSE)
 
-  ## vector of keywords
-  loopKW <- c("for|while|repeat")
-
-  ## list of keywords
+  ##  vector of keywords
   kwOpen <- c("for","while","repeat","if","else")
-  kwEnd <- c("else")
 
-  ## keyword at begin
+  ##  keyword at begin
   kwGrep <- paste("(",paste(kwOpen,sep="",collapse="|"),")",sep="")
 
 
@@ -58,6 +54,8 @@ includeTracker <- function(fbody, track=track)
     ##
     ##@in  code : [character] vector of function body code lines
     ##@ret      : [logical] vector of length of code, indication which are one line control blocks
+    ##
+    ##@codestatus : internal
     
     return(sapply(code,
                   function(line)
@@ -83,6 +81,8 @@ includeTracker <- function(fbody, track=track)
     ##@in  block   : [integer] vector
     ##@in  env     : [logical] vector
     ##@ret         : [list] with matching element vectors: openBr & clodeBr
+    ##
+    ##@codestatus : internal
     
     oBr <- character(length(potLine))
     clBr <- character(length(potLine))
