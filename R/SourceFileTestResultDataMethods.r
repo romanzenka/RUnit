@@ -85,7 +85,24 @@ newSourceFileTestResultData <- function(...) {
 ##  2) accessor methods
 ##
 ## ----------------------------------------
-getErrors.SourceFileTestResultData <- function(obj) {
+getTestResultData.SourceFileTestResultData <- function(obj) {
+  ##@bdescr
+  ##  getter
+  ##@edescr
+  ##
+  ##@class    : [SourceFileTestResultData]
+  ##
+  ##@in   obj : [SourceFileTestResultData] the object on which to invoke this method
+  ##@ret      : [TestCaseTestResultDataArray] ...
+  ##
+  ##@codestatus : untested
+
+
+  return(obj@testCaseResult)
+}
+
+
+getError.SourceFileTestResultData <- function(obj) {
   ##@bdescr
   ##  getter
   ##@edescr
@@ -97,7 +114,8 @@ getErrors.SourceFileTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
-  return()
+  ret <- applyFun(obj@testCaseResult, getError)
+  return(ret)
 }
 
 
@@ -116,23 +134,7 @@ getErrors.SourceFileTestResultData <- function(obj) {
 ##  4) print/validate methods
 ##
 ## ----------------------------------------
-print.SourceFileTestResultData <- function(x) {
-  ##@bdescr
-  ## 
-  ##@edescr
-  ##
-  ##@class    : [SourceFileTestResultData]
-  ##
-  ##@in   x   : [SourceFileTestResultData] the object on which to invoke this method
-  ##@ret      : [SourceFileTestResultData] returned invisible
-  ##
-  ##@codestatus : untested
-
-  return(invisible(x))
-}
-
-
-show.SourceFileTestResultData <- function(object) {
+showObject.SourceFileTestResultData <- function(object) {
   ##@bdescr
   ## 
   ##@edescr
@@ -144,7 +146,37 @@ show.SourceFileTestResultData <- function(object) {
   ##
   ##@codestatus : untested
 
-  return(invisible(NULL))
+  objSlotNames <- slotNames(object)
+  for (si in objSlotNames) {
+    cat("\n slot ",si," [",class(slot(object, si)),"]:\n",sep="")
+    show(slot(object, si))
+  }
+  cat("\n")
+    
+  return(invisible())
+}
+
+
+printObject.SourceFileTestResultData <- function(x) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [SourceFileTestResultData]
+  ##
+  ##@in   x   : [SourceFileTestResultData] the object on which to invoke this method
+  ##@ret      : [SourceFileTestResultData] returned invisible
+  ##
+  ##@codestatus : untested
+
+  className <- class(x)
+  cat("\nAn object of type",className)
+  cat("\n-----------------",rep("-", length=nchar(className)),sep="")
+  cat("\n  contains:\n")
+  
+  show(x)
+   
+  return(invisible(x))
 }
 
 
@@ -160,7 +192,28 @@ verifyObject.SourceFileTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
-  return(FALSE)
+##   if (length(obj@sourceFileName) != 1) {
+##     errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'sourceFileName' has to",
+##                     "be vector of length 1.", sep="")
+##     setError(errMsg)
+##     return(FALSE)
+##   }
+  if (length(obj@error) != 1) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'error'",
+                    "has to be vector of length 1.", sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+
+  if (!verifyObject(obj@testCaseResult)) {
+    errMsg <- paste("invalid '",is(obj)[1],"' object: validation for slot",
+                    "'testCaseResult' failed:\n",
+                    .GLOBAL$getLastErrorMsg(), sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+  
+  return(TRUE)
 }
 
 
@@ -190,21 +243,23 @@ verifyObject.SourceFileTestResultData <- function(obj) {
 
     
   ##  2) accessor methods
-  defineMethod("getErrors", c("SourceFileTestResultData"),
-               getErrors.SourceFileTestResultData, where=where)
+  defineMethod("getTestResultData", c("SourceFileTestResultData"),
+               getTestResultData.SourceFileTestResultData, where=where)
+  defineMethod("getError", c("SourceFileTestResultData"),
+               getError.SourceFileTestResultData, where=where)
 
     
   ##  3) compute methods
  
   ##  4) print/verify methods
-  defineMethod("print", c("SourceFileTestResultData"),
-               print.SourceFileTestResultData, where=where)
-  defineMethod("show", c("SourceFileTestResultData"),
-               show.SourceFileTestResultData, where=where)
- 
+  setMethod("show", c("SourceFileTestResultData"),
+            showObject.SourceFileTestResultData, where=where)
+  setMethod("print", c("SourceFileTestResultData"),
+            printObject.SourceFileTestResultData, where=where)
+  
   defineMethod("verifyObject", c("SourceFileTestResultData"),
                verifyObject.SourceFileTestResultData, where=where)
-
+  
   
   if (.GLOBAL$getDebug()) {
     
