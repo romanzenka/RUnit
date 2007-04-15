@@ -36,7 +36,9 @@
   ##@slot  numTestFunc      : [integer]  
   ##@slot  numDeactivated   : [integer]  
   ##@slot  numFailed        : [integer]  
-  ##@slot  numError         : [integer]  
+  ##@slot  numError         : [integer]
+  ##@slot  error            : [logical]
+  ##@slot  errorMsg         : [character]
   ##@slot  sourceFileResult : [SourceFileTestResultDataArray]  
   ##@slot  testFileRegexp   : [character]  
   ##@slot  testFuncRegexp   : [character]  
@@ -56,10 +58,12 @@
                           numDeactivated   = "integer",
                           numFailed        = "integer",
                           numError         = "integer",
+                          error            = "logical",
+                          errorMsg         = "character",
                           sourceFileResult = "SourceFileTestResultDataArray",
                           testFileRegexp   = "character",
                           testFuncRegexp   = "character"),
-           prototype(), 
+           prototype(name = "RUnit Test Suite"), 
            validity = NULL,
            sealed   = .GLOBAL$getSealed(),
            where    = where)
