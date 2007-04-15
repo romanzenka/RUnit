@@ -32,6 +32,9 @@
 ##  class init calls
 ##
 ##  ------------------------------------
+if (.GLOBAL$getDebug()) {
+  cat("\n define classes ...\n")
+}
 .defineIsEqualBaseTypeMethod(where=.where)
 
 .defineArrayClass(where=.where)
@@ -71,7 +74,10 @@ defineArrayClass("TestSuiteTestResultData", where=.where)
 ##  method init calls
 ##
 ##  ------------------------------------
-.defineTestSuiteMethods(where=.where)
+if (.GLOBAL$getDebug()) {
+  cat("\n define methods ...\n")
+}
+#.defineTestSuiteMethods(where=.where)
 
 .defineTestCaseMethods(where=.where)
 
@@ -82,7 +88,7 @@ defineArrayClass("TestSuiteTestResultData", where=.where)
 .defineTestSuiteTestResultDataMethods(where=.where)
 
 ##  to be implemented
-##.defineTestResultDataMethods(where=.where)
+.defineTestResultDataMethods(where=.where)
 
 
 .defineTestLoggerMethods(where=.where)
