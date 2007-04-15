@@ -29,7 +29,6 @@ newTestSuiteTestResultData <- function(...) {
   ##  standard construction function
   ##@edescr
   ##
-  ##@ipstatus : no:NA
   ##@class    : [TestSuiteTestResultData]
   ##
   ##@in   ... : [ANY]
@@ -85,7 +84,24 @@ newTestSuiteTestResultData <- function(...) {
 ##  2) accessor methods
 ##
 ## ----------------------------------------
-getErrors.TestSuiteTestResultData <- function(obj) {
+getTestResultData.TestSuiteTestResultData <- function(obj) {
+  ##@bdescr
+  ##  getter
+  ##@edescr
+  ##
+  ##@class    : [TestSuiteTestResultData]
+  ##
+  ##@in   obj : [TestSuiteTestResultData] the object on which to invoke this method
+  ##@ret      : [TestCaseTestResultDataArray] ...
+  ##
+  ##@codestatus : untested
+
+
+  return(obj@sourceFileResult)
+}
+
+
+getError.TestSuiteTestResultData <- function(obj) {
   ##@bdescr
   ## 
   ##@edescr
@@ -97,7 +113,8 @@ getErrors.TestSuiteTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
-  return()
+  ret <- applyFun(obj@sourceFileResult, getError)
+  return(ret)
 }
 
 
@@ -115,23 +132,7 @@ getErrors.TestSuiteTestResultData <- function(obj) {
 ##  4) print/validate methods
 ##
 ## ----------------------------------------
-print.TestSuiteTestResultData <- function(x) {
-  ##@bdescr
-  ## 
-  ##@edescr
-  ##
-  ##@class    : [TestSuiteTestResultData]
-  ##
-  ##@in   x  : [TestSuiteTestResultData] the object on which to invoke this method.
-  ##@ret     : [TestSuiteTestResultData] returned invisible
-  ##
-  ##@codestatus : untested
-
-  return(invisible(x))
-}
-
-
-show.TestSuiteTestResultData <- function(object) {
+showObject.TestSuiteTestResultData <- function(object) {
   ##@bdescr
   ## 
   ##@edescr
@@ -143,7 +144,37 @@ show.TestSuiteTestResultData <- function(object) {
   ##
   ##@codestatus : untested
 
-  return(invisible(NULL))
+  objSlotNames <- slotNames(object)
+  for (si in objSlotNames) {
+    cat("\n slot ",si," [",class(slot(object, si)),"]:\n",sep="")
+    show(slot(object, si))
+  }
+  cat("\n")
+    
+  return(invisible())
+}
+
+
+printObject.TestSuiteTestResultData <- function(x) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestSuiteTestResultData]
+  ##
+  ##@in   x  : [TestSuiteTestResultData] the object on which to invoke this method.
+  ##@ret     : [TestSuiteTestResultData] returned invisible
+  ##
+  ##@codestatus : untested
+  
+  className <- class(x)
+  cat("\nAn object of type",className)
+  cat("\n-----------------",rep("-", length=nchar(className)),sep="")
+  cat("\n  contains:\n")
+
+  show(x)
+ 
+  return(invisible(x))
 }
 
 
@@ -159,6 +190,21 @@ verifyObject.TestSuiteTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
+  if (length(obj@name) != 1) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'name' has to ",
+                    "be vector of length 1.", sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+  ##  TODO more slot checks
+
+  if (!verifyObject(obj@sourceFileResult)) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: validation for slot",
+                    "'sourceFileResult' failed:\n", .GLOBAL$getLastErrorMsg(), sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+  
   return(TRUE)
 }
 
@@ -188,16 +234,19 @@ verifyObject.TestSuiteTestResultData <- function(obj) {
                .constructTestSuiteTestResultData.empty, where=where)
 
   ##  2) accessor methods
-  defineMethod("getErrors", c("TestSuiteTestResultData"),
-               getErrors.TestSuiteTestResultData, where=where)
-  
+  defineMethod("getTestResultData", c("TestSuiteTestResultData"),
+               getTestResultData.TestSuiteTestResultData, where=where)
+  defineMethod("getError", c("TestSuiteTestResultData"),
+               getError.TestSuiteTestResultData, where=where)
+
   ##  3) compute methods
   
   ##  4) print/verify methods
-  setMethod("print", signature("TestSuiteTestResultData"),
-            print.TestSuiteTestResultData, where=where)
   defineMethod("show", c("TestSuiteTestResultData"),
-               show.TestSuiteTestResultData, where=where)
+               showObject.TestSuiteTestResultData, where=where)
+  setMethod("print", signature("TestSuiteTestResultData"),
+            printObject.TestSuiteTestResultData, where=where)
+
   defineMethod("verifyObject", c("TestSuiteTestResultData"),
                verifyObject.TestSuiteTestResultData, where=where)
 

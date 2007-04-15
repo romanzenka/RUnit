@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2006 Matthias Burger, Thomas Koenig
+##  Copyright (C) 2006-2007 Matthias Burger, Thomas Koenig, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -79,12 +79,197 @@ newTestCaseTestResultData <- function(...) {
 }
 
 
+.constructTestCaseTestResultData.result <- function(obj, para1, ...) {
+  ##@bdescr
+  ##  construct a TestCaseTestResultData class object
+  ##@edescr
+  ##
+  ##@class  : [TestCaseTestResultData]
+  ##
+  ##@in  obj   : [TestCaseTestResultData]
+  ##@in  para1 : [character] test function name
+  ##@in  ...   : [ANY]
+  ##@ret       : [TestCaseTestResultData]
+  ##
+  ##@codestatus : internal
+
+  ASSERT( length(para1) == 1, "argument functionName has to be of length 1.")
+  obj@functionName <- para1
+
+  ##  infere other parameters
+  args <- list(...)
+  if (length(args) > 0) {
+    if (length(args) < 2) {
+      setFatalError("too few arguments provided.")
+    }
+    if (!all(names(args) %in% c("sourceFileName", "deactivated", "failure",
+                                "error", "setUpError", "tearDownError",
+                                "errorMsg", "execTime"))) {
+      setFatalError("too many arguments supplied.")
+    }
+  }
+  
+  return(obj)
+}
+
+
 
 ## ----------------------------------------
 ##
 ##  2) accessor methods
 ##
 ## ----------------------------------------
+getFunctionName.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@functionName)
+}
+
+
+getSourceFileName.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@sourceFileName)
+}
+
+
+getDeactivated.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@deactivated)
+}
+
+
+getFailure.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@failure)
+}
+
+
+getError.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@error)
+}
+
+
+getSetUpError.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@setUpError)
+}
+
+
+getTearDownError.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@tearDownError)
+}
+
+
+getErrorMsg.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@ErrorMsg)
+}
+
+
+getExecTime.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@ipstatus : no:NA
+  ##
+  ##@in   : []
+  ##@ret  : []
+  ##
+  ##@codestatus : untested
+  
+  
+  return(obj@execTime)
+}
 
 
 
@@ -101,23 +286,7 @@ newTestCaseTestResultData <- function(...) {
 ##  4) print/validate methods
 ##
 ## ----------------------------------------
-print.TestCaseTestResultData <- function(x) {
-  ##@bdescr
-  ## 
-  ##@edescr
-  ##
-  ##@class    : [TestCaseTestResultData]
-  ##
-  ##@in   x   : [TestCaseTestResultData] the object on which to invoke this method
-  ##@ret      : [TestCaseTestResultData] returned invisible
-  ##
-  ##@codestatus : untested
-
-  return(invisible(x))
-}
-
-
-show.TestCaseTestResultData <- function(object) {
+showObject.TestCaseTestResultData <- function(object) {
   ##@bdescr
   ## 
   ##@edescr
@@ -129,7 +298,37 @@ show.TestCaseTestResultData <- function(object) {
   ##
   ##@codestatus : untested
 
-  return(invisible(NULL))
+  objSlotNames <- slotNames(object)
+  for (si in objSlotNames) {
+    cat("\n slot ",si," [",class(slot(object, si)),"]:\n",sep="")
+    show(slot(object, si))
+  }
+  cat("\n")
+  
+  return(invisible())
+}
+
+
+printObject.TestCaseTestResultData <- function(x) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestCaseTestResultData]
+  ##
+  ##@in   x   : [TestCaseTestResultData] the object on which to invoke this method
+  ##@ret      : [TestCaseTestResultData] returned invisible
+  ##
+  ##@codestatus : untested
+
+  className <- class(x)
+  cat("\nAn object of type",className)
+  cat("\n-----------------",rep("-", length=nchar(className)),sep="")
+  cat("\n  contains:\n")
+
+  show(x)
+
+  return(invisible(x))
 }
 
 
@@ -145,7 +344,35 @@ verifyObject.TestCaseTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
-  return(FALSE)
+  if (length(obj@functionName) != 1) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'name' has to",
+                    "be vector of length 1.", sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+  if (length(obj@deactivated) != 1) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'deactivated'",
+                    "has to be vector of length 1.", sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+  if (length(obj@failure) != 1) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'failure'",
+                    "has to be vector of length 1.", sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+  if (length(obj@error) != 1) {
+    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'error'",
+                    "has to be vector of length 1.", sep="")
+    setError(errMsg)
+    return(FALSE)
+  }
+
+  ##  TODO more slot checks
+
+  
+  return(TRUE)
 }
 
 
@@ -169,19 +396,41 @@ verifyObject.TestCaseTestResultData <- function(obj) {
   setMethod("initialize", c("TestCaseTestResultData"), 
             .initialize.TestCaseTestResultData, where=where)
   
+  defineMethod(".constructTestCaseTestResultData", c("TestCaseTestResultData", "character"), 
+               .constructTestCaseTestResultData.result, addEllipse=TRUE, where=where)
+
   defineMethod(".constructTestCaseTestResultData", c("TestCaseTestResultData"), 
                .constructTestCaseTestResultData.empty, where=where)
 
   
   ##  2) accessor methods
+  defineMethod("getFunctionName", c("TestCaseTestResultData"),
+               getFunctionName.TestCaseTestResultData, where=where)
+  defineMethod("getSourceFileName", c("TestCaseTestResultData"),
+               getSourceFileName.TestCaseTestResultData, where=where)
+  defineMethod("getDeactivated", c("TestCaseTestResultData"),
+               getDeactivated.TestCaseTestResultData, where=where)
+  defineMethod("getFailure", c("TestCaseTestResultData"),
+               getFailure.TestCaseTestResultData, where=where)
+  defineMethod("getError", c("TestCaseTestResultData"),
+               getError.TestCaseTestResultData, where=where)
+  defineMethod("getSetUpError", c("TestCaseTestResultData"),
+               getSetUpError.TestCaseTestResultData, where=where)
+  defineMethod("getTearDownError", c("TestCaseTestResultData"),
+               getTearDownError.TestCaseTestResultData, where=where)
+  defineMethod("getErrorMsg", c("TestCaseTestResultData"),
+               getErrorMsg.TestCaseTestResultData, where=where)
+  defineMethod("getExecTime", c("TestCaseTestResultData"),
+               getExecTime.TestCaseTestResultData, where=where)
+  
   ##  3) compute methods
 
  
   ##  4) print/verify methods
-  defineMethod("print", c("TestCaseTestResultData"),
-               print.TestCaseTestResultData, where=where)
-  defineMethod("show", c("TestCaseTestResultData"),
-               show.TestCaseTestResultData, where=where)
+  setMethod("show", c("TestCaseTestResultData"),
+            showObject.TestCaseTestResultData, where=where)
+  setMethod("print", c("TestCaseTestResultData"),
+            printObject.TestCaseTestResultData, where=where)
   
   defineMethod("verifyObject", c("TestCaseTestResultData"),
                verifyObject.TestCaseTestResultData,where=where)
