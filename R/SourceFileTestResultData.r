@@ -29,14 +29,16 @@
   ##
   ##@class : [SourceFileTestResultData]
   ##
-  ##@slot  name           : [character] test suite name 
-  ##@slot  dir            : [character]  
+  ##@slot  sourceFileName : [character] source file name 
+  ##@slot  dir            : [character] not required
   ##@slot  rngKind        : [character] RNG method  
   ##@slot  rngNormalKind  : [character] RNG version 
-  ##@slot  numTestFunc    : [integer]  
-  ##@slot  numDeactivated : [integer]  
-  ##@slot  numFailed      : [integer]  
-  ##@slot  numError       : [integer]  
+  ##@slot  numTestFunc    : [integer] not required
+  ##@slot  numDeactivated : [integer] not required 
+  ##@slot  numFailed      : [integer] not required
+  ##@slot  numError       : [integer] not required
+  ##@slot  error          : [logical]
+  ##@slot  errorMsg       : [character]
   ##@slot  testCaseResult : [TestCaseTestResultDataArray]  
   ##@slot  testFileRegexp : [character]  
   ##@slot  testFuncRegexp : [character]  
@@ -48,7 +50,7 @@
   }
   
   setClass("SourceFileTestResultData",
-           representation(name           = "character",
+           representation(sourceFileName = "character",
                           dir            = "character",
                           rngKind        = "character",
                           rngNormalKind  = "character",
@@ -56,11 +58,14 @@
                           numDeactivated = "integer",
                           numFailed      = "integer",
                           numError       = "integer",
+                          error          = "logical",
+                          errorMsg       = "character",
                           testCaseResult = "TestCaseTestResultDataArray",
                           testFileRegexp = "character",
                           testFuncRegexp = "character"),
            prototype(rngKind        = "Mersenne-Twister",
                      rngNormalKind  = "Inversion",
+                     error          = FALSE,
                      testFileRegexp = "^runit.+\\.[rR]$",
                      testFuncRegexp = "^test.+"),
            validity = NULL,
