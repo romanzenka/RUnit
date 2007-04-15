@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -20,10 +20,12 @@
 
 
 ## This is the ONE global variable in RUnit.
-## If not null, it holds the closure that controls the global state of the package.
+## If not null, it holds the closure that controls the global state of the
+## package.
 .GLOBAL <- NULL
 
-## This function initializes the .GLOBAL object that controls the global state of the package.
+## This function initializes the .GLOBAL object that controls the global state
+## of the package.
 ## The features administrated by this object are:
 ## * debug modus
 ## * error status
@@ -39,36 +41,49 @@
 ##  debug modus is controlled through the logical variable .GLOBAL$DEBUG.
 ##  The variable can be set by .GLOBAL$setDebug([TRUE|FALSE]). The content
 ##  of the variable can be get by .GLOBAL$getDebug()
-##  It is set to true only if the environment variable RUNIT_DEBUG has the value TRUE
+##  It is set to true only if the environment variable RUNIT_DEBUG has the
+##  value TRUE
+##
+##  2.) sealed flag
+##  The logical variable GLOBAL$SEALED,where=where is supposed to be used for
+##  the sealed argument in setClass calls. It is controlled through the
+##  environment variable RUNIT_SEALED and has the value FALSE unless
+##  RUNIT_SEALED is set to TRUE. Setting the sealed flag to TRUE, RUNIT has
+##  problems with method dispatch.
 ##
 ##  3.) error status, available functions:
-## - .GLOBAL$getErrorStatus(): returns the current error status ('noError', 'error' or 'fatal').
-## - .GLOBAL$clearErrorStatus(): sets error status to 'noError'.
-## - .GLOBAL$getLastErrorMsg(): returns the last error message.
-## - .GLOBAL$getErrorMsgStack():  returns the complete stack of error messages.
-## - .GLOBAL$clearErrorMsgStack(): deletes the  stack of error messages and sets error status to 'noError'.
-## - .GLOBAL$handleError(errorStatus, msg): only used by global error handling functions
-##
+##  - .GLOBAL$getErrorStatus(): returns the current error status ('noError',
+##   'error' or 'fatal').
+##  - .GLOBAL$clearErrorStatus(): sets error status to 'noError'.
+##  - .GLOBAL$getLastErrorMsg(): returns the last error message.
+##  - .GLOBAL$getErrorMsgStack():  returns the complete stack of error messages.
+##  - .GLOBAL$clearErrorMsgStack(): deletes the  stack of error messages and
+##    sets error status to 'noError'.
+##  - .GLOBAL$handleError(errorStatus, msg): only used by global error handling
+##    functions
 ##
 ##  4.) log file, available functions:
-## - .GLOBAL$log(msg): writes a log messages 'msg'
-## - .GLOBAL$getLogFileName(): returns the name of the log file
-## - .GLOBAL$getLogString(): returns the string where all the logmessages have been stored in (makes sense in CACHE mode only)
-## - .GLOBAL$clearLogString(): deletes  the string where all the logmessages have been stored in.
+##  - .GLOBAL$log(msg): writes a log messages 'msg'
+##  - .GLOBAL$getLogFileName(): returns the name of the log file
+##  - .GLOBAL$getLogString(): returns the string where all the logmessages have
+##    been stored in (makes sense in CACHE mode only)
+##  - .GLOBAL$clearLogString(): deletes  the string where all the logmessages
+##    have been stored in.
 ##
-## The behaviour of the log file is configured through the environment variable RUNIT_LOGFILE:
+##  The behaviour of the log file is configured through the environment variable
+##  RUNIT_LOGFILE:
 ##  If it is unset log messages (including error
-## messages) are immediately written to the standard output.
-## If it has the value  OFF all log information is ignored.
-## If it has the value CACHE all log information is stored in an
-## internal message string and can be retrieved from the .GLOBAL
-## closure at any time. Otherwise the program tries to create a
-## logfile whose name has the value of the logfile. If such a file cannot
-## be created the program switches to CACHE mode. If such a file is
-## already exists, everything is appended to the end.
+##  messages) are immediately written to the standard output.
+##  If it has the value  OFF all log information is ignored.
+##  If it has the value CACHE all log information is stored in an
+##  internal message string and can be retrieved from the .GLOBAL
+##  closure at any time. Otherwise the program tries to create a
+##  logfile whose name has the value of the logfile. If such a file cannot
+##  be created the program switches to CACHE mode. If such a file is
+##  already exists, everything is appended to the end.
 ##
-## 4.) progress status
-## - .GLOBAL$log(msg): set the progress status (a number between 0 and 1)
+##  5.) progress status
+##  - .GLOBAL$log(msg): set the progress status (a number between 0 and 1)
 
 
 .initGLOBAL <- function(where=environment()){
@@ -115,7 +130,8 @@
     ##
     ##@codestatus : internal
     
-    ret <- paste("RUnit log file, date:", date(), ", user: ", as.character(Sys.getenv("USER")), "\n")
+    ret <- paste("RUnit log file, date:", date(), ", user: ",
+                 as.character(Sys.getenv("USER")), "\n")
     ret <- paste(ret, "******************************************************************\n\n", sep="")
     return(ret)
   }
@@ -177,13 +193,14 @@
 
 
   ## error
-  errorMsgStack<-vector()
-  errorStatus<-"noError"  ## can have the values 'noError', 'error' or 'fatal'
+  errorMsgStack <- vector()
+  errorStatus <- "noError"  ## can have the values 'noError', 'error' or 'fatal'
 
 
   ## debug (logical)
   DEBUG <- readLogicalEnv("RUNIT_DEBUG", default=FALSE) 
-
+  SEALED <- readLogicalEnv("RUNIT_SEALED", default=FALSE)
+  
   ## log file
   logString <- initLog()  ## in 'CACHE' mode everything is stored here
   logFile <- "CACHE"
@@ -208,8 +225,9 @@
     dump.frames();
     frameLimit <- length(last.dump) - 1
     log("\nCall Stack:")
-    for(i in 1:frameLimit)
+    for(i in seq(length=frameLimit)) {
       log(paste(i, ": ", names(last.dump)[i]))
+    }
   }
   options(error=errorHandler)  ## this creates a call stack for all calls to stop
 
@@ -238,8 +256,8 @@
     errorMsgStack <<- append(errorMsgStack, errMsg)
 
     dump.frames();
-    frameLimit<-length(last.dump)-1
-    culprit<-names(last.dump)[frameLimit-1]
+    frameLimit <- length(last.dump)-1
+    culprit <- names(last.dump)[frameLimit-1]
     log("---------------------")
     log(errorStat)
     log(paste("Location:", culprit))
@@ -249,14 +267,15 @@
     }
 
 
-    if(identical(errorStatus, "FAILED ASSERTION")  | identical(errorStatus, "FATAL ERROR"))
+    if(identical(errorStatus, "FAILED ASSERTION")  | identical(errorStatus, "FATAL ERROR")) {
       stop(errMsg, call. = FALSE)
-    else {  ## in this case we do not call stop, so we still have to print the call stack
+    } else {  ## in this case we do not call stop, so we still have to print the call stack
       log("\nCall Stack:")
-      for(i in 1:frameLimit)
+      for(i in seq(along=frameLimit)) {
         log(paste(i, ": ", names(last.dump)[i]))
+      }
       log("---------------------")
-      return(NULL)
+      return(invisible(NULL))
     }
   }
 
@@ -271,7 +290,7 @@
     ##
     ##@codestatus : testing
     
-    errorStatus<<-"noError"
+    errorStatus <<- "noError"
     return(invisible())
   }
 
@@ -292,7 +311,7 @@
 
   getErrorStatus <- function(where=environment()){
     ##@bdescr
-    ##  this function returns the error status 
+    ##  returns the current error status 
     ##@edescr
     ##
     ##@in  where     : [environment] where to find the error status flag
@@ -305,7 +324,7 @@
 
   getErrorMsgStack <- function(where=environment()){
     ##@bdescr
-    ##  this function returns the error message stack
+    ##  returns the current error message stack
     ##@edescr
     ##
     ##@in  where     : [environment] where to find the stack
@@ -318,7 +337,8 @@
 
   getLastErrorMsg <- function(where=environment()){
     ##@bdescr
-    ##  this function returns the last occured error message
+    ##  returns the last occured error message
+    ##  or an empty string if no error has occured since last init.
     ##@edescr
     ##
     ##@in  where     : [environment] where to find the stack
@@ -334,7 +354,7 @@
 
   log <- function(msg) {
     ##@bdescr
-    ##  this function adds the provided string to the logstring
+    ##  adds the provided string to the logstring
     ##@edescr
     ##
     ##@in  msg     : [character] vector of message(s)
@@ -347,16 +367,16 @@
       return(character(1))
     }
     else if(identical(logFile, "CACHE")){
-      logString<<-paste(logString, msg, sep="\n")
+      logString <<- paste(logString, msg, sep="\n")
     }
     else {
       cat(msg, "\n", append=TRUE, file=logFile)
     }
   }
 
-  clearLogString<-function(where=environment()){
+  clearLogString <- function(where=environment()){
     ##@bdescr
-    ##  this function reinitializes the global logstring
+    ##  reinitializes the global logstring
     ##@edescr
     ##
     ##@in  where     : [environment] where to find the logstring
@@ -364,13 +384,13 @@
     ##
     ##@codestatus : testing
     
-    logString<<-initLog()
+    logString <<- initLog()
     return(invisible())
   }
 
-  getLogString<-function(where=environment()){
+  getLogString <- function(where=environment()){
     ##@bdescr
-    ##  this function reinitializes the global logstring
+    ##  returns the current log string
     ##@edescr
     ##
     ##@in  where     : [environment] where to find the logstring
@@ -381,9 +401,9 @@
     return(paste(logString, collapse="\n"))
   }
 
-  getLogFileName<-function(where=environment()) {
+  getLogFileName <- function(where=environment()) {
     ##@bdescr
-    ##  this function reinitializes the global logstring
+    ##  returns the log file name
     ##@edescr
     ##
     ##@in  where     : [environment] where to find the logstring
@@ -407,7 +427,8 @@
     ASSERT(is(name, "character"), "'name' has to be of type 'character'.")
     ASSERT(length(name) == 1, "'name' has to be of length 1.")
     
-    progressFunctionName<<-name
+    progressFunctionName <<- name
+    
     return(invisible())
   }
 
@@ -455,13 +476,25 @@
     
     ASSERT(is(debugMode,"logical") && (length(debugMode) == 1),
            "only logicals with length equals one allowed");
-
-    DEBUG <<- debugMode;
+    ASSERT( !is.na(debugMode), "missing value not allowed.")
+    
+    DEBUG <<- debugMode
 
     return(invisible())
   }
   
 
+  getSealed <- function() {
+    ##@bdescr
+    ##  returns the class definition sealed status
+    ##@edescr
+    ##
+    ##@ret : [logical] sealed status
+    ##
+    ##@codestatus : internal
+    
+    return(SEALED)
+  }
 
   if(!is.null(.GLOBAL)) {
     setFatalError("initGLOBAL called although '.GLOBAL' object had already been initialised")
@@ -470,6 +503,7 @@
 
   return(invisible(list(getDebug=getDebug,
                         setDebug=setDebug,
+                        getSealed=getSealed,
                         handleError=handleError,
                         clearErrorStatus=clearErrorStatus,
                         clearErrorMsgStack=clearErrorMsgStack,
