@@ -109,10 +109,10 @@ printHTMLProtocol <- function(testData,
                                 asAnchor=FALSE) {
     tmp <- paste(testSuite, srcFileName, testFuncName, sep="_")
     if(asAnchor) {
-      return(paste("#", gsub("\/", "_", tmp), sep=""))
+      return(paste("#", gsub("/", "_", tmp), sep=""))
     }
     else {
-      return(gsub("\/", "_", tmp))
+      return(gsub("/", "_", tmp))
     }
   }
 
