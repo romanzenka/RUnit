@@ -39,7 +39,7 @@
 
   setClass("TestResultData",
            representation(name="character",
-                          testData="TestSuiteTestResultDataArray"),
+                          testResultData="TestSuiteTestResultDataArray"),
            prototype(), 
            validity = NULL,
            sealed   = .GLOBAL$getSealed(),
