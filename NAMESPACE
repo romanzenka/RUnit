@@ -24,7 +24,9 @@ import(methods)
 ##  alphabetic order
 export(newSourceFileTestResultData,
        newTestCaseTestResultData,
+       newTestLogger,
        newTestResultData,
+       newTestSuite,
        newTestSuiteTestResultData,
        ".setUp",
        ".tearDown",
@@ -50,17 +52,36 @@ export(newSourceFileTestResultData,
 
 exportClasses(Array,
               SourceFileTestResultData,
+              SourceFileTestResultDataArray,
               TestCaseTestResultData,
+              TestCaseTestResultDataArray,
               TestLogger,
               TestResultData,
               TestSuite,
-              TestSuiteTestResultData)
+              TestSuiteArray,
+              TestSuiteTestResultData,
+              TestSuiteTestResultDataArray)
 
 
-exportMethods(clusterApply,
+exportMethods(##asRUnitTestSuite,
+##              clusterApply,
+              concat,   ##  Array internal
+              getDeactivated,
+              getError,
+              getErrorMsg,
+              getExecTime,
+              getFailure,
+              getFunctionName,
+              getSetUpError,
+              getSourceFileName,
+              getTearDownError,
+              getTestResultData,
               initialize,
               isValidTestData,
               print,
+##              pushBack, ##  Array internal, also defined as primitive in base
+##              runTestSuite,
+              "setFunctionName<-",
+              "setSourceFileName<-",
               show,
-              testResultData,
               verifyObject)
