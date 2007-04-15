@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,68 @@
 ##  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 ##  $Id$
+
+runitInternalError <- function (message, call = NULL)
+{
+  ##@bdescr
+  ##  derived from 'simpleError' in package base
+  ##  signal error generated via Runit except for check* function calls
+  ##  i.e. unexpected errors to distinguish from others
+  ##@edescr
+  ##
+  ##@in  meassge : [character]
+  ##@in  call    : []
+  class <- c("RUnitInternalError", "error", "condition")
+  structure(list(message = as.character(message), call = call),
+            class = class)
+}
+
+
+runitError <- function (message, call = NULL)
+{
+  ##@bdescr
+  ##  derived from 'simpleError' in package base
+  ##  signal error generated via Runit check* function calls
+  ##  i.e. expected errors to distinguish from others
+  ##@edescr
+  ##
+  ##@in  meassge : [character]
+  ##@in  call    : []
+  class <- c("RUnitError", "error", "condition")
+  structure(list(message = as.character(message), call = call),
+            class = class)
+}
+
+
+runitFailure <- function (message, call = NULL)
+{
+  ##@bdescr
+  ##  derived from 'simpleError' in package base
+  ##  signal failure generated via Runit check* function calls
+  ##  i.e. expected failure to distinguish from others
+  ##@edescr
+  ##
+  ##@in  meassge : [character]
+  ##@in  call    : []
+  class <- c("RUnitFailure", "error", "condition")
+  structure(list(message = as.character(message), call = call),
+            class = class)
+}
+
+
+runitDeactivated <- function (message, call = NULL)
+{
+  ##@bdescr
+  ##  derived from 'simpleError' in package base
+  ##  signal deactivated test case generated via Runit DEACTIVATED function call.
+  ##@edescr
+  ##
+  ##@in  meassge : [character]
+  ##@in  call    : []
+  class <- c("RUnitDeactivated", "error", "condition")
+  structure(list(message = as.character(message), call = call),
+            class = class)
+}
 
 
 checkEquals <- function(target, current, msg="",
@@ -37,24 +99,30 @@ checkEquals <- function(target, current, msg="",
 
   
   if(!is.numeric(tolerance)) {
-    stop("tolerance has to be a numeric value")
+    stop(runitError("tolerance has to be a numeric value"))
   }
   if (length(tolerance) != 1) {
-    stop("tolerance has to be a scalar")
+    stop(runitError("tolerance has to be a scalar"))
   }
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
-  if (!isTRUE(checkNames)) {
+  if (!identical(TRUE, checkNames)) {
     names(target)  <- NULL
     names(current) <- NULL
   }
-  result <- all.equal(target, current, tolerance=tolerance, ...)
+  result <- try(all.equal(target, current, tolerance=tolerance, ...))
+  if (inherits(result, "try-error")) {
+    if(exists(".testLogger", envir=.GlobalEnv)) {
+      .testLogger$setError()
+    }
+    stop(result)
+  }
   if (!identical(result, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(paste(result, collapse="\n"), msg))
+    stop(runitFailure(paste(paste(result, collapse="\n"), msg), call=sys.call()))
   }
   else {
     return(TRUE)
@@ -78,20 +146,28 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   ##@codestatus : testing
   
   if(!is.numeric(tolerance)) {
-    stop("tolerance has to be a numeric value")
+    stop(runitError("tolerance has to be a numeric value"))
   }
-
+  if (length(tolerance) != 1) {
+    stop(runitError("tolerance has to be a scalar"))
+  }
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
   ##  R 2.3.0: changed behaviour of all.equal
   ##  strip attributes before comparing current and target
-  result <- all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...)
+  result <- try(all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...))
+  if (inherits(result, "try-error")) {
+    if(exists(".testLogger", envir=.GlobalEnv)) {
+      .testLogger$setError()
+    }
+    stop(result)
+  }
   if (!identical(result, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(paste(result, collapse="\n"), msg))
+    stop(runitFailure(paste(paste(result, collapse="\n"), msg), call=sys.call()))
   }
   else {
     return(TRUE)
@@ -118,12 +194,18 @@ checkIdentical <- function(target, current, msg="")
   }
   
   ##  strip attributes before comparing current and target
-  result <- identical(target, current)
-  if (!isTRUE(result)) {
+  result <- try(identical(target, current))
+  if (inherits(result, "try-error")) {
+    if(exists(".testLogger", envir=.GlobalEnv)) {
+      .testLogger$setError()
+    }
+    stop(result)
+  }
+  if (!identical(TRUE, result)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(paste(result, collapse="\n"), msg))
+    stop(runitFailure(paste(paste(result, collapse="\n"), msg), call=sys.call()))
   }
   else {
     return(TRUE)
@@ -149,14 +231,19 @@ checkTrue <- function(expr, msg="")
   }
 
   ##  allow named logical argument expr
-  result <- eval(expr)
+  result <- try(eval(expr))
   names(result) <- NULL
-  
+  if (inherits(result, "try-error")) {
+    if(exists(".testLogger", envir=.GlobalEnv)) {
+      .testLogger$setError()
+    }
+    stop(result)
+  }
   if (!identical(result, TRUE)) {
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste("Test not TRUE.\n", msg))
+    stop(runitFailure(paste("Test not TRUE.\n", msg), call=sys.call()))
   }
   else {
     return(TRUE)
@@ -190,7 +277,7 @@ checkException <- function(expr, msg="", silent=FALSE)
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste("Error not generated as expected.\n", msg))
+    stop(runitError(paste("Error not generated as expected.\n", msg), call=sys.call()))
   }
   else {
     return(TRUE)
@@ -218,5 +305,5 @@ DEACTIVATED <- function(msg="")
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$setDeactivated(paste(msg, "\n", sep=""))
   }
-  stop(msg)
+  stop(runitDeactivated(msg, call=sys.call()))
 }
