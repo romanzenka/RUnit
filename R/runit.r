@@ -37,14 +37,17 @@ defineTestSuite <- function(name, dirs,
   ##
   ##@codestatus : testing
   
-  ret <- list(name=name,
-              dirs=dirs,
-              testFileRegexp=testFileRegexp,
-              testFuncRegexp=testFuncRegexp,
-              rngKind=rngKind,
-              rngNormalKind=rngNormalKind)
+   ret <- list(name=name,
+               dirs=dirs,
+               testFileRegexp=testFileRegexp,
+               testFuncRegexp=testFuncRegexp,
+               rngKind=rngKind,
+               rngNormalKind=rngNormalKind)
 
-  class(ret) <- "RUnitTestSuite"
+   class(ret) <- "RUnitTestSuite"
+
+##   ret <- newTestSuite(name, dirs, testFileRegexp, testFuncRegexp,
+##                       rngKind, rngNormalKind)
   return(ret)
 }
 
@@ -143,67 +146,75 @@ isValidTestSuite <- function(testSuite)
   ##@in  envir        : [environment]
   ##@in  setUpFunc    : [function]
   ##@in  tearDownFunc : [function]
-  ##@ret              : [NULL]
+  ##@ret              : [TestCaseTestResultData]
   ##
   ##@codestatus : internal
   
   ##  write to stdout for logging
 
 
-  func <- get(funcName, envir=envir)
-  ## anything else than a function is ignored.
-  if(mode(func) != "function") {
-##     cat("\n ", funcName," is not of mode function. skipped.\n")
-    return()
-  }
-
   cat("\n\nExecuting test function",funcName," ... ")
 
+  testCase <- newTestCaseTestResultData(funcName)
+  
   ## safe execution of setup function
   res <- try(setUpFunc())
   if (inherits(res, "try-error")) {
     message <- paste("Error executing .setUp before",funcName, ":", geterrmessage())
     .testLogger$addError(testFuncName=paste(".setUp (before ", funcName, ")", sep=""),
                          errorMsg=message)
-    return()
+    testCase@setUpError <- TRUE
+    testCase@errorMsg <- message
+    return(testCase)
   }
 
   ## reset book keeping variables in .testLogger
   .testLogger$cleanup()
   ## ordinary test function execution:
+  func <- get(funcName, envir=envir)
   timing <- try(system.time(func()))
   if (inherits(timing, "try-error")) {
     if(.testLogger$isFailure()) {
       .testLogger$addFailure(testFuncName=funcName,
                              failureMsg=geterrmessage())
+      testCase@failure=TRUE
+      testCase@errorMsg <- paste(timing)
     }
     else if(.testLogger$isDeactivated()) {
       .testLogger$addDeactivated(testFuncName=funcName)
+      testCase@deactivated <- TRUE
+      testCase@errorMsg <- paste(timing)
     }
     else {
       .testLogger$addError(testFuncName=funcName,
                            errorMsg=geterrmessage())
+      testCase@error <- TRUE
+      testCase@errorMsg <- paste(timing)
     }
   }
   else {
     .testLogger$addSuccess(testFuncName=funcName, secs=round(timing[3], 2))
+    ##  strip attributes
+    testCase@execTime <- as.vector(timing[3])
   }
 
   ## safe execution of tearDown function
   res <- try(tearDownFunc())
   if (inherits(res, "try-error")) {
     message <- paste("Error executing .tearDown after",funcName, ":", geterrmessage())
-    .testLogger$addError(testFuncName=paste(".tearDown (after ", funcName, ")", sep=""),
-                         errorMsg=message)
-    return()
+    #.testLogger$addError(testFuncName=paste(".tearDown (after ", funcName, ")", sep=""),
+    #                     errorMsg=message)
+    testCase@tearDownError <- TRUE
+    testCase@errorMsg <- paste(res)
+    return(testCase)
   }
 
   cat(" done successfully.\n\n")
-  return()
+  return(testCase)
 }
 
 
-.sourceTestFile <- function(absTestFileName, testFuncRegexp)
+.sourceTestFile <- function(absTestFileName, testFuncRegexp, envir=environment())
 {
   ##@bdescr
   ## This function sources a file, finds all the test functions in it, executes them
@@ -212,32 +223,64 @@ isValidTestSuite <- function(testSuite)
   ##@edescr
   ##
   ##@in absTestFileName : [character] the absolute name of the file to test
-  ##@in testFuncRegexp : [character] a regular expression identifying the names of test functions
+  ##@in testFuncRegexp  : [character] a regular expression identifying the names of test functions
+  ##@ret                : [SourceFileTestResultData]
   ##
   ##@codestatus : internal
+
+  #browser()
+  testResult <- newSourceFileTestResultData()
+  testResult@sourceFileName <- absTestFileName
   
   .testLogger$setCurrentSourceFile(absTestFileName)
   if (!file.exists(absTestFileName)) {
     message <- paste("Test case file ", absTestFileName," not found.")
     .testLogger$addError(testFuncName=absTestFileName,
                         errorMsg=message)
-    return()
+    
+    testResult@errorMsg <- message
+    testResult@error <- TRUE
+    return(testResult)
   }
 
+  ##  record existing object listing
+  existingObj <- ls()
   ##  catch syntax errors in test case file
   res <- try(source(absTestFileName, local=TRUE))
+  testFunctions <- ls(pattern=testFuncRegexp)
+  ##  remove existingObj from vector of test functions in case of match
+  testFunctions <- testFunctions[-unlist(sapply(existingObj, function(x) grep(x, testFunctions)))]
   if (inherits(res, "try-error")) {
     message <- paste("Error while sourcing ",absTestFileName,":",geterrmessage())
     .testLogger$addError(testFuncName=absTestFileName,
                         errorMsg=message)
-    return()
+    testResult@errorMsg <- message
+    testResult@error <- TRUE
+    return(testResult)
   }
 
-  testFunctions <- ls(pattern=testFuncRegexp)
-  for (funcName in testFunctions) {
-    .executeTestCase(funcName, envir=environment(), setUpFunc=.setUp, tearDownFunc=.tearDown)
+  testCaseArray <- newTestCaseTestResultDataArray()
+  
+
+  for (ci in  seq(along=testFunctions)) {
+    funcName <- testFunctions[ci]
+    func <- get(funcName, envir=envir)
+    ## anything else than a function is ignored.
+    if(mode(func) != "function") {
+      ##     cat("\n ", funcName," is not of mode function. skipped.\n")
+      next;
+    }
+
+    testCaseArray[ci] <- .executeTestCase(funcName, envir=environment(),
+                                          setUpFunc=.setUp, tearDownFunc=.tearDown)
+    ##  FIXME: this is an redundant entry and should be avoided
+    ##  add source file name
+    testCaseArray[ci]@sourceFileName <- absTestFileName
   }
+  testResult@testCaseResult <- testCaseArray
+  return(testResult)
 }
+
 
 
 runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
@@ -260,13 +303,13 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   
   ##  preconditions
   if (!is.logical(useOwnErrorHandler)) {
-    stop("argument 'useOwnErrorHandler' has to be of type logical.")
+    stop(runitError("argument 'useOwnErrorHandler' has to be of type logical."))
   }
   if (length(useOwnErrorHandler) != 1) {
-    stop("argument 'useOwnErrorHandler' has to be of length 1.")
+    stop(runitError("argument 'useOwnErrorHandler' has to be of length 1."))
   }
   if (is.na(useOwnErrorHandler)) {
-    stop("argument 'useOwnErrorHandler' may not contain NA.")
+    stop(runitError("argument 'useOwnErrorHandler' may not contain NA."))
   }
   
   
@@ -275,35 +318,54 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]))
   
   oldErrorHandler <- getOption("error")
+  ## reinstall error handler
+  on.exit(options(error=oldErrorHandler))
   ## initialize TestLogger
   assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
+  ##assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = environment())
+  ##  current env
+  ##assign(".testLogger", .newTestLogger(useOwnErrorHandler))
 
   ## main loop
   if(isValidTestSuite(testSuites)) {
     testSuites <- list(testSuites)
   }
+  
+  testResult <- newTestResultData()
+  testResult@name <- "RUnit Test"
+
+  testSuitesResultArray <- newTestSuiteTestResultDataArray()
+  
   for (i in seq(length=length(testSuites))) {
     testSuite <- testSuites[[i]]
-    if(!isValidTestSuite(testSuite)) {
-      errMsg <- paste("Invalid test suite",testSuite$name,". Test run aborted.")
-      stop(errMsg)
-    }
+    testSuitesResultArray[i] <- newTestSuiteTestResultData()
+    testSuitesResultArray[i]@name <- testSuite$name
+    
+##     if(!isValidTestSuite(testSuite)) {
+##       errMsg <- paste("Invalid test suite",testSuite$name,". Test run aborted.")
+##       testSuitesResultArray[i]@error <- TRUE
+##       testSuitesResultArray[i]@errorMsg <- errMsg
+##       stop(runitError(errMsg))
+##     }
+    
     .testLogger$setCurrentTestSuite(testSuite)
     testFiles <- list.files(testSuite$dirs,
                             pattern = testSuite$testFileRegexp,
                             full.names=TRUE)
-    for(testFile in testFiles) {
+    #for(testFile in testFiles) {
+    for(ti in seq(along=testFiles)) {
       ## set a standard random number generator.
       RNGkind(kind=testSuite$rngKind, normal.kind=testSuite$rngNormalKind)
       
-      .sourceTestFile(testFile, testSuite$testFuncRegexp)
+       testSuitesResultArray[i]@sourceFileResult[ti] <- .sourceTestFile(testFiles[ti], testSuite$testFuncRegexp)
     }
   }
 
+  testResult@testResultData <-  testSuitesResultArray
+
   ret <- .testLogger$getTestData()
-  ## reinstall error handler
-  options(error=oldErrorHandler)
-  return(ret)
+  
+  return(list(ret, testResult))
 }
 
 
