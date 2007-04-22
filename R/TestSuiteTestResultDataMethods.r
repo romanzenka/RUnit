@@ -101,6 +101,13 @@ getTestResultData.TestSuiteTestResultData <- function(obj) {
 }
 
 
+
+
+## ----------------------------------------
+##
+##  3) compute methods
+##
+## ----------------------------------------
 getError.TestSuiteTestResultData <- function(obj) {
   ##@bdescr
   ## 
@@ -113,17 +120,27 @@ getError.TestSuiteTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
-  ret <- applyFun(obj@sourceFileResult, getError)
+  ret <- applyFun(obj@sourceFileResult, function(x) getError(x))
   return(ret)
 }
 
 
+getTestCaseNum.TestSuiteTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestSuiteTestResultData]
+  ##
+  ##@in   obj  : [TestSuiteTestResultData] the object on which to invoke this method.
+  ##@ret       : [integer] ...
+  ##
+  ##@codestatus : untested
 
-## ----------------------------------------
-##
-##  3) compute methods
-##
-## ----------------------------------------
+  ret <- applyFun(obj@sourceFileResult, function(x) getTestCaseNum(x))
+  return(ret)
+}
+
 
 
 
@@ -132,6 +149,45 @@ getError.TestSuiteTestResultData <- function(obj) {
 ##  4) print/validate methods
 ##
 ## ----------------------------------------
+.printTextProtocol.TestSuiteTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestSuiteTestResultData]
+  ##
+  ##@in   obj : [TestSuiteTestResultData]
+  ##@ret      : [NULL] returned invisible
+  ##
+  ##@codestatus : untested
+
+  pr("***************************")
+  pr("Test Suite:", obj@name)
+  pr("Test function regexp:", obj@testFuncRegexp)
+  pr("Test file regexp:", obj@testFileRegexp)
+
+  if(length(obj@dirs) == 0) {
+    pr("No directories !")
+    
+  } else {
+    if(length(obj@dirs) == 1) {
+      pr("Involved directory:")
+      
+    } else {
+      pr("Involved directories:")
+    }
+    
+    for(dir in obj@dirs) {
+      pr(dir)
+    }
+  }
+  applyFun(obj@sourceFileResult, function(x)
+           printTextProtocol(x))
+  
+  return(invisible())
+}
+
+
 showObject.TestSuiteTestResultData <- function(object) {
   ##@bdescr
   ## 
@@ -236,12 +292,16 @@ verifyObject.TestSuiteTestResultData <- function(obj) {
   ##  2) accessor methods
   defineMethod("getTestResultData", c("TestSuiteTestResultData"),
                getTestResultData.TestSuiteTestResultData, where=where)
-  defineMethod("getError", c("TestSuiteTestResultData"),
-               getError.TestSuiteTestResultData, where=where)
 
   ##  3) compute methods
+  defineMethod("getError", c("TestSuiteTestResultData"),
+               getError.TestSuiteTestResultData, where=where)
+  defineMethod("getTestCaseNum", c("TestSuiteTestResultData"),
+               getTestCaseNum.TestSuiteTestResultData, where=where)
   
   ##  4) print/verify methods
+  defineMethod(".printTextProtocol", c("TestSuiteTestResultData"),
+               .printTextProtocol.TestSuiteTestResultData, where=where)
   defineMethod("show", c("TestSuiteTestResultData"),
                showObject.TestSuiteTestResultData, where=where)
   setMethod("print", signature("TestSuiteTestResultData"),

@@ -102,6 +102,12 @@ getTestResultData.SourceFileTestResultData <- function(obj) {
 }
 
 
+
+## ----------------------------------------
+##
+##  3) compute methods
+##
+## ----------------------------------------
 getError.SourceFileTestResultData <- function(obj) {
   ##@bdescr
   ##  getter
@@ -114,18 +120,25 @@ getError.SourceFileTestResultData <- function(obj) {
   ##
   ##@codestatus : untested
 
-  ret <- applyFun(obj@testCaseResult, getError)
+  ret <- applyFun(obj@testCaseResult, function(x) getError(x))
   return(ret)
 }
 
 
+getTestCaseNum.SourceFileTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestResultData]
+  ##
+  ##@in   obj  : [TestResultData]
+  ##@ret       : [] ...
+  ##
+  ##@codestatus : untested
 
-
-## ----------------------------------------
-##
-##  3) compute methods
-##
-## ----------------------------------------
+  return(getLength(obj@testCaseResult))
+}
 
 
 
@@ -134,6 +147,26 @@ getError.SourceFileTestResultData <- function(obj) {
 ##  4) print/validate methods
 ##
 ## ----------------------------------------
+.printTextProtocol.SourceFileTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [SourceFileTestResultData]
+  ##
+  ##@in   obj : [SourceFileTestResultData]
+  ##@ret      : [NULL] returned invisible
+  ##
+  ##@codestatus : untested
+
+  pr("---------------------------")
+  pr("Test file:", obj@sourceFileName)
+  applyFun(obj@testCaseResult, function(x) .printTextProtocol(x))
+  
+  return(invisible())
+}
+
+
 showObject.SourceFileTestResultData <- function(object) {
   ##@bdescr
   ## 
@@ -141,7 +174,7 @@ showObject.SourceFileTestResultData <- function(object) {
   ##
   ##@class    : [SourceFileTestResultData]
   ##
-  ##@in   object : [SourceFileTestResultData] the object on which to invoke this method
+  ##@in   object : [SourceFileTestResultData]
   ##@ret         : [NULL] returned invisible
   ##
   ##@codestatus : untested
@@ -164,7 +197,7 @@ printObject.SourceFileTestResultData <- function(x) {
   ##
   ##@class    : [SourceFileTestResultData]
   ##
-  ##@in   x   : [SourceFileTestResultData] the object on which to invoke this method
+  ##@in   x   : [SourceFileTestResultData]
   ##@ret      : [SourceFileTestResultData] returned invisible
   ##
   ##@codestatus : untested
@@ -187,7 +220,7 @@ verifyObject.SourceFileTestResultData <- function(obj) {
   ##
   ##@class : [SourceFileTestResultData]
   ##
-  ##@in  obj  : [SourceFileTestResultData] the object on which to invoke the method
+  ##@in  obj  : [SourceFileTestResultData] class object on which to invoke the method
   ##@ret      : [logical] TRUE if obj is valid
   ##
   ##@codestatus : untested
@@ -245,13 +278,17 @@ verifyObject.SourceFileTestResultData <- function(obj) {
   ##  2) accessor methods
   defineMethod("getTestResultData", c("SourceFileTestResultData"),
                getTestResultData.SourceFileTestResultData, where=where)
-  defineMethod("getError", c("SourceFileTestResultData"),
-               getError.SourceFileTestResultData, where=where)
 
     
   ##  3) compute methods
- 
+  defineMethod("getError", c("SourceFileTestResultData"),
+               getError.SourceFileTestResultData, where=where)
+  defineMethod("getTestCaseNum", c("SourceFileTestResultData"),
+               getTestCaseNum.SourceFileTestResultData, where=where)
+  
   ##  4) print/verify methods
+  defineMethod(".printTextProtocol", c("SourceFileTestResultData"),
+               .printTextProtocol.SourceFileTestResultData, where=where)
   setMethod("show", c("SourceFileTestResultData"),
             showObject.SourceFileTestResultData, where=where)
   setMethod("print", c("SourceFileTestResultData"),
