@@ -104,24 +104,20 @@ checkEquals <- function(target, current, msg="",
   if (length(tolerance) != 1) {
     stop(runitError("tolerance has to be a scalar"))
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
+ 
+  ##  alterative check counter
+  testCaseCheckCount <<- testCaseCheckCount + 1
   if (!identical(TRUE, checkNames)) {
     names(target)  <- NULL
     names(current) <- NULL
   }
   result <- try(all.equal(target, current, tolerance=tolerance, ...))
   if (inherits(result, "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setError()
-    }
-    stop(result)
+    
+    stop(runitError(paste(result, msg), call=sys.call()))
   }
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
-    }
+    
     stop(runitFailure(paste(paste(result, collapse="\n"), msg), call=sys.call()))
   }
   else {
@@ -151,22 +147,19 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   if (length(tolerance) != 1) {
     stop(runitError("tolerance has to be a scalar"))
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
+ 
+  testCaseCheckCount <<- testCaseCheckCount + 1
   ##  R 2.3.0: changed behaviour of all.equal
   ##  strip attributes before comparing current and target
   result <- try(all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...))
   if (inherits(result, "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setError()
-    }
-    stop(result)
+    #if(exists(".testLogger", envir=.GlobalEnv)) {
+    #  .testLogger$setError()
+    #}
+    stop(runitError(paste(result, msg), call=sys.call()))
   }
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
-    }
+    
     stop(runitFailure(paste(paste(result, collapse="\n"), msg), call=sys.call()))
   }
   else {
@@ -189,22 +182,17 @@ checkIdentical <- function(target, current, msg="")
   ##
   ##@codestatus : testing
   
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
+ 
+  testCaseCheckCount <<- testCaseCheckCount + 1
   
   ##  strip attributes before comparing current and target
   result <- try(identical(target, current))
   if (inherits(result, "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setError()
-    }
-    stop(result)
+    
+    stop(runitError(paste(result, msg), call=sys.call()))
   }
   if (!identical(TRUE, result)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
-    }
+    
     stop(runitFailure(paste(paste(result, collapse="\n"), msg), call=sys.call()))
   }
   else {
@@ -226,23 +214,18 @@ checkTrue <- function(expr, msg="")
   ##
   ##@codestatus : testing
   
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
-
+  
+  testCaseCheckCount <<- testCaseCheckCount + 1
+  
   ##  allow named logical argument expr
   result <- try(eval(expr))
   names(result) <- NULL
   if (inherits(result, "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setError()
-    }
-    stop(result)
+    
+    stop(runitError(paste(result, msg), call=sys.call()))
   }
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
-    }
+    
     stop(runitFailure(paste("Test not TRUE.\n", msg), call=sys.call()))
   }
   else {
@@ -269,14 +252,11 @@ checkException <- function(expr, msg="", silent=FALSE)
   ##
   ##@codestatus : testing
   
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
-
+  
+  testCaseCheckCount <<- testCaseCheckCount + 1
+  
   if (!inherits(try(eval(expr, envir = parent.frame()), silent=silent), "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
-    }
+    
     stop(runitError(paste("Error not generated as expected.\n", msg), call=sys.call()))
   }
   else {
@@ -302,8 +282,6 @@ DEACTIVATED <- function(msg="")
   ##
   ##@codestatus : testing
 
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$setDeactivated(paste(msg, "\n", sep=""))
-  }
+ 
   stop(runitDeactivated(msg, call=sys.call()))
 }
