@@ -160,50 +160,73 @@ isValidTestSuite <- function(testSuite)
   ## safe execution of setup function
   res <- try(setUpFunc())
   if (inherits(res, "try-error")) {
-    message <- paste("Error executing .setUp before",funcName, ":", geterrmessage())
-    .testLogger$addError(testFuncName=paste(".setUp (before ", funcName, ")", sep=""),
-                         errorMsg=message)
+    message <- paste("Error executing .setUp before",funcName, ":", geterrmessage())    
     testCase@setUpError <- TRUE
     testCase@errorMsg <- message
     return(testCase)
   }
 
-  ## reset book keeping variables in .testLogger
-  .testLogger$cleanup()
+  
+  ## reset book keeping variable
+  testCaseCheckCount <<- 0
+
+  # shut up warnings:
+  optWarn <- getOption("warn")
+  options(warn=-1)
+  ##  esure reset to previous default on exit
+  on.exit(options(warn=optWarn))
+  
+  
+  warnCount <- 0
+  warnMessageStack <- list()
+  warnHandler <- function(e) {
+    warnCount <<- 1 + warnCount
+    warnMessageStack[[warnCount]] <<- conditionMessage(e)
+  }
+  
   ## ordinary test function execution:
-  func <- get(funcName, envir=envir)
-  timing <- try(system.time(func()))
-  if (inherits(timing, "try-error")) {
-    if(.testLogger$isFailure()) {
-      .testLogger$addFailure(testFuncName=funcName,
-                             failureMsg=geterrmessage())
+  func <- get(funcName, envir=envir, mode="function")
+  timing <- tryCatch(withCallingHandlers(system.time(func()),
+                                    warning=warnHandler),
+                     error=function(e) e)
+
+  ##if (inherits(timing, "try-error")) {
+  if (inherits(timing, "error")) {
+    if (inherits(timing, "RUnitFailure")) {
+    #if(.testLogger$isFailure()) {
+    #  .testLogger$addFailure(testFuncName=funcName,
+    #                         failureMsg=geterrmessage())
       testCase@failure=TRUE
       testCase@errorMsg <- paste(timing)
     }
-    else if(.testLogger$isDeactivated()) {
-      .testLogger$addDeactivated(testFuncName=funcName)
+    #else if(.testLogger$isDeactivated()) {
+    else if(inherits(timing, "RUnitDeactivated")) {
+      #.testLogger$addDeactivated(testFuncName=funcName)
       testCase@deactivated <- TRUE
       testCase@errorMsg <- paste(timing)
     }
     else {
-      .testLogger$addError(testFuncName=funcName,
-                           errorMsg=geterrmessage())
+      #.testLogger$addError(testFuncName=funcName,
+      #                     errorMsg=geterrmessage())
       testCase@error <- TRUE
       testCase@errorMsg <- paste(timing)
     }
   }
   else {
-    .testLogger$addSuccess(testFuncName=funcName, secs=round(timing[3], 2))
+    #.testLogger$addSuccess(testFuncName=funcName, secs=round(timing[3], 2))
     ##  strip attributes
     testCase@execTime <- as.vector(timing[3])
   }
 
+  ##  add check counter
+  testCase@checkNum <- as.integer(testCaseCheckCount)
+  ##  add warning stack
+  testCase@warnMessageStack <- warnMessageStack
+  
   ## safe execution of tearDown function
   res <- try(tearDownFunc())
   if (inherits(res, "try-error")) {
     message <- paste("Error executing .tearDown after",funcName, ":", geterrmessage())
-    #.testLogger$addError(testFuncName=paste(".tearDown (after ", funcName, ")", sep=""),
-    #                     errorMsg=message)
     testCase@tearDownError <- TRUE
     testCase@errorMsg <- paste(res)
     return(testCase)
@@ -232,17 +255,18 @@ isValidTestSuite <- function(testSuite)
   testResult <- newSourceFileTestResultData()
   testResult@sourceFileName <- absTestFileName
   
-  .testLogger$setCurrentSourceFile(absTestFileName)
   if (!file.exists(absTestFileName)) {
-    message <- paste("Test case file ", absTestFileName," not found.")
-    .testLogger$addError(testFuncName=absTestFileName,
-                        errorMsg=message)
-    
+    message <- paste("Test case file ", absTestFileName," not found.")    
     testResult@errorMsg <- message
     testResult@error <- TRUE
     return(testResult)
   }
 
+  ## init counter
+  ## has to be done here to be in the parent frame hiearchy of the
+  ## of the calling check* functions
+  testCaseCheckCount <- 0
+  
   ##  record existing object listing
   existingObj <- ls()
   ##  catch syntax errors in test case file
@@ -250,10 +274,9 @@ isValidTestSuite <- function(testSuite)
   testFunctions <- ls(pattern=testFuncRegexp)
   ##  remove existingObj from vector of test functions in case of match
   testFunctions <- testFunctions[-unlist(sapply(existingObj, function(x) grep(x, testFunctions)))]
+  
   if (inherits(res, "try-error")) {
     message <- paste("Error while sourcing ",absTestFileName,":",geterrmessage())
-    .testLogger$addError(testFuncName=absTestFileName,
-                        errorMsg=message)
     testResult@errorMsg <- message
     testResult@error <- TRUE
     return(testResult)
@@ -261,7 +284,6 @@ isValidTestSuite <- function(testSuite)
 
   testCaseArray <- newTestCaseTestResultDataArray()
   
-
   for (ci in  seq(along=testFunctions)) {
     funcName <- testFunctions[ci]
     func <- get(funcName, envir=envir)
@@ -320,11 +342,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   oldErrorHandler <- getOption("error")
   ## reinstall error handler
   on.exit(options(error=oldErrorHandler))
-  ## initialize TestLogger
-  assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
-  ##assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = environment())
-  ##  current env
-  ##assign(".testLogger", .newTestLogger(useOwnErrorHandler))
+  
 
   ## main loop
   if(isValidTestSuite(testSuites)) {
@@ -340,7 +358,8 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
     testSuite <- testSuites[[i]]
     testSuitesResultArray[i] <- newTestSuiteTestResultData()
     testSuitesResultArray[i]@name <- testSuite$name
-    
+
+    ##  FIXME: class dispatch issue after defining S4 method 
 ##     if(!isValidTestSuite(testSuite)) {
 ##       errMsg <- paste("Invalid test suite",testSuite$name,". Test run aborted.")
 ##       testSuitesResultArray[i]@error <- TRUE
@@ -348,7 +367,6 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
 ##       stop(runitError(errMsg))
 ##     }
     
-    .testLogger$setCurrentTestSuite(testSuite)
     testFiles <- list.files(testSuite$dirs,
                             pattern = testSuite$testFileRegexp,
                             full.names=TRUE)
@@ -362,10 +380,8 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   }
 
   testResult@testResultData <-  testSuitesResultArray
-
-  ret <- .testLogger$getTestData()
   
-  return(list(ret, testResult))
+  return(testResult)
 }
 
 
