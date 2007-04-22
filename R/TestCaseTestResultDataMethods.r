@@ -124,10 +124,10 @@ getFunctionName.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [character]
   ##
   ##@codestatus : untested
   
@@ -141,10 +141,10 @@ getSourceFileName.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [character]
   ##
   ##@codestatus : untested
   
@@ -158,10 +158,10 @@ getDeactivated.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [logical]
   ##
   ##@codestatus : untested
   
@@ -175,10 +175,10 @@ getFailure.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [logical]
   ##
   ##@codestatus : untested
   
@@ -192,10 +192,10 @@ getError.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [logical]
   ##
   ##@codestatus : untested
   
@@ -209,10 +209,10 @@ getSetUpError.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [logical]
   ##
   ##@codestatus : untested
   
@@ -226,10 +226,10 @@ getTearDownError.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [logical]
   ##
   ##@codestatus : untested
   
@@ -243,10 +243,10 @@ getErrorMsg.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [character]
   ##
   ##@codestatus : untested
   
@@ -260,10 +260,10 @@ getExecTime.TestCaseTestResultData <- function(obj) {
   ## 
   ##@edescr
   ##
-  ##@ipstatus : no:NA
+  ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   : []
-  ##@ret  : []
+  ##@in   obj : [TestCaseTestResultData]
+  ##@ret      : [numeric]
   ##
   ##@codestatus : untested
   
@@ -278,7 +278,21 @@ getExecTime.TestCaseTestResultData <- function(obj) {
 ##  3) compute methods
 ##
 ## ----------------------------------------
+success.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestCaseTestResultData]
+  ##
+  ##@in   obj : [TestCaseTestResultData] class object on which to invoke this method
+  ##@ret      : [logical]
+  ##
+  ##@codestatus : untested
 
+
+  return(!obj@deactivated && !obj@failure && !obj@error && !obj@setUpError && !obj@tearDownError)
+}
 
 
 ## ----------------------------------------
@@ -286,6 +300,60 @@ getExecTime.TestCaseTestResultData <- function(obj) {
 ##  4) print/validate methods
 ##
 ## ----------------------------------------
+.printTextProtocol.TestCaseTestResultData <- function(obj) {
+  ##@bdescr
+  ## 
+  ##@edescr
+  ##
+  ##@class    : [TestCaseTestResultData]
+  ##
+  ##@in   obj : [TestCaseTestResultData] class object on which to invoke this method
+  ##@ret      : [NULL] returned invisible
+  ##
+  ##@codestatus : untested
+
+  ##  FIXME
+  ##  has to be an argument of method
+  traceBackCutOff <- 7
+
+  if(success(obj)) {
+    pr(obj@functionName, ":", " ... OK (", obj@execTime, " seconds)", sep="")
+    
+  } else {
+    if(obj@error) {
+      pr(functionName, ": ERROR !! ", sep="")
+      
+    } else if (obj@failure) {
+      pr(functionName, ": FAILURE !! (check number ", obj@checkNum, ")", sep="")
+      
+    } else if (obj@deactivated) {
+      pr(functionName, ": DEACTIVATED, ", nl=FALSE)
+      
+    } else {
+      pr(functionName, ": unknown error kind", sep="")
+    }
+    
+    pr(obj@errorMsg, nl=FALSE)
+    if(length(obj@traceBack) > 0) {
+      pr("   Call Stack:")
+      if(traceBackCutOff > length(obj@traceBack)) {
+        pr("   (traceBackCutOff: ",traceBackCutOff," argument larger than length of trace back: full trace back printed)")
+        for(i in seq(along=obj@traceBack)) {
+          pr("   ", i, ": ", obj@traceBack[i], sep="")
+        }
+        
+      } else {
+        for(i in traceBackCutOff:length(obj@traceBack)) {
+          pr("   ", 1+i-traceBackCutOff, ": ", obj@traceBack[i], sep="")
+        }
+      }
+    }
+    
+  }
+  return(invisible())
+}
+
+
 showObject.TestCaseTestResultData <- function(object) {
   ##@bdescr
   ## 
@@ -293,7 +361,7 @@ showObject.TestCaseTestResultData <- function(object) {
   ##
   ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   object : [TestCaseTestResultData] the object on which to invoke this method
+  ##@in   object : [TestCaseTestResultData] class object on which to invoke this method
   ##@ret         : [NULL] returned invisible
   ##
   ##@codestatus : untested
@@ -316,7 +384,7 @@ printObject.TestCaseTestResultData <- function(x) {
   ##
   ##@class    : [TestCaseTestResultData]
   ##
-  ##@in   x   : [TestCaseTestResultData] the object on which to invoke this method
+  ##@in   x   : [TestCaseTestResultData] class object on which to invoke this method
   ##@ret      : [TestCaseTestResultData] returned invisible
   ##
   ##@codestatus : untested
@@ -396,7 +464,8 @@ verifyObject.TestCaseTestResultData <- function(obj) {
   setMethod("initialize", c("TestCaseTestResultData"), 
             .initialize.TestCaseTestResultData, where=where)
   
-  defineMethod(".constructTestCaseTestResultData", c("TestCaseTestResultData", "character"), 
+  defineMethod(".constructTestCaseTestResultData",
+               c("TestCaseTestResultData", "character"), 
                .constructTestCaseTestResultData.result, addEllipse=TRUE, where=where)
 
   defineMethod(".constructTestCaseTestResultData", c("TestCaseTestResultData"), 
@@ -427,13 +496,15 @@ verifyObject.TestCaseTestResultData <- function(obj) {
 
  
   ##  4) print/verify methods
+  defineMethod(".printTextProtocol", c("TestCaseTestResultData"),
+               .printTextProtocol.TestCaseTestResultData, where=where)
   setMethod("show", c("TestCaseTestResultData"),
             showObject.TestCaseTestResultData, where=where)
   setMethod("print", c("TestCaseTestResultData"),
             printObject.TestCaseTestResultData, where=where)
   
   defineMethod("verifyObject", c("TestCaseTestResultData"),
-               verifyObject.TestCaseTestResultData,where=where)
+               verifyObject.TestCaseTestResultData, where=where)
 
 
   if (.GLOBAL$getDebug()) {
