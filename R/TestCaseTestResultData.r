@@ -30,14 +30,16 @@
   ##@class : [TestCaseTestResultData]
   ##
   ##@slot  functionName   : [character] test suite name 
-  ##@slot  sourceFileName : [character]  
-  ##@slot  deactivated    : [logical]  
-  ##@slot  failure        : [logical]  
-  ##@slot  error          : [logical]
-  ##@slot  setUpError     : [logical]
-  ##@slot  tearDownError  : [logical]
-  ##@slot  errorMsg       : [character]
-  ##@slot  execTime       : [numeric]  
+  ##@slot  sourceFileName : [character]
+  ##@slot  checkNum       : [integer] check function counter
+  ##@slot  deactivated    : [logical] flag
+  ##@slot  failure        : [logical] flag
+  ##@slot  error          : [logical] flag
+  ##@slot  setUpError     : [logical] flag
+  ##@slot  tearDownError  : [logical] flag
+  ##@slot  errorMsg       : [character] string
+  ##@slot  execTime       : [numeric] ?sys.time
+  ##@slot  warnMessageStack : [list] list of strings, one per warning incurred
 
   
   if (.GLOBAL$getDebug()) {
@@ -48,19 +50,23 @@
   setClass("TestCaseTestResultData",
            representation(functionName     = "character",
                           sourceFileName   = "character",
+                          checkNum         = "integer",
                           deactivated      = "logical",
                           failure          = "logical",
                           error            = "logical",
                           setUpError       = "logical",
                           tearDownError    = "logical",
                           errorMsg         = "character",
-                          execTime         = "numeric"),
-           prototype(deactivated   = FALSE,
+                          traceBack        = "character",
+                          execTime         = "numeric",
+                          warnMessageStack = "list"),
+           prototype(checkNum      = as.integer(0),
+                     deactivated   = FALSE,
                      failure       = FALSE,
                      error         = FALSE,
                      setUpError    = FALSE,
                      tearDownError = FALSE,
-                     execTime      = as.integer(NA)),
+                     execTime      = as.numeric(NA)),
            validity = NULL,
            sealed   = .GLOBAL$getSealed(),
            where    = where)
