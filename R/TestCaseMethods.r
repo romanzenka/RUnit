@@ -78,6 +78,43 @@ newTestCase <- function(...) {
 }
 
 
+.constructTestCase.character <- function(obj, para1, ...) {
+  ##@bdescr
+  ##  construct a TestCase class object
+  ##@edescr
+  ##
+  ##@class  : [TestCase]
+  ##
+  ##@in  obj   : [TestCase]
+  ##@in  para1 : [character] function name
+  ##@in  ...   : [character]
+  ##@ret       : [TestCase]
+  ##
+  ##@codestatus : internal
+
+  ##  preconditions
+  ASSERT( length(para1) == 1)
+  ASSERT( !is.na(para1))
+
+  ##  may be missing
+  arg <- list(...)
+  if (length(arg) > 0) {
+    if (length(arg) != 1) {
+      setFatalError("only one argument expected.")
+    }
+  
+    if (!(names(arg) %in% c("sourceFileName"))) {
+      setFatalError("argument name not matched in slots.")
+    }
+  
+    slot(obj, names(arg)) <- arg[[1]]
+  }
+  
+  obj@functionName <- para1
+  
+  return(obj)
+}
+
 
 ## --------------------------------------
 ##
@@ -244,22 +281,22 @@ verifyObject.TestCase <- function(obj) {
     setError(errMsg)
     return(FALSE)
   }
-  if (length(obj@sourceFileName) != 1) {
-    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'sourceFileName'",
-                    "has to be vector of length 1.", sep="")
-    setError(errMsg)
-    return(FALSE)
-  }
-  if (is.na(obj@sourceFileName)) {
-    errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'sourceFileName'",
-                    "contains missing value.", sep="")
-    setError(errMsg)
-    return(FALSE)
-  }
+##   if (length(obj@sourceFileName) != 1) {
+##     errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'sourceFileName'",
+##                     "has to be vector of length 1.", sep="")
+##     setError(errMsg)
+##     return(FALSE)
+##   }
+##   if (is.na(obj@sourceFileName)) {
+##     errMsg <- paste("invalid '",is(obj)[1],"' class object: slot 'sourceFileName'",
+##                     "contains missing value.", sep="")
+##     setError(errMsg)
+##     return(FALSE)
+##   }
   
   ##  TODO more slot checks
   
-  return(FALSE)
+  return(TRUE)
 }
 
 
@@ -282,7 +319,8 @@ verifyObject.TestCase <- function(obj) {
   ##  1) constructor methods
   setMethod("initialize", c("TestCase"), 
             .initialize.TestCase, where=where)
-  
+  defineMethod(".constructTestCase", c("TestCase", "character"), 
+               .constructTestCase.character, addEllipse=TRUE, where=where)
   defineMethod(".constructTestCase", c("TestCase"), 
                .constructTestCase.empty, where=where)
 
