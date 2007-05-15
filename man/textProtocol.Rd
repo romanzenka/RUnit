@@ -1,3 +1,23 @@
+%%  RUnit : A unit test framework for the R programming language
+%%  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%
+%%  This program is free software; you can redistribute it and/or modify
+%%  it under the terms of the GNU General Public License as published by
+%%  the Free Software Foundation; either version 2 of the License, or
+%%  (at your option) any later version.
+%%
+%%  This program is distributed in the hope that it will be useful,
+%%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%  GNU General Public License for more details.
+%%
+%%  You should have received a copy of the GNU General Public License
+%%  along with this program; if not, write to the Free Software
+%%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+%%  $Id$
+
+\encoding{latin1}
 \name{textProtocol}
 \alias{printTextProtocol}
 \alias{printHTMLProtocol}
@@ -27,10 +47,10 @@
     all exectuted test functions.}
   \item{traceBackCutOff}{The details section of the test protocol contains the call stack for
     all errors. The first few entries of the complete stack typically
-    contain the internal RUnit function calls that execute the test cases and
+    contain the internal \pkg{RUnit} function calls that execute the test cases and
     are irrelevant for debugging. This argument specifies how many calls
     are removed from the stack before it is written to the protocol. The
-    default value is chosen such that all uninteresting RUnit calls are
+    default value is chosen such that all uninteresting \pkg{RUnit} calls are
     removed from the stack if \code{runTestSuite} has been called from
     the console. This argument takes effect only if
     \code{showDetails=TRUE}.}
@@ -72,7 +92,7 @@
   information as possible is provided.
 }
 
-\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
 
 \seealso{
   \code{\link{runTestSuite}}
