@@ -17,9 +17,12 @@
 
 %%  $Id$
 
+\encoding{latin1}
 \name{runTestSuite}
 \alias{runTestSuite}
+\concept{test suite}
 \alias{runTestFile}
+\concept{test runner}
 \alias{defineTestSuite}
 \alias{isValidTestSuite}
 \title{Definition and execution of RUnit test suites.}
@@ -51,11 +54,12 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
 
 \description{
   \code{runTestSuite} is the central function of the RUnit package.
-  Given one or more test suites it sources all test files and then
-  executes all test functions as defined by the test suites. During
-  the execution information about the test function calls including the
-  possible occurence of failures or errors is stored and returned at the
-  end of the test run. The return value can then be used to create a
+  Given one or more test suites it identifies and sources specified test
+  code files one after another and executes all specified test functions
+  defined therein. This is done sequentially for suites, test code files
+  and test functions. During the execution information about the test function calls including the
+  possible occurence of failures or errors is recorded and returned at the
+  end of the test run. The return object can then be used to create a
   test protocol of various formats.
 
   \code{runTestFile} is just a  convenience function for executing the
@@ -71,27 +75,32 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
   The basic idea of the RUnit test framework is to declare a certain set
   of functions to be test functions and report the results of their
   execution. The test functions must not take any parameter nor return
-  anything important such that their execution can be automatised.
+  anything such that their execution can be automatised.
 
   The specification which functions are taken as test functions is
   contained in an object of class  \code{RUnitTestSuite} which is a list
   with the following elements.
+  \describe{
   \item{name}{A simple character string. The name of a test suite is mainly used to create a well
     structure test protocol.}
   \item{dirs}{A character vector containing the absolute names of all
     directories where to look for test files.}
   \item{testFileRegexp}{A regular expression specifying the test
-    files. All files in the test directories whose name match this
-    regular expression are taken as test files.}
+    files. All files in the test directories whose names match this
+    regular expression are taken as test files. Order of file names will
+    be alpabetical but depending on the used locale.}
   \item{testFuncRegexp}{A regular expression specifying the test
     functions. All functions defined in the test files whose names match
-    this regular expression are used as test functions}
+    this regular expression are used as test functions. Order of test
+    functions will be alphabetical.}
+}
 
-  After the RUnit framework has executed all test suites it returns all
+  After the RUnit framework has sequentially executed all test suites it returns all
   data collected during the test run as an object of class
-  \code{RUnitTestData}. This is a (unfortunately rather deeply nested)
+  \code{RUnitTestData}. This is a (deeply nested)
   list with one list element for each executed test suite. Each of these
   executed test suite lists contains the following elements:
+  \describe{
   \item{nTestFunc}{The number of test functions executed in the test
     suite.}
   \item{nErr}{The number of errors that occured during the execution.}
@@ -103,24 +112,27 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
     functions of the test suite.}
   \item{sourceFileResults}{A list containing the results for each
     separate test file of the test suite.}
+}
 
   The \code{sourceFileResults} list just mentioned contains one element
-  for each test function ion the source file. This elemnt is a list with
+  for each specified test function in the source file. This elemnt is a list with
   the following entries:
-  \item{kind}{One of \code{success}, \code{error} or \code{failure}
+  \describe{
+  \item{kind}{Character string with one of \code{success}, \code{error} or \code{failure}
     describing the outcome of the test function.}
-  \item{msg}{the error message in the case of an error or failure and
-    \code{NULL} for a successful test function.}
+  \item{msg}{the error message in case of an error or failure and
+    \code{NULL} for a successfully executed test function.}
   \item{time}{The duration (measured in seconds) of the successful
     execution of a test function and \code{NULL} in the case of an error
     or failure.}
   \item{traceBack}{The full trace back as a character vector in the case of an error and
     \code{NULL} otherwise.}
+}
 
   To further control test case execution it is possible to define two
-  parameterless function \code{.setUp()} and \code{.tearDown()} in a
+  parameterless function \code{.setUp()} and \code{.tearDown()} in each
   test file. \code{.setUp()} is executed directly before and
-  \code{.tearDown()} directly after each test function.
+  \code{.tearDown()} directly after each test function execution.
 
   Quite often, it is useful to base test cases on random numbers. To
   make this procedure reproducible, the function \code{runTestSuite}
@@ -142,7 +154,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
   \code{defineTestSuite} returns an object of class  \code{RUnitTestSuite}.
 }
 
-\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
