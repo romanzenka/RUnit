@@ -17,6 +17,7 @@
 
 %%  $Id$
 
+\encoding{latin1}
 \name{tracker}
 \alias{tracker}
 
@@ -64,7 +65,7 @@ function on the inspect list with the following elements:
   \item{funcCall}{The declaration of the function.}
 }
 
-\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
 
 \seealso{
   \code{\link{inspect}} for the registration of functions \& methods to

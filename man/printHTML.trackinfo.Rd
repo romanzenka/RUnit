@@ -17,6 +17,7 @@
 
 %%  $Id$
 
+\encoding{latin1}
 \name{printHTML.trackInfo}
 \alias{printHTML.trackInfo}
 \title{Write HTML pages of the tracking result.}
@@ -49,7 +50,7 @@
   become clearly visible.
 }
 
-\author{Thomas K\"onig, Klaus J\"unemann \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
 
 \examples{
 
