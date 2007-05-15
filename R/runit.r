@@ -149,11 +149,9 @@ isValidTestSuite <- function(testSuite)
   
   ##  write to stdout for logging
 
-
   func <- get(funcName, envir=envir)
   ## anything else than a function is ignored.
   if(mode(func) != "function") {
-##     cat("\n ", funcName," is not of mode function. skipped.\n")
     return()
   }
 
@@ -215,7 +213,7 @@ isValidTestSuite <- function(testSuite)
   ##@in testFuncRegexp : [character] a regular expression identifying the names of test functions
   ##
   ##@codestatus : internal
-  
+
   .testLogger$setCurrentSourceFile(absTestFileName)
   if (!file.exists(absTestFileName)) {
     message <- paste("Test case file ", absTestFileName," not found.")
@@ -224,8 +222,11 @@ isValidTestSuite <- function(testSuite)
     return()
   }
 
+  sandbox <- new.env(parent=.GlobalEnv)
+  ##  will be destroyed after function closure is left
+  
   ##  catch syntax errors in test case file
-  res <- try(source(absTestFileName, local=TRUE))
+  res <- try(sys.source(absTestFileName, envir=sandbox))
   if (inherits(res, "try-error")) {
     message <- paste("Error while sourcing ",absTestFileName,":",geterrmessage())
     .testLogger$addError(testFuncName=absTestFileName,
@@ -233,10 +234,11 @@ isValidTestSuite <- function(testSuite)
     return()
   }
 
-  testFunctions <- ls(pattern=testFuncRegexp)
+  testFunctions <- ls(pattern=testFuncRegexp, envir=sandbox)
   for (funcName in testFunctions) {
-    .executeTestCase(funcName, envir=environment(), setUpFunc=.setUp, tearDownFunc=.tearDown)
+    .executeTestCase(funcName, envir=sandbox, setUpFunc=.setUp, tearDownFunc=.tearDown)
   }
+  
 }
 
 
