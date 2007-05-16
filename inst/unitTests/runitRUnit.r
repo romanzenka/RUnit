@@ -104,27 +104,27 @@ testRUnit.checkEquals <- function()
 
   ##  S4 objects
   if (identical(TRUE, require(methods))) {
-    setClass("track",
+    setClass("track1",
              representation(x="numeric", y="numeric"),
              where=.GlobalEnv)
-    on.exit(removeClass("track", where=.GlobalEnv))
+    on.exit(removeClass("track1", where=.GlobalEnv))
     
-    s4Obj <- try(new("track"))
+    s4Obj <- try(new("track1"))
     s4Obj@x <- 1:10
     s4Obj@y <- 10:1
     checkEquals( s4Obj, s4Obj)
 
     ##  S4 class containing S4 class slot
     setClass("trackPair",
-             representation(track1 = "track",
-                            track2 = "track"),
+             representation(trackx = "track1",
+                            tracky = "track1"),
              where=.GlobalEnv)
-    ##  add=TRUE available only for R > 2.4.1
-    #on.exit(removeClass("track", where=.GlobalEnv), add=TRUE)
+    
+    on.exit(removeClass("trackPair", where=.GlobalEnv), add=TRUE)
 
     tPair <- new("trackPair")
-    tPair@track1 <- s4Obj
-    tPair@track2 <- s4Obj
+    tPair@trackx <- s4Obj
+    tPair@tracky <- s4Obj
     checkEquals( tPair, tPair)
   }
 
@@ -189,12 +189,12 @@ testRUnit.checkEquals <- function()
   ##  S4 objects
   if (identical(TRUE, require(methods))) {
     ##  class defined above
-    s4Obj <- new("track")
+    s4Obj <- new("track1")
     s4Obj@x <- 1:10
-    checkException( checkEquals( s4Obj, new("track")))
+    checkException( checkEquals( s4Obj, new("track1")))
 
     tPair <- new("trackPair")
-    tPair@track1 <- s4Obj
+    tPair@trackx <- s4Obj
     checkException( checkEquals( tPair, new("trackPair")))
   }
 
@@ -265,13 +265,13 @@ testRUnit.checkIdentical <- function()
 
   ##  S4 objects
   if (identical(TRUE, require(methods))) {
-    setClass("track",
+    setClass("track1",
              representation(x="numeric", y="numeric"),
              where=.GlobalEnv)
-    on.exit(removeClass("track", where=.GlobalEnv))
+    on.exit(removeClass("track1", where=.GlobalEnv))
 
-    s4Obj <- try(new("track"))
-    checkIdentical( s4Obj, new("track"))
+    s4Obj <- try(new("track1"))
+    checkIdentical( s4Obj, new("track1"))
     rm(s4Obj)
   }
 
@@ -308,7 +308,7 @@ testRUnit.checkIdentical <- function()
              representation(x="numeric", y="numeric"),
              prototype(x=as.numeric(1:23), y=as.numeric(23:1)),
              where=.GlobalEnv)
-    on.exit(removeClass("track2", where=.GlobalEnv))
+    on.exit(removeClass("track2", where=.GlobalEnv), add=TRUE)
 
     s4Obj <- try(new("track2"))
     s4ObjDiff <- s4Obj
