@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004,2005  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,13 @@
 
 cat("\n\nRUnit test cases for 'RUnit:inspect' functions\n\n")
 
+.tearDown <- function() {
+  if (exists("track", envir=.GlobalEnv)) {
+    rm(track)
+  }
+}
+
+
 foo <- function(x) {
   y <- 0
   for(i in 1:100)
@@ -32,7 +39,6 @@ foo <- function(x) {
 
 testRUnit.inspect <- function() {
 
-  ##DEACTIVATED("envir issue: Error in inspect(foo(10)) : Object \"track\" not found.")
   ## the name track is necessary
   track <<- tracker()
   
