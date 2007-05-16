@@ -221,6 +221,7 @@ isValidTestSuite <- function(testSuite)
                         errorMsg=message)
     return()
   }
+  
 
   sandbox <- new.env(parent=.GlobalEnv)
   ##  will be destroyed after function closure is left
@@ -233,7 +234,13 @@ isValidTestSuite <- function(testSuite)
                         errorMsg=message)
     return()
   }
-
+  ##  test file provides definition of .setUp/.tearDown
+  if (exists(".setUp", envir=sandbox, inherits=FALSE)) {
+    .setUp <- get(".setUp", envir=sandbox)
+  }
+  if (exists(".tearDown", envir=sandbox, inherits=FALSE)) {
+    .tearDown <- get(".tearDown", envir=sandbox)
+  }
   testFunctions <- ls(pattern=testFuncRegexp, envir=sandbox)
   for (funcName in testFunctions) {
     .executeTestCase(funcName, envir=sandbox, setUpFunc=.setUp, tearDownFunc=.tearDown)
