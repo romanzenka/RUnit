@@ -8,6 +8,20 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.16
+    o   changed the environment test code files are evaluated, now 
+        a new environment outside the RUnit namespace is utilized,
+        allowing e.g. setClass calls without specifying where=.GlobalEnv
+    o   updated documentation to use encoding latin1
+    o   use LazyLoad: yes instead of SaveImage:yes (to be deprecated for R 2.6.0)
+    o   intenal error handler rewritten to be more failure robust
+    o   added new test cases for .setUp and .tearDown, extended tests
+        to cover S4 class and method behaviour in check* functions
+    o   example on S4 virual class testing added
+    o   utility function to compare to RUnitTestResult objects added:
+        concept idea for comparing and optimizing test suite
+        performance (share/R/checkCode.r)
+
 Changes in RUnit 0.4.15
     o   compatibility to R 1.9.0 as declared in DESCRIPTION: removed calls to isTRUE 
         as this was introduced only in R 2.1.0, replaced where needed by identical(TRUE, x)
