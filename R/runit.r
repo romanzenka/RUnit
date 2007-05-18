@@ -284,6 +284,9 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]))
   
   oldErrorHandler <- getOption("error")
+  ## reinstall error handler
+  on.exit(options(error=oldErrorHandler), add=TRUE)
+  
   ## initialize TestLogger
   assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
 
@@ -310,8 +313,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   }
 
   ret <- .testLogger$getTestData()
-  ## reinstall error handler
-  options(error=oldErrorHandler)
+  
   return(ret)
 }
 
