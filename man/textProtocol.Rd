@@ -102,16 +102,16 @@
 \examples{
 
 ## run some test suite
-myTestSuite <- defineTestSuite("my test suite", "tests")
-testData <- runTestSuite(myTestSuite)
+myTestSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+testResult <- runTestSuite(myTestSuite)
 
 
 ## prints detailed text protocol
 ## to standard out:
-printTextProtocol(testData, showDetails=TRUE)
+printTextProtocol(testResult, showDetails=TRUE)
 ## prints detailed html protocol
 ## to standard out
-printHTMLProtocol(testData)
+printHTMLProtocol(testResult)
 
 }
 
