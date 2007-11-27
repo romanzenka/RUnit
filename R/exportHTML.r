@@ -39,7 +39,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   {
     
     ## open png device
-    png(file=pngfile,width=1024,height=960);
+    png(filename=pngfile,width=1024,height=960);
     plot(1:10,axes=FALSE,xlab="",ylab="",main="",type="n");
     text(5,5,labels="No connection graph available");
     dev.off();
@@ -56,7 +56,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   con <- (con + 14) %/% 15;
 
   ## open png device
-  png(file=pngfile,width=1024,height=960)
+  png(filename=pngfile,width=1024,height=960)
   
   ## basic plot
   plot(x=1:nrow(con), y=1:nrow(con), type="n",axes=FALSE,ylab="# line",xlab="",
@@ -66,7 +66,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   text(x=1, y=1:nrow(con), labels=1:nrow(con))
 
   ## offset, to avoid complete overlay
-  offset <- rep(3,length=nrow(con))
+  offset <- rep(3,length.out=nrow(con))
 
   ## minimal x
   xmin <- 2
@@ -192,7 +192,7 @@ printHTML.trackInfo <- function(object, baseDir=".")
   writeHtmlHeader("RUnit Code Inspection - Overview",htmlFile);
   writeHtmlSection("Overview",2,htmlFile);
   writeBeginTable(c("Categ.","Name","Signature"),htmlFile)
-  for(i in seq(along=object))
+  for(i in seq_along(object))
   {
     funcID <- strsplit(names(object)[i],"/")[[1]];
     funcCat <- funcID[1]
@@ -256,7 +256,7 @@ printHTML.trackInfo <- function(object, baseDir=".")
   }
   
   ## create result pages
-  for(i in seq(along=object))
+  for(i in seq_along(object))
   {
     absGraphImg  <- file.path(path, paste("con",i,".png",sep=""))
     absGraphFile <- file.path(path, paste("con",i,".html",sep=""))
@@ -292,7 +292,7 @@ printHTML.trackInfo <- function(object, baseDir=".")
     writeCR(htmlFile);
 
     writeBeginTable(c("line","code","calls","time"),htmlFile)
-    for(j in seq(along=object[[i]]$src))
+    for(j in seq_along(object[[i]]$src))
     {
       srcLine <- object[[i]]$src[j]
       leadingSpaceNr <- attr(regexpr("^( )*",srcLine),"match.length")

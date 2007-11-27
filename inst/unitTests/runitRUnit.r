@@ -38,11 +38,12 @@ testRUnit.checkEquals <- function()
   checkEquals(namedInt, x, checkNames=FALSE)
   
   ##  numeric
-  checkEquals(9,9)
+  y <- 1/0
+  checkEquals(9, y)
   checkEquals( numeric(1), numeric(1))
-  checkEquals( 0.01, 0.02, tol=0.01)
+  checkEquals( 0.01, 0.02, tolerance=0.01)
   tmp <- c(0.01, NA, 0.02, Inf, -Inf, NaN, 1.0)
-  checkEquals( tmp, tmp, tol=0.01)
+  checkEquals( tmp, tmp, tolerance=0.01)
   
   ##  complex
   checkEquals(complex(0), complex(0))
@@ -76,8 +77,8 @@ testRUnit.checkEquals <- function()
   
   ##  list
   checkEquals( list(100), list(100))
-  checkEquals( list(100), list(100), tol=1)
-  alphaList <- seq(along=letters)
+  checkEquals( list(100), list(100), tolerance=1)
+  alphaList <- seq_along(letters)
   names(alphaList) <- letters
   checkEquals( alphaList, alphaList)
   checkEquals( alphaList, alphaList, checkNames=FALSE)
@@ -130,9 +131,9 @@ testRUnit.checkEquals <- function()
 
   
   ##  exception handling
-  checkException( checkEquals(1 , 1, tol=FALSE))
-  checkException( checkEquals(1 , 1, tol=numeric(0)))
-  checkException( checkEquals(1 , 1, tol=numeric(2)))
+  checkException( checkEquals(1 , 1, tolerance=FALSE))
+  checkException( checkEquals(1 , 1, tolerance=numeric(0)))
+  checkException( checkEquals(1 , 1, tolerance=numeric(2)))
 
   ##  integer
   namedInt <- 1:9
@@ -141,7 +142,7 @@ testRUnit.checkEquals <- function()
   
   ##  numeric
   checkException( checkEquals( 8, 9))
-  checkException( checkEquals( 0.01, 0.02, tol=0.009))
+  checkException( checkEquals( 0.01, 0.02, tolerance=0.009))
   
   ##  complex
   checkException( checkEquals(complex(0), complex(1)))
@@ -162,7 +163,7 @@ testRUnit.checkEquals <- function()
   checkException( checkEquals( lmFitInter, lmFit))
   
   ##  factor
-  alphaFacRecoded <- factor(alphaFac, labels=as.character(seq(along=levels(alphaFac))))
+  alphaFacRecoded <- factor(alphaFac, labels=as.character(seq_along(levels(alphaFac))))
   checkException( checkEquals(alphaFacRecoded, alphaFac))
   
   ##  list
@@ -208,7 +209,7 @@ testRUnit.checkEqualsNumeric <- function()
   ##@edescr
 
   checkTrue( checkEqualsNumeric( 9,9))
-  checkTrue( checkEqualsNumeric( 9.1,9.2, tol=0.1))
+  checkTrue( checkEqualsNumeric( 9.1,9.2, tolerance=0.1))
   x <- 1:10
   attributes(x) <- list(dummy="nonsense")
   checkTrue( checkEqualsNumeric( x, x))
@@ -360,10 +361,10 @@ testRUnit.checkException <- function()
   checkException( checkTrue( ))
   checkException( checkEquals( ))
   checkException( checkEquals( 24))
-  checkException( checkEquals( 24, 24, tol="dummy"))
+  checkException( checkEquals( 24, 24, tolerance="dummy"))
   checkException( checkEqualsNumeric( ))
   checkException( checkEqualsNumeric( 24))
-  checkException( checkEqualsNumeric( 24, 24, tol="dummy"))
+  checkException( checkEqualsNumeric( 24, 24, tolerance="dummy"))
 
   checkException( stop("with message"), silent=FALSE)
   checkException( stop("wo message"), silent=TRUE)
