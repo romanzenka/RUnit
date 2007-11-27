@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -234,9 +234,9 @@ printHTMLProtocol <- function(testData,
       if(testData[[tsName]]$nErr > 0) {
         srcFileRes <- testData[[tsName]]$sourceFileResults
         srcFileNames <- names(srcFileRes)
-        for(i in seq(length=length(srcFileRes))) {
+        for(i in seq_len(srcFileRes)) {
           testFuncNames <- names(srcFileRes[[i]])
-          for(j in seq(length=length(testFuncNames))) {
+          for(j in seq_len(testFuncNames)) {
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "error") {
               lnk <- paste("<a href=\"",
@@ -266,9 +266,9 @@ printHTMLProtocol <- function(testData,
       if(testData[[tsName]]$nFail > 0) {
         srcFileRes <- testData[[tsName]]$sourceFileResults
         srcFileNames <- names(srcFileRes)
-        for(i in seq(length=length(srcFileRes))) {
+        for(i in seq_len(srcFileRes)) {
           testFuncNames <- names(srcFileRes[[i]])
-          for(j in seq(length=length(testFuncNames))) {
+          for(j in seq_len(testFuncNames)) {
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "failure") {
               lnk <- paste("<a href=\"",
@@ -299,9 +299,9 @@ printHTMLProtocol <- function(testData,
       if(testData[[tsName]]$nDeactivated > 0) {
         srcFileRes <- testData[[tsName]]$sourceFileResults
         srcFileNames <- names(srcFileRes)
-        for(i in seq(length=length(srcFileRes))) {
+        for(i in seq_len(srcFileNames)) {
           testFuncNames <- names(srcFileRes[[i]])
-          for(j in seq(length=length(testFuncNames))) {
+          for(j in seq_len(testFuncNames)) {
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "deactivated") {
               lnk <- paste("<a href=\"",

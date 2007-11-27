@@ -126,10 +126,10 @@ printTextProtocol <- function(testData,
        sop(testData[[tsName]]$nErr, "error"), ", ",
        sop(testData[[tsName]]$nFail, "failure"), sep="")
     if(separateFailureList && (testData[[tsName]]$nErr + testData[[tsName]]$nFail > 0)) {
-      srcFileRes <- testData[[tsName]]$sourceFileResults
-      for(i in seq(length=length(srcFileRes))) {
+      srcFileRes <- testData[[tsName]][["sourceFileResults"]]
+      for(i in seq_along(srcFileRes)) {
         testFuncNames <- names(srcFileRes[[i]])
-        for(j in seq(length=length(testFuncNames))) {
+        for(j in seq_along(testFuncNames)) {
           funcList <- srcFileRes[[i]][[testFuncNames[j]]]
           if(funcList$kind == "error") {
             pr("ERROR in ", testFuncNames[j], ": ", funcList$msg, nl=FALSE, sep="")

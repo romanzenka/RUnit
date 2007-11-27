@@ -259,7 +259,7 @@ getErrors <- function(testData) {
     stop("getErrors needs an object of class 'RUnitTestData' as argument.")
   }
   ret <- list(nErr=0, nDeactivated=0, nFail=0, nTestFunc=0)
-  for(i in seq(length=length(testData))) {
+  for(i in seq_along(testData)) {
     ret$nErr <- ret$nErr + testData[[i]]$nErr
     ret$nDeactivated <- ret$nDeactivated + testData[[i]]$nDeactivated
     ret$nFail <- ret$nFail + testData[[i]]$nFail

@@ -256,7 +256,7 @@ writeBeginTable <- function(header,htmlFile,border=1,
     writeBeginTag("tr",htmlFile)
 
     
-    for(i in seq(along=header)) {
+    for(i in seq_along(header)) {
       para <- ""
       if(!is.null(columnWidth)) {
         if (length(columnWidth) == length(header)) {
@@ -298,7 +298,7 @@ writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
   {
     bgcolor <- rep(bgcolor,length(row));
   }
-  for(i in seq(along=row))
+  for(i in seq_along(row))
   {
     if(bgcolor[i] == "")
     {

@@ -72,7 +72,7 @@ isValidTestSuite <- function(testSuite)
     warning("'testSuite' object does not conform to S3 class definition.")
     return(FALSE)
   }
-  for(i in seq(along=testSuite))
+  for(i in seq_along(testSuite))
   {
     if(!is.character(testSuite[[i]]))
     {
@@ -294,7 +294,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   if(isValidTestSuite(testSuites)) {
     testSuites <- list(testSuites)
   }
-  for (i in seq(length=length(testSuites))) {
+  for (i in seq_along(testSuites)) {
     testSuite <- testSuites[[i]]
     if(!isValidTestSuite(testSuite)) {
       errMsg <- paste("Invalid test suite",testSuite$name,". Test run aborted.")
