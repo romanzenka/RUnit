@@ -1,3 +1,472 @@
+2007-11-27 20:05  burgerm
+
+	* DESCRIPTION: patch level 0.4.18; R dependency set to 2.4.0 were
+	  seq_along was introduced
+
+2007-11-27 19:56  burgerm
+
+	* tests/runitRUnit.r: seq_along introduced; partial argument names
+	  expanded
+
+2007-11-27 19:55  burgerm
+
+	* R/runit.r: seq_along introduced
+
+2007-11-27 19:53  burgerm
+
+	* R/exportHTML.r: seq_along introduced; partial argument names
+	  expanded
+
+2007-11-27 19:52  burgerm
+
+	* R/: html.r, htmlProtocol.r, testLogger.r, textProtocol.r:
+	  seq_along introduced
+
+2007-05-21 13:42  burgerm
+
+	* NEWS: updated for 0.4.17 CRAN submission
+
+2007-05-21 13:37  burgerm
+
+	* DESCRIPTION: patch level 0.4.17
+
+2007-05-21 13:33  burgerm
+
+	* man/: textProtocol.Rd, runit.Rd: changed example code to work
+	  with installed package test case example path
+
+2007-05-18 14:58  burgerm
+
+	* R/runit.r: try harder to ensure previous error handler is
+	  reinstantiated after test runner execution
+
+2007-05-18 14:56  burgerm
+
+	* DESCRIPTION: patch level 0.4.16
+
+2007-05-18 14:55  burgerm
+
+	* NEWS: updated for 0.4.16
+
+2007-05-16 15:17  burgerm
+
+	* DESCRIPTION: SaveImage replaced by LazyLoad
+
+2007-05-16 14:27  burgerm
+
+	* inst/share/R/compareRUnitTestData.r: initial prototype: comare
+	  two RUnitTestData objects: intended for test run time performance
+	  evaluation
+
+2007-05-16 14:24  burgerm
+
+	* R/runit.r: .sourceTestFile: updated to observe - after sandbox
+	  introduction - test case file defined .setUp and .tearDown
+	  functions
+
+2007-05-16 14:21  burgerm
+
+	* tests/runitS4.r: check S4 setClass + removeClass chain with new
+	  sandbox implementation
+
+2007-05-16 14:19  burgerm
+
+	* tests/: runitSetUp.r, runitTearDown.r: added for focused check of
+	  .setUp and .tearDown functioning
+
+2007-05-16 14:16  burgerm
+
+	* tests/runitRUnit.r: class names changed; clean up operation
+	  revised: try harder to reset to previous global state
+
+2007-05-16 14:15  burgerm
+
+	* tests/runitInspect.r: .tearDown added: cleanup
+
+2007-05-16 10:49  burgerm
+
+	* DESCRIPTION: dev patch level 0.4.15-2
+
+2007-05-16 00:46  burgerm
+
+	* man/runit.Rd: added encoding latin1 to display umlaut correctly
+	  if available; make use of describe command to format details
+	  section
+
+2007-05-16 00:42  burgerm
+
+	* man/checkFuncs.Rd: added encoding latin1 to display umlaut
+	  correctly if available; added paragraph on S4 classes and methods
+	  to details section
+
+2007-05-15 23:46  burgerm
+
+	* man/inspect.Rd: added encoding latin1 to display umlaut correctly
+	  if available
+
+2007-05-15 23:45  burgerm
+
+	* man/textProtocol.Rd: added encoding latin1 to display umlaut
+	  correctly if available; added header; added \pkg command around
+	  RUnit phrase
+
+2007-05-15 23:43  burgerm
+
+	* man/: RUnit-intro.Rd, tracker.Rd, printHTML.trackinfo.Rd: added
+	  encoding latin1 to display umlaut correctly if available
+
+2007-05-15 17:33  burgerm
+
+	* R/runit.r: make use of a new environment defined as child of
+	  .GlobalEnv to allow setClass calls wo where argument
+
+2007-04-25 08:46  burgerm
+
+	* R/TestCaseMethods.r: construct method added; verify method checks
+	  partially switched off
+
+2007-04-25 08:39  burgerm
+
+	* R/TestCaseTestResultData.r: slots checkNum, traceBack and
+	  warnMessageStack added
+
+2007-04-23 00:14  burgerm
+
+	* R/testLogger.r: replaced by condition signals
+
+2007-04-23 00:10  burgerm
+
+	* R/TestCaseTestResultDataMethods.r: .printTextProtocol added: used
+	  in recursive call chain
+
+2007-04-23 00:08  burgerm
+
+	* R/: SourceFileTestResultDataMethods.r,
+	  TestSuiteTestResultDataMethods.r: .printTextProtocol, getError
+	  and getTestCaseNum added: used in recursive call chain
+
+2007-04-23 00:05  burgerm
+
+	* R/runit.r: removed .testLogger; added warning handler; switched
+	  to condition signals; use testCaseCheckCount for check call
+	  counting
+
+2007-04-23 00:03  burgerm
+
+	* R/checkFuncs.r: removed .testLogger
+
+2007-04-23 00:00  burgerm
+
+	* DESCRIPTION: removed .testLogger; added experimental condition
+	  signaling
+
+2007-04-15 12:50  burgerm
+
+	* DESCRIPTION: patch level 0.6.0-2 exploration stage; NOT FIT FOR
+	  PUBLIC USE
+
+2007-04-15 12:48  burgerm
+
+	* NAMESPACE: new S4 classes and methods added
+
+2007-04-15 12:47  burgerm
+
+	* R/runit.r: experimental: enabled new S4 class based result
+	  collection IN PARALLEL to exiting logger mechanism for
+	  exploration; NOT FIT FOR PUBLIC USE
+
+2007-04-15 12:45  burgerm
+
+	* R/Logger.r: getSealed added to exported accessors
+
+2007-04-15 12:40  burgerm
+
+	* R/checkFuncs.r: RUnit specific signals/conditions implemented and
+	  enabled in check* functions
+
+2007-04-15 12:38  burgerm
+
+	* R/zzz.r: log statement added; TestResultData method def enabled
+
+2007-04-15 12:37  burgerm
+
+	* R/TestSuiteTestResultDataMethods.r: method implementation added,
+	  accessor methods added
+
+2007-04-15 12:36  burgerm
+
+	* R/TestSuiteTestResultData.r: slots error & errorMsg added to
+	  cover suite level errors
+
+2007-04-15 12:35  burgerm
+
+	* R/TestResultData.r: slot name changed
+
+2007-04-15 12:34  burgerm
+
+	* R/TestCaseTestResultDataMethods.r: method implementation added,
+	  accessor methods added
+
+2007-04-15 12:33  burgerm
+
+	* R/TestCaseTestResultData.r: class definition reworked, slots
+	  renamed and added: NOT FINAL DESIGN
+
+2007-04-15 12:31  burgerm
+
+	* R/SourceFileTestResultDataMethods.r: method implementation added,
+	  getTestResultData added
+
+2007-04-15 12:29  burgerm
+
+	* R/SourceFileTestResultData.r: slot name renamed to
+	  sourceFileName, slots error & errorMsg added to cover source file
+	  level errors
+
+2007-04-15 12:28  burgerm
+
+	* R/htmlProtocol.r: regexpr fixed for R 2.5.0
+
+2007-04-12 10:29  burgerm
+
+	* R/inspector.r: unused variables removed
+
+2007-04-09 19:42  burgerm
+
+	* tests/runitRUnit.r: all check* test cases reviewed and extended
+	  to cover more failure conditions; checkEquals extended to be
+	  checked for all basic R types and S4 objects
+
+2007-04-09 19:38  burgerm
+
+	* R/testLogger.r: errorHandler: rewritten to be more failure
+	  robust; docu added
+
+2007-04-09 19:25  burgerm
+
+	* R/checkFuncs.r: checkEqualsNumeric: one more argument check added
+	  (now identical to checkEquals; docu description made more clear
+
+2007-04-08 14:14  burgerm
+
+	* R/runit.r: runTestSuite docu make more clear
+
+2007-04-08 14:11  burgerm
+
+	* R/00Init.r: pass lib argument on to packageDescription to load
+	  correct DESCRITPION file
+
+2007-04-05 16:28  burgerm
+
+	* R/htmlProtocol.r: included deactivatedStyle tag to HTML output:
+	  non-visible change
+
+2007-04-02 00:08  burgerm
+
+	* R/zzz.r: class and method init calls added/updated
+
+2007-04-02 00:04  burgerm
+
+	* R/00Init.r: packageDescription now observes the library path for
+	  the currently loaded package version
+
+2007-04-02 00:02  burgerm
+
+	* R/TestCaseTestResultData.r: sealed argument controlled by .GLOBAL
+	  state; slot failed renamed to failure
+
+2007-04-01 23:59  burgerm
+
+	* R/: TestResultData.r, SourceFileTestResultData.r,
+	  TestSuiteTestResultData.r: sealed argument controlled by .GLOBAL
+	  state
+
+2007-04-01 23:53  burgerm
+
+	* R/: TestCase.r, TestCaseMethods.r, TestLogger.r,
+	  TestLoggerMethods.r: playground extended
+
+2007-04-01 23:51  burgerm
+
+	* R/ArrayMethods.r:  - code formating changes ArrayMethods.r
+	   - setNames: unnecessary precondition check removed
+	   - concat: precondition check added
+	     method definition also added to Array base class
+	   - printObject rewritten to use show
+	   - show method added
+	   - array class constructor: sealed argument controlled by .GLOBAL
+	  state
+	   - applyFun method definition added to array class generator
+
+2007-04-01 23:43  burgerm
+
+	* R/Array.r: allow sealed argument to be controlled by .GLOBAL
+	  state
+
+2007-04-01 23:42  burgerm
+
+	* R/classUtilities.r: in setGeneric avoid assigning to temp
+	  variable value as no postprocessing is intended here and this
+	  assignment has a small memory penalty as shown by memprof
+
+2007-04-01 23:38  burgerm
+
+	* DESCRIPTION: patch level 0.6.0-1: more exploratory code chunks
+	  added
+
+2007-03-31 23:15  burgerm
+
+	* inst/examples/runitVirtualClassTest.r: S4 class example
+
+2007-03-29 09:26  burgerm
+
+	* inst/share/R/checkCode.r: utility wrappers around checkUsage
+	  (package codetools) to check no default location code files;
+	  experimental
+
+2007-03-23 15:18  burgerm
+
+	* tests/runitPlotConnection.r: deactivate test case if R is run in
+	  non-interactive mode i.e. most likely no X server is present but
+	  require by the png device
+
+2007-03-19 21:08  burgerm
+
+	* tests/runitPlotConnection.r: simple run test
+
+2007-03-19 01:54  burgerm
+
+	* R/htmlProtocol.r: fixed gcc query under Windows: report NA
+
+2007-03-19 01:52  burgerm
+
+	* NEWS: printHTMLProtocol fixed (Windows)
+
+2007-03-19 00:55  burgerm
+
+	* man/runit.Rd: added header
+
+2007-03-19 00:54  burgerm
+
+	* tests/runitRUnit.r: added exception check for call object: R
+	  2.5.0 devel issue with new try implementation
+
+2007-03-19 00:51  burgerm
+
+	* tests/: runitTextProtocol.r, runitHTMLProtocol.r: added check for
+	  successful execution, taking care of nested test suite calls
+
+2007-03-19 00:49  burgerm
+
+	* inst/examples/correctTestCase.r: R 1.9.0 compatibility: replace
+	  isTRUE by identical
+
+2007-03-19 00:45  burgerm
+
+	* R/inspector.r: docu updated/extended; tracker closure functions
+	  revised: internal object now is always of S3 class trackInfo,
+	  renamed to trackInfo for clarity, addFunc simplified, reinit of
+	  oldTime was not written to closure variable;	several
+	  precondition checks added
+
+2007-03-19 00:40  burgerm
+
+	* R/exportHTML.r: functions now return invisible; HTML head info
+	  updated; result page file names changed; HTML footer added
+
+2007-03-19 00:36  burgerm
+
+	* man/printHTML.trackinfo.Rd: header added; details text
+	  description corrected
+
+2007-03-19 00:34  burgerm
+
+	* man/tracker.Rd: header added; moved closure functions to new
+	  section to avoid R CMD check warning; added isValid
+
+2007-03-16 12:25  burgerm
+
+	* NEWS: updated for 0.4.15
+
+2007-03-16 12:22  burgerm
+
+	* DESCRIPTION: patch level 0.4.15
+
+2007-03-16 12:08  burgerm
+
+	* R/checkFuncs.r: compatibility to R 1.9.0 as declared in
+	  DESCRIPTION: removed calls to isTRUE as this was introduced only
+	  in R 2.1.0, replaced where needed by identical(TRUE, x)
+
+2007-03-16 12:07  burgerm
+
+	* R/htmlProtocol.r: createTestFuncRef: removed unnecessary escape
+	  characters in gsub call
+
+2007-03-16 12:05  burgerm
+
+	* tests/runitRUnit.r: compatibility to R 1.9.0 as declared in
+	  DESCRIPTION: removed calls to isTRUE as this was introduced only
+	  in R 2.1.0, replaced where needed by identical(TRUE, x)
+
+2006-08-30 01:13  burgerm
+
+	* DESCRIPTION: patch level 0.6.0-0: start new minor level 0.6.0.x
+	  for development, first public release will be 0.6.0; 0.5.x is
+	  reserved for potential S3 implementation updates; class layout as
+	  described in dia
+
+2006-08-30 01:11  burgerm
+
+	* NAMESPACE: initial commit: class layout as described in dia
+
+2006-08-30 00:58  burgerm
+
+	* R/TestSuiteTestResultDataMethods.r: initial commit: class layout
+	  as described in dia
+
+2006-08-30 00:54  burgerm
+
+	* R/: ArrayMethods.r, Logger.r, SignalHandler.r,
+	  SourceFileTestResultDataMethods.r,
+	  TestCaseTestResultDataMethods.r, TestSuiteMethods.r,
+	  classUtilities.r, zzz.r: initial commit: class layout as
+	  described in dia
+
+2006-08-30 00:51  burgerm
+
+	* R/: Array.r, SourceFileTestResultData.r,
+	  TestCaseTestResultData.r, TestResultData.r, TestSuite.r,
+	  TestSuiteTestResultData.r: initial commit: class layout as
+	  described in dia
+
+2006-08-22 11:21  burgerm
+
+	* NEWS: 0.4.14 update log added
+
+2006-08-17 09:12  burgerm
+
+	* DESCRIPTION: patch level 0.4.14: package utils dependency made
+	  explicit in DESCRIPTION and NAMESPACE
+
+2006-08-17 01:14  burgerm
+
+	* NAMESPACE: import of package utils added (required for R 2.4.0)
+
+2006-08-16 17:39  burgerm
+
+	* inst/doc/RUnit.Rnw: added a note on the new arguments rngKind,
+	  and rngNormalKind; replaced path construction via paste by the
+	  more protable file.path (Gregor Gorjanc)
+
+2006-08-16 17:36  burgerm
+
+	* inst/doc/RUnit.pdf: updated
+
+2006-08-15 18:52  burgerm
+
+	* ChangeLog: updated
+
 2006-08-15 18:51  burgerm
 
 	* R/textProtocol.r: return type enforced (a bit more) to be logical
@@ -226,9 +695,19 @@
 	  thus relies on EpiR.base FIXME: remove dependency on EpiR.base
 	  once design has matured
 
+2005-11-21 15:28  burgerm
+
+	* R/zzz.r: file zzz.r was added on branch S4-devel-branch-2006-08
+	  on 2006-08-29 22:54:46 +0000
+
 2005-11-21 15:26  burger
 
 	* R/Logger.r: first exploration
+
+2005-11-21 15:26  burgerm
+
+	* R/Logger.r: file Logger.r was added on branch
+	  S4-devel-branch-2006-08 on 2006-08-29 22:54:46 +0000
 
 2005-11-21 15:15  burger
 
