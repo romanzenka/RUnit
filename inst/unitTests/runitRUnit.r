@@ -39,7 +39,14 @@ testRUnit.checkEquals <- function()
   
   ##  numeric
   y <- 1/0
-  checkEquals(9, y)
+  checkEquals(Inf, y)
+  checkEquals(y, Inf)
+  y <- log(-1)
+  checkEquals(NaN, y)
+  checkEquals(rep(NaN, 23), rep(y, 23))
+  checkEquals(9, 9.0)
+  checkEquals(NA, NA)
+  checkEquals(rep(NA, 14), rep(NA, 14))
   checkEquals( numeric(1), numeric(1))
   checkEquals( 0.01, 0.02, tolerance=0.01)
   tmp <- c(0.01, NA, 0.02, Inf, -Inf, NaN, 1.0)
@@ -143,20 +150,28 @@ testRUnit.checkEquals <- function()
   ##  numeric
   checkException( checkEquals( 8, 9))
   checkException( checkEquals( 0.01, 0.02, tolerance=0.009))
+  checkException(checkEquals(NaN, NA))
+  checkException(checkEquals(NaN, Inf))
+  checkException(checkEquals(NaN, -Inf))
+  checkException(checkEquals(NA, Inf))
+  checkException(checkEquals(NA, -Inf))
+  checkException(checkEquals(numeric(2), numeric(3)))
+  checkException(checkEquals(numeric(3), numeric(2)))
   
   ##  complex
   checkException( checkEquals(complex(0), complex(1)))
-  checkException( checkEquals(complex(1), complex(2)))
+  checkException( checkEquals(complex(2), complex(1)))
   checkException( checkEquals(complex(2, imaginary=1), complex(2, imaginary=0)))
   checkException( checkEquals(complex(2, real=1, imaginary=1), complex(2, real=1, imaginary=0)))
   checkException( checkEquals(complex(2, real=1, imaginary=1), complex(2, real=0, imaginary=1)))
   checkException( checkEquals(complex(2, real=1, imaginary=1), complex(2, real=0, imaginary=0)))
-
+  
   ##  character
   named <- character(1)
   names(named) <- "name"
   checkException( checkEquals( character(1), named))
-
+  checkException( checkEquals( letters, letters[-1]))
+  
   ##  formula
   checkException( checkEquals( lmFit, lmFitUnnamed))
   lmFitInter <- glm(counts ~ outcome * treatment, family=poisson())
