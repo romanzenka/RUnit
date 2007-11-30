@@ -125,7 +125,7 @@ printHTMLProtocol <- function(testData,
       if(traceBackCutOff > length(testFuncInfo$traceBack)) {
         writeRaw("(traceBackCutOff argument larger than length of trace back: full trace back printed)<br/>", htmlFile=fileName)
         writeBeginTag("ol", htmlFile=fileName)
-        for(i in 1:length(traceBack)) {
+        for(i in seq_along(traceBack)) {
           writeBeginTag("li", htmlFile=fileName)
           writeRaw(traceBack[i], htmlFile=fileName)
           writeEndTag("li", htmlFile=fileName)
@@ -234,9 +234,9 @@ printHTMLProtocol <- function(testData,
       if(testData[[tsName]]$nErr > 0) {
         srcFileRes <- testData[[tsName]]$sourceFileResults
         srcFileNames <- names(srcFileRes)
-        for(i in seq_len(srcFileRes)) {
+        for(i in seq_along(srcFileRes)) {
           testFuncNames <- names(srcFileRes[[i]])
-          for(j in seq_len(testFuncNames)) {
+          for(j in seq_along(testFuncNames)) {
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "error") {
               lnk <- paste("<a href=\"",
@@ -266,9 +266,9 @@ printHTMLProtocol <- function(testData,
       if(testData[[tsName]]$nFail > 0) {
         srcFileRes <- testData[[tsName]]$sourceFileResults
         srcFileNames <- names(srcFileRes)
-        for(i in seq_len(srcFileRes)) {
+        for(i in seq_along(srcFileRes)) {
           testFuncNames <- names(srcFileRes[[i]])
-          for(j in seq_len(testFuncNames)) {
+          for(j in seq_along(testFuncNames)) {
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "failure") {
               lnk <- paste("<a href=\"",
@@ -299,9 +299,9 @@ printHTMLProtocol <- function(testData,
       if(testData[[tsName]]$nDeactivated > 0) {
         srcFileRes <- testData[[tsName]]$sourceFileResults
         srcFileNames <- names(srcFileRes)
-        for(i in seq_len(srcFileNames)) {
+        for(i in seq_along(srcFileNames)) {
           testFuncNames <- names(srcFileRes[[i]])
-          for(j in seq_len(testFuncNames)) {
+          for(j in seq_along(testFuncNames)) {
             funcList <- srcFileRes[[i]][[testFuncNames[j]]]
             if(funcList$kind == "deactivated") {
               lnk <- paste("<a href=\"",
