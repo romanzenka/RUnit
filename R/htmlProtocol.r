@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2008  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -376,7 +376,7 @@ printHTMLProtocol <- function(testData,
               writeBeginTag("a", para=paste("name=\"", anchorName, "\"", sep=""),
                             htmlFile=fileName)
               if(testFuncInfo$kind == "success") {
-                pr(paste(testFuncName, ":", " ... OK (", testFuncInfo$time,
+                pr(paste(testFuncName, ": (",testFuncInfo$checkNum, " checks) ... OK (", testFuncInfo$time,
                          " seconds)", sep=""))
                 writeEndTag("a", htmlFile=fileName)
               }
@@ -433,25 +433,26 @@ printHTMLProtocol <- function(testData,
   rownames(ver)[dim(ver)[1]] <- "host"
   colnames(ver) <- "Value"
 
-  ##  compiler
-  ##  Linux
+  ##  compiler used (under *nix)
   rhome <- Sys.getenv("R_HOME")
-
-  gccVersion <- as.character(NA)
-
   ##  on Windows Makeconf does not exist
   ##  OTOH I have no idea which compiler would be for R CMD INSTALL
   ##  so we report NA
   makeconfFile <- file.path(rhome, "etc", "Makeconf")
   if (file.exists(makeconfFile)) {
-    gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
-                         intern=TRUE)
-    gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
+    if (identical(.Platform$OS.type, "unix")) {
+      gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
+                           intern=TRUE)
+      
+      gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
+    } else {
+      gccVersion <- as.character(NA)
+    }
   }
-  if (length(gccVersion) > 0) {
-    ver <- rbind(ver, gccVersion)
-    rownames(ver)[dim(ver)[1]] <- "gcc"
-  }
+
+  ver <- rbind(ver, gccVersion)
+  rownames(ver)[dim(ver)[1]] <- "compiler"
+
   
   writeHtmlTable(ver,
                  htmlFile=fileName,
