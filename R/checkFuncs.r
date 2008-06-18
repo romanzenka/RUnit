@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2006  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2008  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -37,10 +37,16 @@ checkEquals <- function(target, current, msg="",
 
   
   if(!is.numeric(tolerance)) {
-    stop("tolerance has to be a numeric value")
+    stop("'tolerance' has to be a numeric value")
   }
   if (length(tolerance) != 1) {
-    stop("tolerance has to be a scalar")
+    stop("'tolerance' has to be a scalar")
+  }
+  if(!is.logical(checkNames)) {
+    stop("'checkNames' has to be a logical value")
+  }
+  if (length(checkNames) != 1) {
+    stop("'checkNames' has to be a scalar")
   }
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
@@ -54,7 +60,7 @@ checkEquals <- function(target, current, msg="",
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(paste(result, collapse="\n"), msg))
+    stop(paste(result, collapse="\n"), msg)
   }
   else {
     return(TRUE)
@@ -79,10 +85,10 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   ##@codestatus : testing
   
   if(!is.numeric(tolerance)) {
-    stop("tolerance has to be a numeric value")
+    stop("'tolerance' has to be a numeric value")
   }
   if (length(tolerance) != 1) {
-    stop("tolerance has to be a scalar")
+    stop("'tolerance' has to be a scalar")
   }
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
@@ -94,7 +100,7 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste(paste(result, collapse="\n"), msg))
+    stop(paste(result, collapse="\n"), msg)
   }
   else {
     return(TRUE)
@@ -159,7 +165,7 @@ checkTrue <- function(expr, msg="")
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste("Test not TRUE.\n", msg))
+    stop("Test not TRUE.\n", msg)
   }
   else {
     return(TRUE)
@@ -193,7 +199,7 @@ checkException <- function(expr, msg="", silent=FALSE)
     if(exists(".testLogger", envir=.GlobalEnv)) {
       .testLogger$setFailure()
     }
-    stop(paste("Error not generated as expected.\n", msg))
+    stop("Error not generated as expected.\n", msg)
   }
   else {
     return(TRUE)
