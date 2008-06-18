@@ -61,7 +61,7 @@ isValidTestSuite <- function(testSuite)
   ##
   ##@codestatus : testing
   
-  if(!identical(class(testSuite), "RUnitTestSuite"))
+  if(!is(testSuite, "RUnitTestSuite"))
   {
     warning(paste("'testSuite' object is not of class 'RUnitTestSuite'."))
     return(FALSE)
@@ -187,6 +187,9 @@ isValidTestSuite <- function(testSuite)
     .testLogger$addSuccess(testFuncName=funcName, secs=round(timing[3], 2))
   }
 
+  ##  add number of check function calls within test case
+  .testLogger$addCheckNum(testFuncName=funcName)
+  
   ## safe execution of tearDown function
   res <- try(tearDownFunc())
   if (inherits(res, "try-error")) {
