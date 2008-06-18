@@ -191,7 +191,7 @@ printTextProtocol <- function(testData,
             for(testFuncName in testFuncNames) {
               testFuncInfo <- res[[testFileName]][[testFuncName]]
               if(testFuncInfo$kind == "success") {
-                pr(testFuncName, ":", " ... OK (", testFuncInfo$time, " seconds)", sep="")
+                pr(testFuncName, ": (",testFuncInfo$checkNum, " checks) ... OK (", testFuncInfo$time, " seconds)", sep="")
               }
               else {
                 if(testFuncInfo$kind == "error") {
