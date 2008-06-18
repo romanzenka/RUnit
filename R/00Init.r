@@ -1,6 +1,6 @@
 ######################################################################
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2008  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@
   require(methods) || stop(errMsg)
 
   runitVersion <- packageDescription("RUnit", lib.loc=lib, fields="Version")
-  cat(paste("\n RUnit", runitVersion,"loaded.\n"))
 }
 
 
@@ -56,7 +55,6 @@
 
   
   runitVersion <- packageDescription("RUnit", lib.loc=lib, fields="Version")
-  cat(paste("\n RUnit", runitVersion,"loaded.\n"))
 }
 
 
