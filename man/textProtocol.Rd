@@ -1,5 +1,5 @@
 %%  RUnit : A unit test framework for the R programming language
-%%  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%  Copyright (C) 2003-2008  Thomas Koenig, Matthias Burger, Klaus Juenemann
 %%
 %%  This program is free software; you can redistribute it and/or modify
 %%  it under the terms of the GNU General Public License as published by
@@ -83,12 +83,16 @@
 
 \details{
   The text protocol can roughly be divided into three sections with an
-  increasing amount of information. The first section just reports the
+  increasing amount of information. The first section as an overview just reports the
   number of executed test functions and the number of failures and
-  errors. The second section describes all test suits. Optionally, all
+  errors. The second section describes all test suites. Optionally, all
   errors and failures that occured in some test suite are listed.
   In the optional third section details are given about all executed
-  test functions and in the case of an error or failure as much debug
+  test functions in the order they were processed. For each test file
+  all test functions executed are listed in the order they were executed. After the test
+  function name the number of \code{check*} function calls inside the
+  test case and the execution time in seconds are stated. In the
+  case of an error or failure as much debug
   information as possible is provided.
 }
 
@@ -112,6 +116,28 @@ printTextProtocol(testResult, showDetails=TRUE)
 ## prints detailed html protocol
 ## to standard out
 printHTMLProtocol(testResult)
+
+
+\dontrun{
+##  example function to add links to URL of the code files in a code
+##  repository, here the SourceForge repository
+testFileToSFLinkMap <- function(testFileName, testDir="tests") {
+    ##  get unit test file name
+    bname <- basename(testFileName)
+    
+    ## figure out package name
+    regExp <- paste("^.*/([\\.a-zA-Z0-9]*)/",testDir,"/.*$", sep="")
+    pack <- sub(regExp, "\\1", testFileName)
+    return(paste("http://runit.cvs.sourceforge.net/runit/",
+                 pack, testDir, bname, sep="/"))
+  }
+
+
+##  example call for a test suite run on the RUnit package
+testSuite <- defineTestSuite("RUnit", "<path-to-source-folder>/RUnit/tests", testFileRegexp="^test.+")
+testResult <- runTestSuite(testSuite)
+printHTMLProtocol(testResult, fileName = "RUnit-unit-test-log.html", testFileToLinkMap=testFileToSFLinkMap )
+}
 
 }
 
