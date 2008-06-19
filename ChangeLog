@@ -1,3 +1,59 @@
+2008-06-19 10:07  burgerm
+
+	* DESCRIPTION: patch version 0.4.19
+
+2008-06-18 19:18  burgerm
+
+	* R/textProtocol.r: details section: output check number per test
+	  case
+
+2008-06-18 19:17  burgerm
+
+	* R/htmlProtocol.r: details section: output check number per test
+	  case; improved compiler detection
+
+2008-06-18 19:16  burgerm
+
+	* R/runit.r: isValidTestSuite: changed check for object class to
+	  is() to allow derived class objects to pass (suggested by
+	  Philippe Grosjean); use addCheckNum to set number of checks
+	  performed within test function
+
+2008-06-18 19:13  burgerm
+
+	* R/testLogger.r: added addCheckNum, getCheckNum functions to allow
+	  check number output in summary
+
+2008-06-18 19:12  burgerm
+
+	* R/checkFuncs.r: checkEquals: argument checkNames checked for
+	  correct type; not required paste calls around error message
+	  removed (suggested by Philippe Grosjean)
+
+2008-06-18 19:09  burgerm
+
+	* R/00Init.r: removed start up message
+
+2008-04-29 10:06  burgerm
+
+	* inst/share/R/compareRUnitTestData.r: check for empty test case
+	  results and exclude them from comparison; replaced seq with
+	  seq_along
+
+2007-11-30 15:13  burgerm
+
+	* tests/runitRUnit.r: error introduced in last commit corrected;
+	  some more check conditions added
+
+2007-11-30 14:57  burgerm
+
+	* R/htmlProtocol.r: fixed errors introduced in last commit:
+	  replaced seq_len with seq_along
+
+2007-11-27 20:07  burgerm
+
+	* ChangeLog: updated
+
 2007-11-27 20:05  burgerm
 
 	* DESCRIPTION: patch level 0.4.18; R dependency set to 2.4.0 were
