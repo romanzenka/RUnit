@@ -171,6 +171,10 @@ testResult <- runTestSuite(myTestSuite)
 ## prints detailed text protocol
 ## to standard out:
 printTextProtocol(testResult, showDetails=TRUE)
+
+##  for single test files, e.g. outside a package context
+testResult2 <- runTestFile(file.path(system.file("examples", package="RUnit"), "correctTestCase.r"))
+printTextProtocol(testResult2, showDetails=TRUE)
 }
 
 \keyword{programming}
