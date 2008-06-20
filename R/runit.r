@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2008  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -17,328 +17,94 @@
 
 ##  $Id$
 
-defineTestSuite <- function(name, dirs, 
-                            testFileRegexp="^runit.+\\.[rR]$",
-                            testFuncRegexp="^test.+",
-                            rngKind="Marsaglia-Multicarry",
-                            rngNormalKind="Kinderman-Ramage")
-{
-  ##@bdescr
-  ##  Convenience functions to handle test suites
-  ##@edescr
-  ##
-  ##@in  name           : [character] test suite title used in protocol
-  ##@in  dirs           : [character] vector of paths to search for test case files
-  ##@in  testFileRegexp : [character] regular expression string to match file names
-  ##@in  testFuncRegexp : [character] regular expression string to match test case functions within all test case files
-  ##@in  rngKind        : [character] name of the RNG version, see RNGversion()
-  ##@in  rngNormalKind  : [character] name of the RNG version for the rnorm, see RNGversion()
-  ##@ret                : [RUnitTestSuite] S3 class (list) object, ready for test runner
-  ##
-  ##@codestatus : testing
-  
-  ret <- list(name=name,
-              dirs=dirs,
-              testFileRegexp=testFileRegexp,
-              testFuncRegexp=testFuncRegexp,
-              rngKind=rngKind,
-              rngNormalKind=rngNormalKind)
-
-  class(ret) <- "RUnitTestSuite"
-  return(ret)
-}
 
 
-isValidTestSuite <- function(testSuite)
-{
-  ##@bdescr
-  ##  Helper function
-  ##  checks 'RUnitTestSuite' class object features
-  ##@edescr
-  ##
-  ##@in   testSuite : [RUnitTestSuite] S3 class (list) object, input object for test runner
-  ##@ret            : [logical] TRUE if testSuite is valid
-  ##
-  ##@codestatus : testing
-  
-  if(!is(testSuite, "RUnitTestSuite"))
-  {
-    warning(paste("'testSuite' object is not of class 'RUnitTestSuite'."))
-    return(FALSE)
-  }
-  if(!setequal(names(testSuite), c("name", "dirs", "testFileRegexp", "testFuncRegexp",
-                                   "rngKind", "rngNormalKind")))
-  {
-    warning("'testSuite' object does not conform to S3 class definition.")
-    return(FALSE)
-  }
-  for(i in seq_along(testSuite))
-  {
-    if(!is.character(testSuite[[i]]))
-    {
-      warning(paste("'testSuite' object does not conform to S3 class definition.\n",
-                    names(testSuite)[i],"has to be of type 'character'."))
-      return(FALSE)
-    }
-  }
-  if (!all(file.exists(testSuite[["dirs"]])))
-  {
-    warning(paste("specifed directory",testSuite[["dirs"]],"not found."))
-    return(FALSE)
-  }
-  
-  ##  RNGkind has an internal list of valid names which cannot be accessed
-  ##  programatically. Furthermore, users can define their own RNG and select that one
-  ##  so we have to leave it to RNGkind() to check if the arguments are valid.
-  if (length(testSuite[["rngKind"]]) != 1) {
-    warning(paste("specifed 'rngKind' may only contain exatly one name."))
-    return(FALSE)
-  }
-  if (length(testSuite[["rngNormalKind"]]) != 1) {
-    warning(paste("specifed 'rngNormalKind' may only contain exatly one name."))
-    return(FALSE)
-  }
-  return(TRUE)
-}
 
-
-.setUp <- function() {
-  ##@bdescr
-  ##  Internal Function.
-  ##  Default function to be executed once for each test case before the test case gets executed.
-  ##  This function can be adopted to specific package requirements for a given project.
-  ##  Need to replace this default with a new function definition.
-  ##  Function cannot take arguments and does not have a return value.
-  ##@edescr
-  ##
-  ##@codestatus : internal
-  
-  return()
-}
-
-
-.tearDown <- function() {
-  ##@bdescr
-  ##  Internal Function.
-  ##  Default function to be executed once for each test case after the test case got executed.
-  ##  This function can be adopted to specific package requirements for a given project.
-  ##  Need to replace this default with a new function definition.
-  ##  Function cannot take arguments and does not have a return value.
-  ##@edescr
-  ##
-  ##@codestatus : internal
-  
-  return()
-}
-
-
-.executeTestCase <- function(funcName, envir, setUpFunc, tearDownFunc)
-{
-  ##@bdescr
-  ##  Internal Function.
-  ##  Execute individual test case, record logs and change state of global TestLogger object.
-  ##@edescr
-  ##
-  ##@in  funcName     : [character] name of test case function
-  ##@in  envir        : [environment]
-  ##@in  setUpFunc    : [function]
-  ##@in  tearDownFunc : [function]
-  ##@ret              : [NULL]
-  ##
-  ##@codestatus : internal
-  
-  ##  write to stdout for logging
-
-  func <- get(funcName, envir=envir)
-  ## anything else than a function is ignored.
-  if(mode(func) != "function") {
-    return()
-  }
-
-  cat("\n\nExecuting test function",funcName," ... ")
-
-  ## safe execution of setup function
-  res <- try(setUpFunc())
-  if (inherits(res, "try-error")) {
-    message <- paste("Error executing .setUp before",funcName, ":", geterrmessage())
-    .testLogger$addError(testFuncName=paste(".setUp (before ", funcName, ")", sep=""),
-                         errorMsg=message)
-    return()
-  }
-
-  ## reset book keeping variables in .testLogger
-  .testLogger$cleanup()
-  ## ordinary test function execution:
-  timing <- try(system.time(func()))
-  if (inherits(timing, "try-error")) {
-    if(.testLogger$isFailure()) {
-      .testLogger$addFailure(testFuncName=funcName,
-                             failureMsg=geterrmessage())
-    }
-    else if(.testLogger$isDeactivated()) {
-      .testLogger$addDeactivated(testFuncName=funcName)
-    }
-    else {
-      .testLogger$addError(testFuncName=funcName,
-                           errorMsg=geterrmessage())
-    }
-  }
-  else {
-    .testLogger$addSuccess(testFuncName=funcName, secs=round(timing[3], 2))
-  }
-
-  ##  add number of check function calls within test case
-  .testLogger$addCheckNum(testFuncName=funcName)
-  
-  ## safe execution of tearDown function
-  res <- try(tearDownFunc())
-  if (inherits(res, "try-error")) {
-    message <- paste("Error executing .tearDown after",funcName, ":", geterrmessage())
-    .testLogger$addError(testFuncName=paste(".tearDown (after ", funcName, ")", sep=""),
-                         errorMsg=message)
-    return()
-  }
-
-  cat(" done successfully.\n\n")
-  return()
-}
-
-
-.sourceTestFile <- function(absTestFileName, testFuncRegexp)
-{
-  ##@bdescr
-  ## This function sources a file, finds all the test functions in it, executes them
-  ## and reports the results to the TestLogger.
-  ## No return value, called for its side effects on TestLogger object
-  ##@edescr
-  ##
-  ##@in absTestFileName : [character] the absolute name of the file to test
-  ##@in testFuncRegexp : [character] a regular expression identifying the names of test functions
-  ##
-  ##@codestatus : internal
-
-  .testLogger$setCurrentSourceFile(absTestFileName)
-  if (!file.exists(absTestFileName)) {
-    message <- paste("Test case file ", absTestFileName," not found.")
-    .testLogger$addError(testFuncName=absTestFileName,
-                        errorMsg=message)
-    return()
-  }
-  
-
-  sandbox <- new.env(parent=.GlobalEnv)
-  ##  will be destroyed after function closure is left
-  
-  ##  catch syntax errors in test case file
-  res <- try(sys.source(absTestFileName, envir=sandbox))
-  if (inherits(res, "try-error")) {
-    message <- paste("Error while sourcing ",absTestFileName,":",geterrmessage())
-    .testLogger$addError(testFuncName=absTestFileName,
-                        errorMsg=message)
-    return()
-  }
-  ##  test file provides definition of .setUp/.tearDown
-  if (exists(".setUp", envir=sandbox, inherits=FALSE)) {
-    .setUp <- get(".setUp", envir=sandbox)
-  }
-  if (exists(".tearDown", envir=sandbox, inherits=FALSE)) {
-    .tearDown <- get(".tearDown", envir=sandbox)
-  }
-  testFunctions <- ls(pattern=testFuncRegexp, envir=sandbox)
-  for (funcName in testFunctions) {
-    .executeTestCase(funcName, envir=sandbox, setUpFunc=.setUp, tearDownFunc=.tearDown)
-  }
-  
-}
-
-
-runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
+runTestSuite <- function(testSuites) {
   ##@bdescr
   ## This is the main function of the runit framework. It finds all the relevant
-  ## test files and triggers all the required actions. At the end it creates a test
-  ## protocol data object. 
+  ## test files and triggers all the required actions. At the end it creates an
+  ## object of type 'TestResult' containing all the data collected during the 
+  ## test run. From this object a test protocol can be generated.
   ## IMPORTANT to note, the random number generator is (re-)set to the default
-  ## methods specifed in defineTestSuite() before each new test case file is sourced. 
+  ## methods specifed in defineTestSuite() before each new test file is sourced. 
   ## This garantees that each new test case set defined together in on file can rely
-  ## on the default, even if the random number generator version is being reconfigured in some
-  ## previous test case file(s).
+  ## on the default, even if the random number generator version is being
+  ## reconfigured in some previous test file(s).
   ##@edescr
   ##
-  ##@in  testSuites         : [list] list of test suite lists
-  ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler
-  ##@ret                    : [list] 'RUnitTestData' S3 class object
-  ##
-  ##@codestatus : testing
-  
-  ##  preconditions
-  if (!is.logical(useOwnErrorHandler)) {
-    stop("argument 'useOwnErrorHandler' has to be of type logical.")
-  }
-  if (length(useOwnErrorHandler) != 1) {
-    stop("argument 'useOwnErrorHandler' has to be of length 1.")
-  }
-  if (is.na(useOwnErrorHandler)) {
-    stop("argument 'useOwnErrorHandler' may not contain NA.")
-  }
-  
+  ##@in  testSuites : [list | TestSuite] single or list of TestSuite object(s)
+  ##@ret            : [TestResult] 'TestResult' S4 class object
   
   ##  record RNGkind and reinstantiate on exit
   rngDefault <- RNGkind()
   on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]))
-  
-  oldErrorHandler <- getOption("error")
-  ## reinstall error handler
-  on.exit(options(error=oldErrorHandler), add=TRUE)
-  
-  ## initialize TestLogger
-  assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
 
-  ## main loop
-  if(isValidTestSuite(testSuites)) {
+  assign(".runit_running", TRUE, envir=.GlobalEnv)
+  on.exit(rm(".runit_running", envir=.GlobalEnv))
+  ## create list if single TestSuite object has been passed
+  if(is(testSuites, "TestSuite")) {
     testSuites <- list(testSuites)
   }
+
+  ## initialise result object
+  testResult = new("TestResult")
+  
+  ## main loop executes one test suite after the other
+  ## (might need to change in case of parallel execution)
   for (i in seq_along(testSuites)) {
     testSuite <- testSuites[[i]]
+    ## FIXME: is this check necessary? 
     if(!isValidTestSuite(testSuite)) {
-      errMsg <- paste("Invalid test suite",testSuite$name,". Test run aborted.")
+      errMsg <- paste("Invalid test suite",testSuite@name,". Test run aborted.")
       stop(errMsg)
     }
-    .testLogger$setCurrentTestSuite(testSuite)
-    testFiles <- list.files(testSuite$dirs,
-                            pattern = testSuite$testFileRegexp,
+
+    ## initialise TestSuiteResult object
+    testSuiteResult <- new("TestSuiteResult", testSuite=testSuite,
+                           execStart=Sys.time())
+    
+    ## find test files, loop over and run them
+    testFiles <- list.files(testSuite@dirs,
+                            pattern = testSuite@testFileRegexp,
                             full.names=TRUE)
     for(testFile in testFiles) {
       ## set a standard random number generator.
-      RNGkind(kind=testSuite$rngKind, normal.kind=testSuite$rngNormalKind)
-      
-      .sourceTestFile(testFile, testSuite$testFuncRegexp)
+      RNGkind(kind=testSuite@rngKind, normal.kind=testSuite@rngNormalKind)
+      ## source and run test file, add result to current test suite result
+      testSuiteResult@testFileData[[testFile]] <- 
+        .sourceTestFile(testFile, testSuite@testFuncRegexp)
     }
-  }
 
-  ret <- .testLogger$getTestData()
-  
-  return(ret)
+    testSuiteResult@execStop <- Sys.time()
+    ## add TestSuiteResult object to overall result object
+    testResult@testSuiteData[[testSuite@name]] <- testSuiteResult
+    
+  } # end of loop over test suites
+
+  ## FIXME: remove next if-block before release
+  resultState <- isValidTestResult(testResult)
+  if(!isTRUE(resultState)) {
+    stop(paste("Internal RUnit problem, invalid TestResult object produced:",
+               resultState, sep="\n"))
+  }
+  return(testResult)
 }
 
 
-runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, 
+runTestFile <- function(absFileName, 
                         testFuncRegexp="^test.+",
                         rngKind="Marsaglia-Multicarry",
                         rngNormalKind="Kinderman-Ramage") {
   ##@bdescr
-  ##  Convenience function.
+  ##  Convenience function: creates and runs test suite made from just one file
   ##@edescr
   ##
-  ##@in  absFileName        : [character] complete file name of test cases code file
-  ##@in  useOwnErrorHandler : [logical] if TRUE RUnits error handler will be used
-  ##@in  testFuncRegexp     : [character]
-  ##@ret                    : [list] 'RUnitTestData' S3 class object
-  ##
-  ##@codestatus : testing
+  ##@in  absFileName : [character] complete file name of test file
+  ##@ret             : [TestResult] 'TestResult' S4 class object
+
   
-  ##  preconditions
   ##  all error checking and hanling is delegated to function runTestSuite
-  
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
   dn <- dirname(absFileName)
@@ -348,5 +114,202 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
                         rngKind=rngKind,
                         rngNormalKind=rngNormalKind)
                         
-  return(runTestSuite(ts, useOwnErrorHandler=useOwnErrorHandler))
+  return(runTestSuite(ts))
 }
+
+
+## --------------------------------------------------------------
+## Internal helper functions (invisible outside RUnit namespace)
+## --------------------------------------------------------------
+
+.sourceTestFile <- function(absTestFileName, testFuncRegexp)
+{
+  ##@bdescr
+  ## This function sources a file in a sandbox environment,
+  ## finds all the test functions in it, executes them
+  ## and stores the results in an object of type 'TestFileResult'.
+  ##@edescr
+  ##
+  ##@in absTestFileName : [character] the absolute name of the file to test
+  ##@in testFuncRegexp  : [character] regexp identifying names of test functions
+  ##@ret                : [TestFileResult] object containing collected test data
+
+  ## initialise result object
+  testFileResult <- new("TestFileResult", testFileName=absTestFileName,
+                        sourceState="OK",
+                        execStart=Sys.time())
+
+  ## create separate sandbox environment for test functions execution
+  ## (which is destroyed after this function is left)
+  sandbox <- new.env(parent=.GlobalEnv)
+  
+  ## try to source the file, catch and report error in case of failure
+  res <- try(sys.source(absTestFileName, envir=sandbox))
+  if (inherits(res, "try-error")) {
+    testFileResult@sourceState <- geterrmessage()
+  } else {  # sourcing of test file successfull ...
+    
+    ## check if test file provides definition of .setUp/.tearDown
+    if (exists(".setUp", envir=sandbox, inherits=FALSE)) {
+      .setUp <- get(".setUp", envir=sandbox)
+    }
+    if (exists(".tearDown", envir=sandbox, inherits=FALSE)) {
+      .tearDown <- get(".tearDown", envir=sandbox)
+    }
+
+    ## Find test functions, loop over and run them
+    testFunctions <- ls(pattern=testFuncRegexp, envir=sandbox)
+    for (funcName in testFunctions) {
+      testFileResult@testFunctionData[[funcName]] <-
+        .executeTestFunc(funcName, envir=sandbox,
+                         setUpFunc=.setUp, tearDownFunc=.tearDown)
+    }
+  }
+  testFileResult@execStop <- Sys.time()
+  return(testFileResult)
+}
+
+
+.executeTestFunc <- function(funcName, envir, setUpFunc, tearDownFunc)
+{
+  ##@bdescr
+  ##  Execute individual test function, record logs and change state of global TestLogger object.
+  ##@edescr
+  ##
+  ##@in  funcName     : [character] name of test function
+  ##@in  envir        : [environment] env where test function is executed
+  ##@in  setUpFunc    : [function] to be executed before each test function
+  ##@in  tearDownFunc : [function] to be executed before each test function
+  ##@ret              : [TestFunctionResult] data collected during test run
+
+
+  ## put the test function into a mangled symbol in order
+  ## to be able to identify the call in a traceback
+  runit_test_func__  <- get(funcName, envir=envir)
+  ## anything else than a function is ignored.
+  if(mode(runit_test_func__) != "function") {
+    return(NULL)
+  }
+
+  ## FIXME: it should be possible to shut this up
+  ## FIXME: what about a proper progress reporter?
+  cat("\n\nExecuting test function",funcName," ... ")
+
+  ## Initilize result object
+  testFuncResult <- new("TestFunctionResult",
+                        testFunctionName = funcName,
+                        state="OK",
+                        numChecks=0,
+                        numWarns=0)
+  
+  ## Definition of handler functions
+  checkCounter <- 0
+  checkCountHandler <- function(e) {
+    checkCounter <<- 1 + checkCounter
+  }
+
+  ## FIXME: not only count warnings, but optionally also store warning messages
+  warnCounter <- 0
+  warnHandler <- function(e) {
+    warnCounter <<- 1 + warnCounter
+     return(e)
+  }
+
+  traceRecorder <- function(e) {
+    tb <- as.character(sys.calls())
+    ltr <- length(tb)
+    if(ltr > 0) {
+      cutoff <- grep("^runit_test_func__", tb)
+      if( (length(cutoff) != 1) || cutoff > (ltr-2)) {
+        warning("Internal runit problem: cannot make sense from traceback")
+      } else {
+        testFuncResult@traceBack <<- tb[-c(1:cutoff, ltr-1,ltr)]
+      }
+    }
+    return(e)
+  }
+
+  deactHandler <- function(e) {
+    testFuncResult@state <<- "DEACTIVATED"
+    testFuncResult@msg <<- e$msg
+    return(e)
+  }
+
+  
+  failureHandler <- function(e) {
+    testFuncResult@state <<- "FAILURE"
+    testFuncResult@msg <<- e$msg
+    testFuncResult@traceBack <<- e$checkCall
+    return(e)
+  }
+
+  errorHandler <- function(e) {
+    testFuncResult@state <<- "ERROR"
+    testFuncResult@msg <<- geterrmessage()  
+    return(e)
+  }
+  
+  ## Safe execution of setup function
+  res <- try(setUpFunc())
+  if (inherits(res, "try-error")) {
+    testFuncResult@state <- "ERROR"
+    testFuncResult@msg <- paste(".setUp (before ", funcName, ") failed: ",
+                                geterrmessage(), sep="")
+    return(testFuncResult)
+  }
+
+  ## Execution of the test function
+  execStart <- proc.time()
+  tryCatch(withCallingHandlers(system.time(runit_test_func__()),
+                               checkCountSignal=checkCountHandler,
+                               warning=warnHandler,
+                               error=traceRecorder),
+           deactSignal=deactHandler,
+           failureSignal=failureHandler,
+           error=errorHandler)
+
+  testFuncResult@execTime <- (proc.time() - execStart)[3]
+  testFuncResult@numChecks <- checkCounter
+  testFuncResult@numWarns <- warnCounter
+
+  
+  ## When tearDown fails, a possible error in the actual test function 
+  ## is overwritten! Is this really a good behaviour?
+  res <- try(tearDownFunc())
+  if (inherits(res, "try-error")) {
+    testFuncResult@state <- "ERROR"
+    testFuncResult@msg <- paste(".tearDown (after ", funcName, ") failed:",
+                                geterrmessage(), sep="")
+    return(testFuncResult)
+  }
+  
+  cat(" done successfully.\n\n")
+  return(testFuncResult)
+}
+
+
+
+.setUp <- function() {
+  ##@bdescr
+  ## Internal Function.
+  ## Default function to be executed once for each test case BEFORE the test
+  ## case gets executed.  This function can be adopted to specific package
+  ## requirements for a given project. Need to replace this default with a
+  ## new function definition. Function cannot take arguments and does not
+  ## have a return value.
+  ##@edescr
+
+  return()
+}
+
+
+.tearDown <- function() {
+  ##@bdescr
+  ## Similar to .setUp but is executed AFTER the test case gets executed
+  ##@edescr
+   
+  return()
+}
+
+
+
