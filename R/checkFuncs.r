@@ -48,19 +48,23 @@ checkEquals <- function(target, current, msg="",
   if (length(checkNames) != 1) {
     stop("'checkNames' has to be a scalar")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
+  
+  ## increment counter of checks in test function
+  signalCondition(.newCheckCountSignal())
+  
   if (!identical(TRUE, checkNames)) {
     names(target)  <- NULL
     names(current) <- NULL
   }
   result <- all.equal(target, current, tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
+    ## report failure
+    msg <- paste(paste(result, collapse="\n"), paste(msg, collapse="\n "))
+    if(exists(".runit_running")) {
+      signalCondition(.newFailureSignal(msg, deparse(sys.call(sys.nframe()))))
+    } else {
+      stop(msg)
     }
-    stop(paste(result, collapse="\n"), msg)
   }
   else {
     return(TRUE)
@@ -90,17 +94,19 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   if (length(tolerance) != 1) {
     stop("'tolerance' has to be a scalar")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
-  ##  R 2.3.0: changed behaviour of all.equal
+
+  ## increment counter of checks in test function
+  signalCondition(.newCheckCountSignal())
+  
   ##  strip attributes before comparing current and target
   result <- all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
+    msg <- paste(paste(result, collapse="\n"), paste(msg, collapse="\n "))
+    if(exists(".runit_running")) {
+      signalCondition(.newFailureSignal(msg, deparse(sys.call(sys.nframe()))))
+    } else {
+      stop(msg)
     }
-    stop(paste(result, collapse="\n"), msg)
   }
   else {
     return(TRUE)
@@ -122,18 +128,17 @@ checkIdentical <- function(target, current, msg="")
   ##
   ##@codestatus : testing
   
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
+  ## increment counter of checks in test function
+  signalCondition(.newCheckCountSignal())
   
-  ##  strip attributes before comparing current and target
-  result <- identical(target, current)
-  if (!identical(TRUE, result)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
+  if (!identical(target, current)) {
+     msg <- paste("Objects are not identical. ", paste(msg, collapse="\n "))
+    if(exists(".runit_running")) {
+      signalCondition(.newFailureSignal(msg, deparse(sys.call(sys.nframe()))))
+    } else {
+      stop(msg)
     }
-    stop(paste(paste(result, collapse="\n"), msg))
-  }
+   }
   else {
     return(TRUE)
   }
@@ -149,23 +154,24 @@ checkTrue <- function(expr, msg="")
   ##@in expr : [expression] the logical expression to be checked to be TRUE
   ##@in msg  : [character] optional message to further identify and document the call
   ##
-  ##@ret     : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
+  ##@ret     : [logical] TRUE, if the expression evaluates to TRUE, else a failure signal is issued 
   ##
   ##@codestatus : testing
-  
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
+
+  ## increment counter of checks in test function
+  signalCondition(.newCheckCountSignal())
 
   ##  allow named logical argument expr
   result <- eval(expr)
   names(result) <- NULL
   
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
+    msg <- paste("Test not TRUE. ", paste(msg, collapse="\n "))
+    if(exists(".runit_running")) {
+      signalCondition(.newFailureSignal(msg, deparse(sys.call(sys.nframe()))))
+    } else {
+      stop(msg)
     }
-    stop("Test not TRUE.\n", msg)
   }
   else {
     return(TRUE)
@@ -191,15 +197,16 @@ checkException <- function(expr, msg="", silent=FALSE)
   ##
   ##@codestatus : testing
   
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$incrementCheckNum()
-  }
-
+  ## increment counter of checks in test function
+  signalCondition(.newCheckCountSignal())
+  
   if (!inherits(try(eval(expr, envir = parent.frame()), silent=silent), "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
-      .testLogger$setFailure()
+    msg <- paste("Error not generated as expected. ", paste(msg, collapse="\n "))
+    if(exists(".runit_running")) {
+      signalCondition(.newFailureSignal(msg, deparse(sys.call(sys.nframe()))))
+    } else {
+      stop(msg)
     }
-    stop("Error not generated as expected.\n", msg)
   }
   else {
     return(TRUE)
@@ -224,8 +231,57 @@ DEACTIVATED <- function(msg="")
   ##
   ##@codestatus : testing
 
-  if(exists(".testLogger", envir=.GlobalEnv)) {
-    .testLogger$setDeactivated(paste(msg, "\n", sep=""))
-  }
-  stop(msg)
+  
+  signalCondition(.newDeactSignal(msg))
+}
+
+
+## ---------------------------------------
+## Helper functions for signal creation
+## ---------------------------------------
+.newCheckCountSignal <- function() {
+  ##@bdescr
+  ##  internal function
+  ##  used for signaling a check* function call inside a test case
+  ##@edescr
+  ##@ret   : [checkCountSignal] counter condition
+  ##
+  ##@codestatus : internal
+  
+  sig <- list()
+  class(sig) <- c("checkCountSignal", "condition")
+  return(sig)
+}
+
+.newDeactSignal <- function(msg) {
+  ##@bdescr
+  ##  internal function
+  ##  used for signaling a DEACTIVATED function call inside a test case
+  ##@edescr
+  ##@in msg : [character] optional message to further identify and document the call
+  ##@ret    : [deactSignal] DEACTIVATED condition
+  ##
+  ##@codestatus : internal
+  
+  sig <- list(msg=msg)
+  class(sig) <- c("deactSignal", "condition")
+  return(sig)
+}
+
+
+.newFailureSignal <- function(msg, checkCall) {
+  ##@bdescr
+  ##  internal function
+  ##  used for signaling a failure inside a test case, i.e.
+  ##  a check function test returned 
+  ##@edescr
+  ##@in msg : [character] optional message to further identify and document the call
+  ##@in checkCall : []
+  ##@ret    : [failureSignal] FAILURE condition
+  ##
+  ##@codestatus : internal
+  
+  sig <- list(msg=msg, checkCall=checkCall)
+  class(sig) <- c("failureSignal", "condition")
+  return(sig)
 }
