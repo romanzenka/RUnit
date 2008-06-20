@@ -60,3 +60,105 @@
 
 
 
+##  define generics used in RUnit
+setGeneric("countResult", function(obj) {
+  ##@bdescr
+  ## returns number of successes, failures, errors and deactivations as
+  ## a 4-element vector. The sum of elements equals the number of test
+  ## functions in this file. The element names of the result vector
+  ## indicate the meaning of the elements
+  ##@edescr
+  standardGeneric("countResult")
+})
+
+setGeneric("testFuncsByState", function(obj, state) {
+  ##@bdescr
+  ## Returns a list of all TestFunctionResult objects with given
+  ## states. The names of the list are the corresponding test file
+  ## names (i.e. the names are not unique).
+  ##@edescr
+  ##@in object :  object from which to retrieve the TestFunctionResult objects
+  ##@in state  : [character] one or more states 
+  ##@ret       : [list] all TestFunctionResult objects having one of the passed states
+  standardGeneric("testFuncsByState")
+})
+           
+setGeneric("sourceErrors", function(obj) {
+   ##@bdescr
+  ## Returns a list of all TestFileResult objects where sourcing failed.
+  ## The names of the list are the corresponding test suite
+  ## names (i.e. the names are not unique).
+  ##@edescr
+  ##@in obj : object from which to retrieve the TestFileResult objects
+  ##@ret    : [list] all TestFileResult objects where sourcing failed
+  standardGeneric("sourceErrors")
+})
+
+
+setGeneric("toText", function(obj, verbosity) {
+  ##@bdescr
+  ## Creates a textual representation and returns it as character vector.
+  ## verbosity=0: only basic info is returned (used for print and show)
+  ## verbosity=1: more but not all details are returned (used for summary)
+  ## verbosity=2: all details are returned (used for printTextProtocol)
+  ##@edescr
+  ##@in obj : object from which to create the text
+  ##@in verbosity : [numeric] flag controlling level of detail
+  ##@ret : [character] char-vector containing the text
+  standardGeneric("toText")
+})
+
+setGeneric("details", function(obj) {
+  ##@bdescr
+  ## writes all available data for an object to the command line
+  ##@edescr
+  ##@in obj : object from which to create the output
+
+  standardGeneric("details")
+})
+
+setGeneric("isValid", function(obj) {
+  ##@bdescr
+  ## checks object against defined contracts
+  ##@edescr
+  ##@in obj : object to check
+
+  standardGeneric("isValid")
+})
+
+
+##  this ought to be a generic already
+#setGeneric("show", function(object) standardGeneric("show"))
+
+## --- Def of RUnitBase class and implementation of standard output methods
+##     in terms of 'toText' generic function
+setClass("RUnitBase", representation("VIRTUAL"))
+
+setMethod("toText", c("RUnitBase", "numeric"),
+          function(obj, verbosity) {
+            stop("toText not defined for RUnitBase")
+          })
+            
+setMethod("show", "RUnitBase",
+          function(object) {
+            sapply(toText(object, verbosity=0), function(x) cat(x, "\n"))
+            return(invisible(NULL))
+          })
+
+setMethod("summary", "RUnitBase",
+          function(object) {
+            sapply(toText(object, verbosity=1), function(x) cat(x, "\n"))
+            return(invisible(NULL))
+          })
+
+setMethod("details", "RUnitBase",
+          function(obj) {
+            sapply(toText(obj, verbosity=2), function(x) cat(x, "\n"))
+            return(invisible(NULL))
+          })
+
+setMethod("isValid", "RUnitBase",
+          function(obj) {
+            sapply(toText(obj, verbosity=2), function(x) cat(x, "\n"))
+            return(invisible(NULL))
+          })
