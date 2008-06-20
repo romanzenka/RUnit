@@ -20,6 +20,21 @@
 import(utils)
 import(methods)
 
+exportClasses(TestFileResult,
+              TestFunctionResult,
+              TestResult,
+              TestSuite,
+              TestSuiteResult)
+
+exportMethods(countResult,
+              details,
+              show,
+              sourceErrors,
+              summary,
+              testFuncsByState,
+              toText)
+
+
 export(".setUp",
        ".tearDown",
        "checkTrue",
@@ -29,15 +44,16 @@ export(".setUp",
        "checkIdentical",
        "DEACTIVATED",
        "defineTestSuite",
-       "getErrors",
-       "inspect",
+#       "getErrors",
+#       "inspect",
        "isValidTestSuite",
-       "print.RUnitTestData",
+       "isValid",
+#       "print.RUnitTestData",
        "printTextProtocol",
        "printHTMLProtocol",
-       "printHTML.trackInfo",
+#       "printHTML.trackInfo",
        "runTestSuite",
        "runTestFile",
-       "summary.RUnitTestData",
+#       "summary.RUnitTestData",
        "tracker")
 
