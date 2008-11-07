@@ -1,6 +1,6 @@
 Package:      RUnit
-Version:      0.4.19
-Date:         2008/06/18
+Version:      0.4.20
+Date:         2008/11/06
 Title:        R Unit test framework
 Author:       Matthias Burger <burgerm@users.sourceforge.net>, Klaus Juenemann <k.junemann@gmx.net>, Thomas Koenig <thomas.koenig@epigenomics.com>
 Maintainer:   Matthias Burger <burgerm@users.sourceforge.net>
