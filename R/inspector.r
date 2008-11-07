@@ -156,8 +156,7 @@ includeTracker <- function(fbody, track=track)
                    return("")
                  },USE.NAMES=FALSE)
 
-  for(i in seq(along=bpVec))
-  {
+  for(i in seq_along(bpVec)) {
     bpVec[i] <- gsub("\\(\\)",paste("(",i,")",sep=""),bpVec[i])
   }
   
