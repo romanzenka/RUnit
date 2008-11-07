@@ -435,19 +435,16 @@ printHTMLProtocol <- function(testData,
 
   ##  compiler used (under *nix)
   rhome <- Sys.getenv("R_HOME")
+  
   ##  on Windows Makeconf does not exist
-  ##  OTOH I have no idea which compiler would be for R CMD INSTALL
-  ##  so we report NA
+  ##  other than that we have no indication which compiler
+  ##  would be used for R CMD INSTALL so we report NA
+  gccVersion <- as.character(NA)
   makeconfFile <- file.path(rhome, "etc", "Makeconf")
-  if (file.exists(makeconfFile)) {
-    if (identical(.Platform$OS.type, "unix")) {
-      gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
-                           intern=TRUE)
-      
-      gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
-    } else {
-      gccVersion <- as.character(NA)
-    }
+  if (file.exists(makeconfFile) && identical(.Platform$OS.type, "unix")) {
+    gccVersion <- system(paste("cat ", makeconfFile," | grep  \"^CXX =\" "),
+                         intern=TRUE)
+    gccVersion <- sub("^CXX[ ]* =[ ]*", "", gccVersion)
   }
 
   ver <- rbind(ver, gccVersion)
