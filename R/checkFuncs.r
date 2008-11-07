@@ -35,7 +35,9 @@ checkEquals <- function(target, current, msg="",
   ##
   ##@codestatus : testing
 
-  
+  if (missing(current)) {
+     stop("argument 'current' is missing.")
+  }
   if(!is.numeric(tolerance)) {
     stop("'tolerance' has to be a numeric value")
   }
@@ -83,7 +85,10 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   ##@ret          : [logical] TRUE, if objects 'target' and 'current' are equal w.r.t. specified numerical tolerance, else a stop signal is issued 
   ##
   ##@codestatus : testing
-  
+
+  if (missing(current)) {
+    stop("argument 'current' is missing.")
+  }
   if(!is.numeric(tolerance)) {
     stop("'tolerance' has to be a numeric value")
   }
@@ -152,7 +157,10 @@ checkTrue <- function(expr, msg="")
   ##@ret     : [logical] TRUE, if the expression in a evaluates to TRUE, else a stop signal is issued 
   ##
   ##@codestatus : testing
-  
+
+  if (missing(expr)) {
+    stop("'expr' is missing.")
+  }
   if(exists(".testLogger", envir=.GlobalEnv)) {
     .testLogger$incrementCheckNum()
   }
