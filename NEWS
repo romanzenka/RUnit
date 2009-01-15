@@ -8,6 +8,24 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.21
+    o   documentation issues corrected, identified by new R 2.9.0 devel Rd parser
+
+Changes in RUnit 0.4.20
+    o   test protocol generation on Mac OS X failed due to incorrect code to identify 'gcc' version  
+    o   Rd documentation updated
+
+Changes in RUnit 0.4.19
+    o   test protocol now states check number per test case
+    o   changed check for object class to is() to allow derived class objects to pass 
+        (suggested by Philippe Grosjean)
+    o   removed start up message
+
+Changes in RUnit 0.4.18
+    o   seq_along introduced instead of seq( ) for efficiency and R version dependency set to 
+        2.4.0 when seq_along was introduced
+    o   some small changes to avoid warnings with options(warnPartialMatchArgs=TRUE)
+
 Changes in RUnit 0.4.17
     o   corrected documentation example code
  
