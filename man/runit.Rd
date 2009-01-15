@@ -28,7 +28,7 @@
 \title{Definition and execution of RUnit test suites.}
 
 \usage{
-defineTestSuite(name, dirs, testFileRegexp="^runit.+\\.[rR]$", testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
+defineTestSuite(name, dirs, testFileRegexp="^runit.+\\\\.[rR]$", testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
 isValidTestSuite(testSuite)
 runTestSuite(testSuites, useOwnErrorHandler=TRUE)
 runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
