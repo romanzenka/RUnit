@@ -56,13 +56,15 @@
 }
 
 \details{The 'trackInfo' S3 class object (list) has one entry for each
-function on the inspect list with the following elements:
+  function on the inspect list with the following elements:
+  \describe{
   \item{src}{The source code of the function.}
   \item{run}{The number of executions for each line of code.}
   \item{graph}{A matrix. Each element in the matrix counts how often a
     code line was called from the previous code line in the execution flow.}
   \item{nrRuns}{Counts how often the function was called.}
   \item{funcCall}{The declaration of the function.}
+  }
 }
 
 \author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
