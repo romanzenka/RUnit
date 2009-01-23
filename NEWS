@@ -35,10 +35,10 @@ Changes in RUnit 0.4.16
         allowing e.g. setClass calls without specifying where=.GlobalEnv
     o   updated documentation to use encoding latin1
     o   use LazyLoad: yes instead of SaveImage:yes (to be deprecated for R 2.6.0)
-    o   intenal error handler rewritten to be more failure robust
+    o   internal error handler rewritten to be more failure robust
     o   added new test cases for .setUp and .tearDown, extended tests
         to cover S4 class and method behaviour in check* functions
-    o   example on S4 virual class testing added
+    o   example on S4 virtual class testing added
     o   utility function to compare to RUnitTestResult objects added:
         concept idea for comparing and optimizing test suite
         performance (share/R/checkCode.r)
@@ -79,13 +79,13 @@ Changes in RUnit 0.4.8
     o   checkIdentical added, to allow to check for exact identity
 
 Changes in RUnit 0.4.7
-    o   update for checkEqualsNumeric to be compattible with R 2.3.0
+    o   update for checkEqualsNumeric to be compatible with R 2.3.0
 
 Changes in RUnit 0.4.5
     o   improvements to error detection in runTestSuite
 
 Changes in RUnit 0.4.4
-    o   chaged maintainer
+    o   changed maintainer
 
 Changes in RUnit 0.4.2
     o   checkTrue: corrected handling of named logical arguments
