@@ -1,5 +1,5 @@
 %%  RUnit : A unit test framework for the R programming language
-%%  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
 %%
 %%  This program is free software; you can redistribute it and/or modify
 %%  it under the terms of the GNU General Public License as published by
@@ -28,10 +28,16 @@
 \title{Definition and execution of RUnit test suites.}
 
 \usage{
-defineTestSuite(name, dirs, testFileRegexp="^runit.+\\\\.[rR]$", testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
+defineTestSuite(name, dirs, testFileRegexp = "^runit.+\\\\.[rR]$",
+                testFuncRegexp = "^test.+",
+                rngKind = "Marsaglia-Multicarry",
+                rngNormalKind = "Kinderman-Ramage")
 isValidTestSuite(testSuite)
-runTestSuite(testSuites, useOwnErrorHandler=TRUE)
-runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngKind="Marsaglia-Multicarry", rngNormalKind="Kinderman-Ramage")
+runTestSuite(testSuites, useOwnErrorHandler = TRUE)
+runTestFile(absFileName, useOwnErrorHandler = TRUE,
+            testFuncRegexp = "^test.+",
+            rngKind = "Marsaglia-Multicarry",
+            rngNormalKind = "Kinderman-Ramage")
 }
 
 \arguments{
@@ -58,7 +64,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
   code files one after another and executes all specified test functions
   defined therein. This is done sequentially for suites, test code files
   and test functions. During the execution information about the test function calls including the
-  possible occurence of failures or errors is recorded and returned at the
+  possible occurrence of failures or errors is recorded and returned at the
   end of the test run. The return object can then be used to create a
   test protocol of various formats.
 
@@ -88,7 +94,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
   \item{testFileRegexp}{A regular expression specifying the test
     files. All files in the test directories whose names match this
     regular expression are taken as test files. Order of file names will
-    be alpabetical but depending on the used locale.}
+    be alphabetical but depending on the used locale.}
   \item{testFuncRegexp}{A regular expression specifying the test
     functions. All functions defined in the test files whose names match
     this regular expression are used as test functions. Order of test
@@ -103,8 +109,8 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
   \describe{
   \item{nTestFunc}{The number of test functions executed in the test
     suite.}
-  \item{nErr}{The number of errors that occured during the execution.}
-  \item{nFail}{The number of failures that occured during the execution.}
+  \item{nErr}{The number of errors that occurred during the execution.}
+  \item{nFail}{The number of failures that occurred during the execution.}
   \item{dirs}{The test directories of the test suite.}
   \item{testFileRegexp}{The regular expression for identifying the test
     files of the test suite.}
@@ -115,7 +121,7 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
 }
 
   The \code{sourceFileResults} list just mentioned contains one element
-  for each specified test function in the source file. This elemnt is a list with
+  for each specified test function in the source file. This element is a list with
   the following entries:
   \describe{
   \item{kind}{Character string with one of \code{success}, \code{error} or \code{failure}
@@ -158,23 +164,27 @@ runTestFile(absFileName, useOwnErrorHandler=TRUE, testFuncRegexp="^test.+", rngK
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
-  \code{\link{printTextProtocol}} and \code{\link{printHTMLProtocol}} for printing the test protocol.
+  \code{\link{printTextProtocol}} and \code{\link{printHTMLProtocol}}
+  for printing the test protocol.
 }
 
 
 \examples{
 
 ## run some test suite
-myTestSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+myTestSuite <- defineTestSuite("RUnit Example",
+                               system.file("examples", package = "RUnit"),
+                               testFileRegexp = "correctTestCase.r")
 testResult <- runTestSuite(myTestSuite)
 
 ## prints detailed text protocol
 ## to standard out:
-printTextProtocol(testResult, showDetails=TRUE)
+printTextProtocol(testResult, showDetails = TRUE)
 
 ##  for single test files, e.g. outside a package context
-testResult2 <- runTestFile(file.path(system.file("examples", package="RUnit"), "correctTestCase.r"))
-printTextProtocol(testResult2, showDetails=TRUE)
+testResult2 <- runTestFile(file.path(system.file("examples", package = "RUnit"),
+                                     "correctTestCase.r"))
+printTextProtocol(testResult2, showDetails = TRUE)
 }
 
 \keyword{programming}

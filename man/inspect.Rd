@@ -1,10 +1,29 @@
+%%  RUnit : A unit test framework for the R programming language
+%%  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%
+%%  This program is free software; you can redistribute it and/or modify
+%%  it under the terms of the GNU General Public License as published by
+%%  the Free Software Foundation; either version 2 of the License, or
+%%  (at your option) any later version.
+%%
+%%  This program is distributed in the hope that it will be useful,
+%%  but WITHOUT ANY WARRANTY; without even the implied warranty of
+%%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%%  GNU General Public License for more details.
+%%
+%%  You should have received a copy of the GNU General Public License
+%%  along with this program; if not, write to the Free Software
+%%  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+%%  $Id$
+
 \encoding{latin1}
 \name{inspect}
 \alias{inspect}
 \title{Track the executed code lines of a function or method.}
 
 \usage{
-  inspect(expr, track=track)
+  inspect(expr, track = track)
 }
 
 \arguments{
@@ -14,7 +33,7 @@
 
 \description{
   \code{inspect} examines and modifies the source code of a function or
-  method.  After the modifcation of the source code, the modified function
+  method.  After the modification of the source code, the modified function
   will be executed and the result of the tracking process will be
   stored. To store the information a \code{tracker} environment with the
   name track must exist.
@@ -55,7 +74,7 @@ track$init()
 
 ## inspect the function
 ## res will collect the result of calling foo
-res <- inspect(foo(10), track=track)
+res <- inspect(foo(10), track = track)
 
 ## get the tracked function call info
 resTrack <- track$getTrackInfo()
