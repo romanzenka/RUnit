@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -30,13 +30,20 @@ defineTestSuite <- function(name, dirs,
   ##@in  name           : [character] test suite title used in protocol
   ##@in  dirs           : [character] vector of paths to search for test case files
   ##@in  testFileRegexp : [character] regular expression string to match file names
-  ##@in  testFuncRegexp : [character] regular expression string to match test case functions within all test case files
+  ##@in  testFuncRegexp : [character] (vector) regular expression string(s) to match test case functions within all test case files
   ##@in  rngKind        : [character] name of the RNG version, see RNGversion()
   ##@in  rngNormalKind  : [character] name of the RNG version for the rnorm, see RNGversion()
   ##@ret                : [RUnitTestSuite] S3 class (list) object, ready for test runner
   ##
   ##@codestatus : testing
-  
+
+  if (missing(dirs)) {
+    stop("argument 'dirs' is missing without a default.")
+  }
+  if (missing(name)) {
+    warning("argument 'name' is missing. using basename(dirs)[1] instead.")
+    name <- basename(dirs)[1]
+  }
   ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,
@@ -66,10 +73,12 @@ isValidTestSuite <- function(testSuite)
     warning(paste("'testSuite' object is not of class 'RUnitTestSuite'."))
     return(FALSE)
   }
-  if(!setequal(names(testSuite), c("name", "dirs", "testFileRegexp", "testFuncRegexp",
-                                   "rngKind", "rngNormalKind")))
+  ##  check required elements, irrepective of order, allow for additional elements
+  requiredNames <-  c("name", "dirs", "testFileRegexp", "testFuncRegexp",
+                      "rngKind", "rngNormalKind")
+  if(!all(requiredNames %in% names(testSuite)))
   {
-    warning("'testSuite' object does not conform to S3 class definition.")
+    warning("'testSuite' object does not conform to S3 class definition. Not all list elements present.")
     return(FALSE)
   }
   for(i in seq_along(testSuite))
@@ -77,25 +86,30 @@ isValidTestSuite <- function(testSuite)
     if(!is.character(testSuite[[i]]))
     {
       warning(paste("'testSuite' object does not conform to S3 class definition.\n",
-                    names(testSuite)[i],"has to be of type 'character'."))
+                    names(testSuite)[i]," element has to be of type 'character'."))
       return(FALSE)
-    }
-  }
-  if (!all(file.exists(testSuite[["dirs"]])))
-  {
-    warning(paste("specifed directory",testSuite[["dirs"]],"not found."))
-    return(FALSE)
+    }  
   }
   
+  if (!all(file.exists(testSuite[["dirs"]])))
+  {
+    warning(paste("specified directory", paste(testSuite[["dirs"]], collapse=", "), "not found."))
+    return(FALSE)
+  }
+
+  if (length(testSuite[["name"]]) != 1) {
+    warning(paste("'name' element may only contain exatly one name."))
+    return(FALSE)
+  }
   ##  RNGkind has an internal list of valid names which cannot be accessed
   ##  programatically. Furthermore, users can define their own RNG and select that one
   ##  so we have to leave it to RNGkind() to check if the arguments are valid.
   if (length(testSuite[["rngKind"]]) != 1) {
-    warning(paste("specifed 'rngKind' may only contain exatly one name."))
+    warning(paste("'rngKind' element may only contain exatly one name."))
     return(FALSE)
   }
   if (length(testSuite[["rngNormalKind"]]) != 1) {
-    warning(paste("specifed 'rngNormalKind' may only contain exatly one name."))
+    warning(paste("'rngNormalKind' element may only contain exatly one name."))
     return(FALSE)
   }
   return(TRUE)
@@ -212,8 +226,9 @@ isValidTestSuite <- function(testSuite)
   ## No return value, called for its side effects on TestLogger object
   ##@edescr
   ##
-  ##@in absTestFileName : [character] the absolute name of the file to test
-  ##@in testFuncRegexp : [character] a regular expression identifying the names of test functions
+  ##@in  absTestFileName : [character] absolute path name of the file to test
+  ##@in  testFuncRegexp  : [character] a regular expression identifying the names of test functions
+  ##@ret                 : [NULL]
   ##
   ##@codestatus : internal
 
@@ -258,7 +273,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   ## test files and triggers all the required actions. At the end it creates a test
   ## protocol data object. 
   ## IMPORTANT to note, the random number generator is (re-)set to the default
-  ## methods specifed in defineTestSuite() before each new test case file is sourced. 
+  ## methods specified in defineTestSuite() before each new test case file is sourced. 
   ## This garantees that each new test case set defined together in on file can rely
   ## on the default, even if the random number generator version is being reconfigured in some
   ## previous test case file(s).
@@ -332,12 +347,14 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
   ##@in  absFileName        : [character] complete file name of test cases code file
   ##@in  useOwnErrorHandler : [logical] if TRUE RUnits error handler will be used
   ##@in  testFuncRegexp     : [character]
+  ##@in  rngKind            : [character] name of the RNG, see RNGversion()
+  ##@in  rngNormalKind      : [character] name of the RNG for rnorm, see RNGversion()
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
   
   ##  preconditions
-  ##  all error checking and hanling is delegated to function runTestSuite
+  ##  all error checking and handling is delegated to function runTestSuite
   
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
