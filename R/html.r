@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003, 2004  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ writeRawCR <- function(htmlStr,htmlFile,append=TRUE)
   ##
   ##@codestatus : internal 
 
-  writeRaw(htmlStr,htmlFile,append);
+  writeRaw(htmlStr,htmlFile,append)
   cat("\n",file=htmlFile,append=TRUE)
   invisible(TRUE)
 }
@@ -68,9 +68,9 @@ writeTitle <- function(htmlStr,htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
    
-  writeRaw("<title>",htmlFile,append);
-  writeRaw(htmlStr,htmlFile);
-  writeRaw("</title>\n",htmlFile);
+  writeRaw("<title>",htmlFile,append)
+  writeRaw(htmlStr,htmlFile)
+  writeRaw("</title>\n",htmlFile)
 }
 
 
@@ -86,7 +86,7 @@ writeBeginHead <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw("<head>",htmlFile,append);
+  writeRaw("<head>",htmlFile,append)
 }
 
 
@@ -102,7 +102,7 @@ writeEndHead <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw("</head>\n",htmlFile,append);
+  writeRaw("</head>\n",htmlFile,append)
 }
 
 
@@ -118,7 +118,7 @@ writeBeginHtml <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw("<html>",htmlFile,append);
+  writeRaw("<html>",htmlFile,append)
 }
 
 
@@ -134,7 +134,7 @@ writeEndHtml <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw("</html>\n",htmlFile,append);
+  writeRaw("</html>\n",htmlFile,append)
 }
 
 
@@ -150,7 +150,7 @@ writeBeginBody <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw("<body>",htmlFile,append);
+  writeRaw("<body>",htmlFile,append)
 }
 
 
@@ -166,7 +166,7 @@ writeEndBody <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw("</body>\n",htmlFile,append);
+  writeRaw("</body>\n",htmlFile,append)
 }
 
 
@@ -184,13 +184,10 @@ writeBeginTag <- function(htmlTag,htmlFile,para="",append=TRUE)
   ##
   ##@codestatus : internal
    
-  if(para =="")
-  {
-    writeRaw(paste("<",htmlTag,">",sep=""),htmlFile,append);
-  }
-  else
-  {
-    writeRaw(paste("<",htmlTag," ",para,">",sep=""),htmlFile,append);
+  if(para =="") {
+    writeRaw(paste("<",htmlTag,">",sep=""),htmlFile,append)
+  } else {
+    writeRaw(paste("<",htmlTag," ",para,">",sep=""),htmlFile,append)
   }
 
 }
@@ -209,7 +206,7 @@ writeEndTag <- function(htmlTag,htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeRaw(paste("</",htmlTag,">",sep=""),htmlFile,append);
+  writeRaw(paste("</",htmlTag,">",sep=""),htmlFile,append)
 }
 
 
@@ -293,28 +290,26 @@ writeTableRow <- function(row,htmlFile,append=TRUE,bgcolor="")
   ##
   ##@codestatus : internal
     
-  writeBeginTag("tr",htmlFile);
+  writeBeginTag("tr",htmlFile)
   if(length(bgcolor) == 1)
   {
-    bgcolor <- rep(bgcolor,length(row));
+    bgcolor <- rep(bgcolor,length(row))
   }
   for(i in seq_along(row))
   {
     if(bgcolor[i] == "")
     {
-      writeBeginTag("td",htmlFile);
+      writeBeginTag("td",htmlFile)
+    } else {
+      writeBeginTag("td",htmlFile,para=paste("bgcolor=\"",bgcolor[i],"\"",sep=""))
     }
-    else
-    {
-      writeBeginTag("td",htmlFile,para=paste("bgcolor=\"",bgcolor[i],"\"",sep=""));
-    }
-    writeRaw(row[i],htmlFile);
-    writeEndTag("td",htmlFile);
-    writeCR(htmlFile);
+    writeRaw(row[i],htmlFile)
+    writeEndTag("td",htmlFile)
+    writeCR(htmlFile)
   }
 
-  writeEndTag("tr",htmlFile,append);
-  writeCR(htmlFile);
+  writeEndTag("tr",htmlFile,append)
+  writeCR(htmlFile)
 }
 
 
@@ -332,9 +327,9 @@ writeLink <- function(target,name,htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
     
-  writeBeginTag("a",htmlFile,paste("href=\"",target,"\"",sep=""),append=append);
-  writeRaw(name,htmlFile,append=TRUE);
-  writeEndTag("a",htmlFile,append=TRUE);
+  writeBeginTag("a",htmlFile,paste("href=\"",target,"\"",sep=""),append=append)
+  writeRaw(name,htmlFile,append=TRUE)
+  writeEndTag("a",htmlFile,append=TRUE)
 }
 
 
@@ -350,8 +345,8 @@ writeEndTable <- function(htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
   
-  writeEndTag("table",htmlFile,append);
-  writeCR(htmlFile);
+  writeEndTag("table",htmlFile,append)
+  writeCR(htmlFile)
 }
 
 
@@ -373,13 +368,14 @@ writeHtmlHeader <- function(header,htmlFile)
   ##
   ##@codestatus : internal
   
-  writeRawCR("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"",htmlFile,FALSE);
-  writeRawCR("\"http://www.w3.org/TR/html4/transitional.dtd\">",htmlFile);
-  writeBeginHtml(htmlFile);
-  writeBeginHead(htmlFile);
-  writeTitle(header,htmlFile);
-  writeEndHead(htmlFile);
-  writeBeginBody(htmlFile);
+  writeRawCR("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"",
+             htmlFile,FALSE)
+  writeRawCR("\"http://www.w3.org/TR/html4/transitional.dtd\">",htmlFile)
+  writeBeginHtml(htmlFile)
+  writeBeginHead(htmlFile)
+  writeTitle(header,htmlFile)
+  writeEndHead(htmlFile)
+  writeBeginBody(htmlFile)
 }
 
 
@@ -394,8 +390,8 @@ writeHtmlEnd <- function(htmlFile)
   ##
   ##@codestatus : internal
   
-  writeEndBody(htmlFile);
-  writeEndHtml(htmlFile);
+  writeEndBody(htmlFile)
+  writeEndHtml(htmlFile)
 }
 
 
@@ -410,7 +406,7 @@ writeHtmlSep <- function(htmlFile)
   ##
   ##@codestatus : internal
   
-  writeRawCR("<hr>",htmlFile);
+  writeRawCR("<hr>",htmlFile)
 }
 
 
@@ -427,8 +423,8 @@ writeImage <- function(img,htmlFile,append=TRUE)
   ##
   ##@codestatus : internal
   
-  writeBeginTag("img",htmlFile,para=paste("src=\"",img,"\"",sep=""),append);
-  writeEndTag("img",htmlFile);
+  writeBeginTag("img",htmlFile,para=paste("src=\"",img,"\"",sep=""),append)
+  writeEndTag("img",htmlFile)
 }
 
 
@@ -447,10 +443,10 @@ writeHtmlSection <- function(title,sec,htmlFile,append=TRUE)
   ##@codestatus : internal
   
   secTag <- paste("h",sec,sep="")
-  writeBeginTag(secTag,htmlFile,append);
-  writeRaw(title,htmlFile,append);
-  writeEndTag(secTag,htmlFile,append);
-  writeCR(htmlFile,append);
+  writeBeginTag(secTag,htmlFile,append)
+  writeRaw(title,htmlFile,append)
+  writeEndTag(secTag,htmlFile,append)
+  writeCR(htmlFile,append)
 }
 
 
