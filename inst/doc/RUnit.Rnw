@@ -29,14 +29,14 @@
 %
 \begin{document}
 \title{RUnit - A Unit Test Framework for R}
-\author{Thomas K\"onig\footnote{thomas.koenig@epigenomics.com}, Klaus J\"unemann, and Matthias Burger\\Epigenomics AG}
+\author{Thomas K\"onig, Klaus J\"unemann, and Matthias Burger\\Epigenomics AG}
 \maketitle
 \tableofcontents
 \section*{Abstract}
 \label{section:abstract}
-Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modeled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyze and report the software quality status. The presented framework is completely implemented within R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an well structured test protocol.
+Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modeled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyse and report the software quality status. The presented framework is completely implemented within R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an well structured test protocol.
 To verify the coverage of the test framework a code inspector is provided that monitors the code coverage of executed test cases. The result of individual test invocations as well as package wide evaluations can be compiled into a summary report exported to HTML. This report details the executed tests, their failure or success, as well as the code coverage. Taking it one step further and combining the build system with a development and release procedure with defined code status description this approach opens the way for a principled software quality monitoring and risk assessment of the developed application.
-For our code development we have utilized the described system with great benefit w.r.t.\ code reliability and maintenance efforts in a medium sized development team.
+For our code development we have utilised the described system with great benefit w.r.t.\ code reliability and maintenance efforts in a medium sized development team.
 
 \section{Introduction}
 The importance of software testing can hardly be overrated. This
@@ -117,7 +117,7 @@ of tips relating to a Test-First development approach can be found in \cite{tfg}
     interplay of various software components.}
 
 \item{Good test coverage enables refactoring, by which a
-        reorganization of the implementation is meant. Without testing the
+        reorganisation of the implementation is meant. Without testing the
         attitude {\it `I better do not touch this code anymore`} once some piece
         of software appears to be working is frequently
         encountered. It is very pleasing and time-saving just to run a
@@ -135,7 +135,7 @@ of tips relating to a Test-First development approach can be found in \cite{tfg}
     the export list is selected carefully and maintained). 
     If internal functions are directly tested, the ability of
     refactoring gets lost because this typically involves
-    reorganization of the internal part of a library.}
+    reorganisation of the internal part of a library.}
 
 \item {Once a bug has been found, add a corresponding test case.}
 
@@ -155,7 +155,7 @@ This section contains a detailed explanation of the RUnit package and
 examples how to use it. As has already been mentioned the package
 contains two independent components: a framework for test case
 execution and a tool that allows to inspect the flow of execution
-inside a function in order to analyze which portions of code are
+inside a function in order to analyse which portions of code are
 covered by some test case.
 Both components are now discussed in turn.
 
@@ -181,7 +181,7 @@ test.c2f <- function() {
   checkException(c2f("xx"))
 }
 \end{Sinput}
-The default naming convention for test functions in the RUnit package is {\tt test...} as is standard in JUnit. To perform the actual checks that the function to be tested works correctly a set of functions called {\tt check ...} is provided. The purpose of these {\tt check} functions is two-fold: they make sure that a possible failure is reported to the central test logger so that it will appear properly in the final test protocol and they are supposed to make explicit the actual checks in a test case as opposed to other code used to set up the test scenario. Note that {\tt checkException} fails if the passed expression does not generate an error. This kind of test is useful to make sure that a function correctly recognizes error situations instead of silently creating inappropriate results. These check functions are direct equivalents to the various {\tt assert} functions of the JUnit framework. More information can be found in the online help.
+The default naming convention for test functions in the RUnit package is {\tt test...} as is standard in JUnit. To perform the actual checks that the function to be tested works correctly a set of functions called {\tt check ...} is provided. The purpose of these {\tt check} functions is two-fold: they make sure that a possible failure is reported to the central test logger so that it will appear properly in the final test protocol and they are supposed to make explicit the actual checks in a test case as opposed to other code used to set up the test scenario. Note that {\tt checkException} fails if the passed expression does not generate an error. This kind of test is useful to make sure that a function correctly recognises error situations instead of silently creating inappropriate results. These check functions are direct equivalents to the various {\tt assert} functions of the JUnit framework. More information can be found in the online help.
 
 Before running the test function it is necessary to create a test suite which is a collection of test functions and files relating to one topic. One could, for instance, create one test suite for one R package. A test suite is just a list containing a name, an array of absolute directories containing the locations of the test files, a regular expression identifying the test files and a regular expression identifying the test functions. In our example assume that the test function is located in a file {\tt runitc2f.r} located in a directory {\tt /foo/bar/}. To create the corresponding test suite we can use a helper function:
 \begin{Sinput}
@@ -205,7 +205,7 @@ runTestFile(file.path(path.package(package="RUnit"),
             "examples/runitc2f.r"))
 \end{Sinput}
 
-The creation and execution of test suites can be summarized by the following recipe:
+The creation and execution of test suites can be summarised by the following recipe:
 \begin{enumerate}
 \item{create as many test functions in as many test files as necessary }
 \item{create one or more test suites using the helper function {\tt defineTestSuite}}
@@ -217,7 +217,7 @@ The creation and execution of test suites can be summarized by the following rec
 \begin{itemize}
 \item{A test file can contain an arbitrary number of test functions. A test directory can contain an arbitrary number of test files, a test suite can contain an arbitrary number of test directories and the test runner can run an arbitrary number of test suites -- all resulting in one test protocol. The test function and file names of a test suite must, however,  obey a naming convention expressible through regular expressions.
     As default test functions start with {\tt test} and files with {\tt runit}.}
-\item{RUnit makes a distinction between failures and error. A failure occurs if one of the check functions fail (e.g. {\tt checkTrue(FALSE)} creates a failure). An error is reported if an ordinary R error (usually created by {\tt stop}) occurs.}
+\item{RUnit makes a distinction between failures and error. A failure occurs if one of the check functions fail (e.g.~{\tt checkTrue(FALSE)} creates a failure). An error is reported if an ordinary R error (usually created by {\tt stop}) occurs.}
 \item{Since version 0.4.0 there is a function {\tt DEACTIVATED} which
 can be used to deactivate test cases temporarily. This might be useful
 in the case of a major refactoring. In particular, the deactivated
@@ -235,7 +235,7 @@ which are then executed directly before and after each test function. This can, 
 \subsection{R Code Inspection}
 \label{subsection:RCodeInspection}
 The Code Inspector is an additional tool for checking detailed test case coverage and getting profiling information.
-It records how often a code line will be executed. We utilize this information for improving our test cases, because we can identify code lines not executed by the current test case code.
+It records how often a code line will be executed. We utilise this information for improving our test cases, because we can identify code lines not executed by the current test case code.
 The Code Inspector is able to handle S4 methods.
 During the development of the Code Inspector, we noticed, that the syntax of R is very flexible.
 Because our coding philosophy has an emphasis of maintenance and a clear style, we developed style guides for our R coding.
@@ -312,10 +312,10 @@ original:
 <<eval=FALSE>>=
 foo <- function(x)
 {
-   y <- 0;
+  y <- 0
   for(i in 1:x)
   {
-      y <- y + x;
+      y <- y + x
   }
   return(y)
 }
@@ -325,15 +325,15 @@ modified:
 foo.mod <- function(x)
 {
    track$bp(1) ;
-   y <- 0;
+   y <- 0
    track$bp(2);
    for(i in 1:x)
   {
       track$bp(4) ;
-     y <- y +x;
+     y <- y +x
   }
    track$bp(6);
-   return(y);
+   return(y)
 }
 @
 
@@ -360,11 +360,11 @@ The problem is the \textit{else} branch, that cannot be modified in the current 
 Here we briefly list -- in an unordered manner -- some of the avenues for future development we or someone interested in this package could take:
 \begin{itemize}
 \item{extend the {\tt checkEquals} function to handle complex S4 class objects correctly in comparisons. To this end R core has modified check.equal to handle S4 objects.}
-\item{reimplement the internal structures stroing the test suite as well as the test result data as S4 classes.}
+\item{reimplement the internal structures storing the test suite as well as the test result data as S4 classes.}
 \item{record all warnings generated during the execution of a test function.}
 \item{add tools to create test cases automatically. This is a research project but -- given the importance of testing -- worth the effort. See \cite{junit} for various approaches in other languages.}
-\item{improve the export of test suite execution data e.g.\ by adding XML data export support.}
-\item{add some evaluation methods to the code inspector e.g. use software metrics to estimate standard measures of code quality, complexity, and performance.}
+\item{improve the export of test suite execution data e.g.~by adding XML data export support.}
+\item{add some evaluation methods to the code inspector e.g.~use software metrics to estimate standard measures of code quality, complexity, and performance.}
 \item{overcome the problem of nested calls to registered functions for code inspection.}
 \item{allow automatic registration of functions \& methods.}
 \end{itemize}
