@@ -195,10 +195,10 @@ tracker <- function()
   fIdx <- 0
 
   ## old time
-  oldTime <- NULL;
+  oldTime <- NULL
 
   ## old src line
-  oldSrcLine <- 0;
+  oldSrcLine <- 0
   
   addFunc <- function(fId,src,callExpr)
   {
@@ -219,7 +219,7 @@ tracker <- function()
       stop("fId must be one character string: function name")
     }
     
-    isThere <- which(fId == names(trackInfo));
+    isThere <- which(fId == names(trackInfo))
 
     if(length(isThere) == 1)
     {
@@ -228,7 +228,7 @@ tracker <- function()
     }
     else
     {
-      fIdx <<- fIdx +1;
+      fIdx <<- fIdx + 1
       newFuncInfo <- list(src=src,
                           run=integer(length(src)),
                           time=numeric(length(src)),
@@ -237,9 +237,9 @@ tracker <- function()
                           funcCall=callExpr)
 
       ##  append strips class attribute
-      trackInfo <- append(trackInfo,list(newFuncInfo));
+      trackInfo <- append(trackInfo,list(newFuncInfo))
       
-      names(trackInfo)[fIdx] <- fId;
+      names(trackInfo)[fIdx] <- fId
       class(trackInfo) <- "trackInfo"
       ##  update global state
       trackInfo <<- trackInfo
@@ -249,8 +249,8 @@ tracker <- function()
     trackInfo[[fIdx]]$nrRuns <<- trackInfo[[fIdx]]$nrRuns + 1
     
     ## initialize local variables
-    oldSrcLine <<- 0;
-    oldTime <<- NULL;
+    oldSrcLine <<- 0
+    oldTime <<- NULL
 
     return(invisible())
   }
@@ -276,7 +276,7 @@ tracker <- function()
     ##
     ##  codestatus : internal
     
-    return(trackInfo);
+    return(trackInfo)
   }
   
   
@@ -446,13 +446,13 @@ inspect <- function(expr, track=track)
   ##@codestatus : testing
   
   ## getting the call and his parameter
-  fCall <- as.character(substitute(expr));
+  fCall <- as.character(substitute(expr))
 
   ## get the original call
-  callExpr <- deparse(substitute(expr));
+  callExpr <- deparse(substitute(expr))
   
   ## getting the name of the function
-  fname <- fCall[1];
+  fname <- fCall[1]
   
   ## check for generic function
   if(isGeneric(fname))
@@ -486,9 +486,7 @@ inspect <- function(expr, track=track)
       if(length(ellipseIdx) != 0)
       {
         selType <- c(selType,rep("missing",nrMissing -1 ))
-      }
-      else
-      {
+      } else {
         selType <- c(selType,rep("missing",nrMissing))
       }
     }
@@ -500,9 +498,8 @@ inspect <- function(expr, track=track)
 
     ## create an identifier for the generic function
     fNameId <- paste("S4",fname,paste(selFunc@defined@.Data, collapse="/"), sep="/")
-  }
-  else
-  {
+    
+  } else {
     ## deparse the function
     fbody <- try(deparse(get(fname), width.cutoff=500))
     if (inherits(fbody, "try-error")) {
@@ -536,9 +533,7 @@ inspect <- function(expr, track=track)
   {
     ## call the new function
     res <- eval(parsedFunc,envir=parent.frame())
-  }
-  else
-  {
+  } else {
     ## no parsing possible
     ## simple call without tracking
     res <- expr
