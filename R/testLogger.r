@@ -1,10 +1,9 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2007  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
-##  the Free Software Foundation; either version 2 of the License, or
-##  (at your option) any later version.
+##  the Free Software Foundation; version 2 of the License.
 ##
 ##  This program is distributed in the hope that it will be useful,
 ##  but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,9 +19,9 @@
 
 .newTestLogger <- function(useOwnErrorHandler) {
   ##@bdescr
-  ## creates a new, empty TestLogger 'object'.
-  ## TestLogger is an object based on the 'closure trick'. It has the task
-  ## to store, administrate and print the test protocol.
+  ##  creates a new, empty TestLogger 'object'.
+  ##  TestLogger is an object based on the 'closure trick'. It has the task
+  ##  to store, administrate and print the test protocol.
   ##@edescr
   ##@in  useOwnErrorHandler  : [logical] 
   ##@ret                     : [list]
@@ -37,7 +36,7 @@
   .currentSourceFileName <- NULL
 
   ## book keeping variables for individual test functions
-  ## can be reset by cleanup function
+  ## can be reset by function cleanup
   .currentTraceBack <- NULL
   .failure <- FALSE
   .deactivationMsg <- NULL   ## if non-NULL test function is deactivated
@@ -77,14 +76,14 @@
   ## -----------------------
   getTestData <- function() {
     ##@bdescr
-    ## returns the protocol data collected during the test runs
+    ##  return the protocol data collected during the test runs
     ##@edescr
     return(.testData)
   }
 
   setCurrentTestSuite <- function(testSuite) {
     ##@bdescr
-    ## specify the test suite that is currently executed.
+    ##  record the test suite that is currently executed.
     ##@edescr
     ##@in testSuite : [testSuite - list] the current testSuite
 
@@ -109,7 +108,7 @@
 
   setCurrentSourceFile <- function(sourceFileName) {
     ##@bdescr
-    ## specify the source file whose test functions are currently executed
+    ##  record the source file whose test functions are currently executed
     ##@edescr
     ##@in sourceFileName : [character] name of current source file
 
@@ -124,7 +123,7 @@
 
   addSuccess <- function(testFuncName, secs) {
     ##@bdescr
-    ## add a successful test function run.
+    ##  add a successful test function run.
     ##@edescr
     ##@in testFuncName : [character] name of test function
     ##@in secs : [numeric] time in seconds needed by the test function to complete
@@ -137,7 +136,7 @@
 
   addError <- function(testFuncName, errorMsg) {
     ##@bdescr
-    ## add a test function that generated an error.
+    ##  add a test function that generated an error.
     ##@edescr
     ##@in testFuncName : [character] name of test function
     ##@in errorMsg : [character] the error message
@@ -151,7 +150,7 @@
 
   addFailure <- function(testFuncName, failureMsg) {
     ##@bdescr
-    ## add a test function that generated an error.
+    ##  add a test function that generated an error.
     ##@edescr
     ##@in testFuncName : [character] name of test function
     ##@in failureMsg : [character] the failure message
@@ -165,7 +164,7 @@
 
   addDeactivated <- function(testFuncName) {
     ##@bdescr
-    ## add a deactivated test function that generated an error.
+    ##  add a deactivated test function that generated an error.
     ##@edescr
     ##@in testFuncName : [character] name of test function
 
@@ -177,7 +176,7 @@
 
   addCheckNum <- function(testFuncName) {
     ##@bdescr
-    ## add total number of checks performed 
+    ##  add total number of checks performed 
     ##@edescr
     ##@in testFuncName : [character] name of test function
 
@@ -188,8 +187,8 @@
   
   cleanup <- function() {
     ##@bdescr
-    ## reset book keeping variables like .failure, ...
-    ## should be called before each test function execution
+    ##  reset book keeping variables like .failure, ...
+    ##  should be called before each test function execution
     ##@edescr
 
     .currentTraceBack <<- NULL
@@ -200,7 +199,7 @@
 
   isFailure <- function() {
     ##@bdescr
-    ##
+    ##  return current failure status 
     ##@edescr
     return(.failure)
   }
@@ -214,7 +213,7 @@
 
   isDeactivated <- function() {
     ##@bdescr
-    ##
+    ##  return current deactivation message
     ##@edescr
     ##@ret  : [logical] TRUE if deactivation msg is not NULL
     return(!is.null(.deactivationMsg))
@@ -222,7 +221,7 @@
 
   setDeactivated <- function(msg) {
     ##@bdescr
-    ##  set deactivation msg variable, indicating a deactivated test case
+    ##  set deactivation message variable, indicating a deactivated test case
     ##@edescr
     ##@in  msg : [character] message string
     
@@ -267,7 +266,8 @@
 
 getErrors <- function(testData) {
   ##@bdescr
-  ##  tools to handle the testData listlistlist
+  ##  return a brief summary of the test case execution result,
+  ##  computed from the testData listOfListsOfLists
   ##
   ##@edescr
   ##
