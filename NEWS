@@ -8,6 +8,12 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.22
+    o   clarified applicable license: GPL 2
+    o   defineTestSuite: gained some argument checks
+    o   isValidTestSuite: check for empty name
+    o   includeTracker: fix `<- if` handling
+
 Changes in RUnit 0.4.21
     o   documentation issues corrected, identified by new R 2.9.0 devel Rd parser
 

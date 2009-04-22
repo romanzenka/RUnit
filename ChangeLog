@@ -1,3 +1,127 @@
+2009-04-22 15:52  burgerm
+
+	* tests/runitInspect.r: added test cases for more complex functions
+	  to track
+
+2009-04-22 15:50  burgerm
+
+	* R/inspector.r: includeTracker: fix `<- if` call handling which
+	  caused the inspect mechanism to fail
+
+2009-04-22 15:48  burgerm
+
+	* R/runit.r: isValidTestSuite: check for empty name string as this
+	  will cause subsequent failure which is harder to understand
+
+2009-04-22 15:46  burgerm
+
+	* NAMESPACE: declare S3 print and summary methods for RUnitTestData
+
+2009-04-22 11:37  burgerm
+
+	* inst/doc/RUnit.pdf: removed: use R CMD build to generate, no need
+	  to store in repository
+
+2009-04-16 11:54  burgerm
+
+	* DESCRIPTION: patch level 0.4.22:  clarified GPL version
+
+2009-04-16 11:49  burgerm
+
+	* R/textProtocol.r: specified license to be version 2 of the GPL
+
+2009-04-16 11:48  burgerm
+
+	* R/testLogger.r: specified license to be version 2 of the GPL;
+	  extended function descriptions
+
+2009-04-16 11:44  burgerm
+
+	* R/: checkFuncs.r, exportHTML.r, html.r, htmlProtocol.r,
+	  inspector.r, runit.r: specified license to be version 2 of the
+	  GPL
+
+2009-04-16 11:39  burgerm
+
+	* R/00Init.r: specified license to be version 2 of the GPL
+
+2009-04-16 11:23  burgerm
+
+	* inst/: examples/correctTestCase.r,
+	  examples/runitVirtualClassTest.r, share/R/checkCode.r,
+	  share/R/compareRUnitTestData.r: specified license to be version 2
+	  of the GPL
+
+2009-04-16 11:18  burgerm
+
+	* tests/: runitHTMLProtocol.r, runitInspect.r,
+	  runitPlotConnection.r, runitRUnit.r, runitS4.r, runitSetUp.r,
+	  runitTearDown.r, runitTextProtocol.r: specified license to be
+	  version 2 of the GPL
+
+2009-04-16 11:13  burgerm
+
+	* man/: RUnit-internal.Rd, RUnit-intro.Rd, checkFuncs.Rd,
+	  inspect.Rd, printHTML.trackinfo.Rd, runit.Rd, textProtocol.Rd,
+	  tracker.Rd: specified license to be version 2 of the GPL
+
+2009-03-16 17:38  burgerm
+
+	* R/inspector.r: always coninue if-else on the same line removed
+	  semicolon at line ends
+
+2009-03-16 17:36  burgerm
+
+	* R/runit.r: defineTestSuite: gained some argument checks
+	  isValidTestSuite: warning messages modified to handle multiple
+	  names some typos in inline documentation fixed
+
+2009-03-16 17:29  burgerm
+
+	* R/checkFuncs.r: always coninue if else on the same line
+	  checkIdentical: added precondition check
+
+2009-03-16 17:26  burgerm
+
+	* R/exportHTML.r: always coninue if-else on the same line removed
+	  semicolon at line ends
+
+2009-03-16 17:24  burgerm
+
+	* R/html.r: always coninue if else on the same line html.r removed
+	  semicolon at line ends
+
+2009-03-16 17:21  burgerm
+
+	* inst/doc/RUnit.Rnw: minute corrections
+
+2009-03-05 16:58  burgerm
+
+	* DESCRIPTION: License field updated according to R-ext for R 2.8.1
+
+2009-01-23 19:13  burgerm
+
+	* man/: checkFuncs.Rd, inspect.Rd, printHTML.trackinfo.Rd,
+	  runit.Rd, textProtocol.Rd, tracker.Rd: corrected typos, changed
+	  formating of code chunks to allow for proper display in pdf
+	  reference manual (suggested by Terry Therneau)
+
+2009-01-23 17:23  burgerm
+
+	* NEWS: typos corrected
+
+2009-01-15 14:47  burgerm
+
+	* DESCRIPTION: patch level 0.4.21
+
+2009-01-15 14:46  burgerm
+
+	* ChangeLog: update for 0.4.21 submission
+
+2009-01-15 14:46  burgerm
+
+	* NEWS: updated for 0.4.21 submission
+
 2009-01-15 14:26  burgerm
 
 	* man/tracker.Rd: enclosed \item statements within \describe
@@ -24,6 +148,43 @@
 2008-11-07 12:15  burgerm
 
 	* DESCRIPTION: patch level 0.4.20
+
+2008-06-20 17:51  burgerm
+
+	* R/textProtocol.r: printTextProtocol rewritten by Klaus using
+	  toText; getErrors moved here, TODO replace with S4 method
+
+2008-06-20 17:49  burgerm
+
+	* NAMESPACE: adopt S4 classes and methods; removed some outdated
+	  functions
+
+2008-06-20 17:36  burgerm
+
+	* R/runit.r: rewritten by Klaus, using S4 design and condition
+	  mechanism
+
+2008-06-20 17:29  burgerm
+
+	* R/00Init.r: added generics definition used for S4 methods
+
+2008-06-20 17:27  burgerm
+
+	* R/testLogger.r: removed; will eventually be replaced
+
+2008-06-20 17:26  burgerm
+
+	* R/: TestFileResult.r, TestFunctionResult.r, TestResult.r,
+	  TestSuite.r, TestSuiteResult.r: S4 class based design of RUnit
+
+2008-06-20 17:26  burgerm
+
+	* R/checkFuncs.r: rewritten by Klaus using conditions
+
+2008-06-20 17:24  burgerm
+
+	* R/utility.r: utility functions not attributed to one class;
+	  miscellaneous
 
 2008-06-19 15:57  burgerm
 
@@ -222,6 +383,113 @@
 	* R/runit.r: make use of a new environment defined as child of
 	  .GlobalEnv to allow setClass calls wo where argument
 
+2007-04-25 08:46  burgerm
+
+	* R/TestCaseMethods.r: construct method added; verify method checks
+	  partially switched off
+
+2007-04-25 08:39  burgerm
+
+	* R/TestCaseTestResultData.r: slots checkNum, traceBack and
+	  warnMessageStack added
+
+2007-04-23 00:14  burgerm
+
+	* R/testLogger.r: replaced by condition signals
+
+2007-04-23 00:10  burgerm
+
+	* R/TestCaseTestResultDataMethods.r: .printTextProtocol added: used
+	  in recursive call chain
+
+2007-04-23 00:08  burgerm
+
+	* R/: SourceFileTestResultDataMethods.r,
+	  TestSuiteTestResultDataMethods.r: .printTextProtocol, getError
+	  and getTestCaseNum added: used in recursive call chain
+
+2007-04-23 00:05  burgerm
+
+	* R/runit.r: removed .testLogger; added warning handler; switched
+	  to condition signals; use testCaseCheckCount for check call
+	  counting
+
+2007-04-23 00:03  burgerm
+
+	* R/checkFuncs.r: removed .testLogger
+
+2007-04-23 00:00  burgerm
+
+	* DESCRIPTION: removed .testLogger; added experimental condition
+	  signaling
+
+2007-04-15 12:50  burgerm
+
+	* DESCRIPTION: patch level 0.6.0-2 exploration stage; NOT FIT FOR
+	  PUBLIC USE
+
+2007-04-15 12:48  burgerm
+
+	* NAMESPACE: new S4 classes and methods added
+
+2007-04-15 12:47  burgerm
+
+	* R/runit.r: experimental: enabled new S4 class based result
+	  collection IN PARALLEL to exiting logger mechanism for
+	  exploration; NOT FIT FOR PUBLIC USE
+
+2007-04-15 12:45  burgerm
+
+	* R/Logger.r: getSealed added to exported accessors
+
+2007-04-15 12:40  burgerm
+
+	* R/checkFuncs.r: RUnit specific signals/conditions implemented and
+	  enabled in check* functions
+
+2007-04-15 12:38  burgerm
+
+	* R/zzz.r: log statement added; TestResultData method def enabled
+
+2007-04-15 12:37  burgerm
+
+	* R/TestSuiteTestResultDataMethods.r: method implementation added,
+	  accessor methods added
+
+2007-04-15 12:36  burgerm
+
+	* R/TestSuiteTestResultData.r: slots error & errorMsg added to
+	  cover suite level errors
+
+2007-04-15 12:35  burgerm
+
+	* R/TestResultData.r: slot name changed
+
+2007-04-15 12:34  burgerm
+
+	* R/TestCaseTestResultDataMethods.r: method implementation added,
+	  accessor methods added
+
+2007-04-15 12:33  burgerm
+
+	* R/TestCaseTestResultData.r: class definition reworked, slots
+	  renamed and added: NOT FINAL DESIGN
+
+2007-04-15 12:31  burgerm
+
+	* R/SourceFileTestResultDataMethods.r: method implementation added,
+	  getTestResultData added
+
+2007-04-15 12:29  burgerm
+
+	* R/SourceFileTestResultData.r: slot name renamed to
+	  sourceFileName, slots error & errorMsg added to cover source file
+	  level errors
+
+2007-04-15 12:28  burgerm
+
+	* R/htmlProtocol.r: regexpr fixed for R 2.5.0
+
 2007-04-12 10:29  burgerm
 
 	* R/inspector.r: unused variables removed
@@ -255,6 +523,59 @@
 
 	* R/htmlProtocol.r: included deactivatedStyle tag to HTML output:
 	  non-visible change
+
+2007-04-02 00:08  burgerm
+
+	* R/zzz.r: class and method init calls added/updated
+
+2007-04-02 00:04  burgerm
+
+	* R/00Init.r: packageDescription now observes the library path for
+	  the currently loaded package version
+
+2007-04-02 00:02  burgerm
+
+	* R/TestCaseTestResultData.r: sealed argument controlled by .GLOBAL
+	  state; slot failed renamed to failure
+
+2007-04-01 23:59  burgerm
+
+	* R/: TestResultData.r, SourceFileTestResultData.r,
+	  TestSuiteTestResultData.r: sealed argument controlled by .GLOBAL
+	  state
+
+2007-04-01 23:53  burgerm
+
+	* R/: TestCase.r, TestCaseMethods.r, TestLogger.r,
+	  TestLoggerMethods.r: playground extended
+
+2007-04-01 23:51  burgerm
+
+	* R/ArrayMethods.r:  - code formating changes ArrayMethods.r
+	   - setNames: unnecessary precondition check removed
+	   - concat: precondition check added
+	     method definition also added to Array base class
+	   - printObject rewritten to use show
+	   - show method added
+	   - array class constructor: sealed argument controlled by .GLOBAL
+	  state
+	   - applyFun method definition added to array class generator
+
+2007-04-01 23:43  burgerm
+
+	* R/Array.r: allow sealed argument to be controlled by .GLOBAL
+	  state
+
+2007-04-01 23:42  burgerm
+
+	* R/classUtilities.r: in setGeneric avoid assigning to temp
+	  variable value as no postprocessing is intended here and this
+	  assignment has a small memory penalty as shown by memprof
+
+2007-04-01 23:38  burgerm
+
+	* DESCRIPTION: patch level 0.6.0-1: more exploratory code chunks
+	  added
 
 2007-03-31 23:15  burgerm
 
@@ -350,6 +671,37 @@
 	* tests/runitRUnit.r: compatibility to R 1.9.0 as declared in
 	  DESCRIPTION: removed calls to isTRUE as this was introduced only
 	  in R 2.1.0, replaced where needed by identical(TRUE, x)
+
+2006-08-30 01:13  burgerm
+
+	* DESCRIPTION: patch level 0.6.0-0: start new minor level 0.6.0.x
+	  for development, first public release will be 0.6.0; 0.5.x is
+	  reserved for potential S3 implementation updates; class layout as
+	  described in dia
+
+2006-08-30 01:11  burgerm
+
+	* NAMESPACE: initial commit: class layout as described in dia
+
+2006-08-30 00:58  burgerm
+
+	* R/TestSuiteTestResultDataMethods.r: initial commit: class layout
+	  as described in dia
+
+2006-08-30 00:54  burgerm
+
+	* R/: ArrayMethods.r, Logger.r, SignalHandler.r,
+	  SourceFileTestResultDataMethods.r,
+	  TestCaseTestResultDataMethods.r, TestSuiteMethods.r,
+	  classUtilities.r, zzz.r: initial commit: class layout as
+	  described in dia
+
+2006-08-30 00:51  burgerm
+
+	* R/: Array.r, SourceFileTestResultData.r,
+	  TestCaseTestResultData.r, TestResultData.r, TestSuite.r,
+	  TestSuiteTestResultData.r: initial commit: class layout as
+	  described in dia
 
 2006-08-22 11:21  burgerm
 
@@ -450,6 +802,19 @@
 	* R/checkFuncs.r: checkException: added comment on contributing
 	  author
 
+2006-04-04 19:25  burger
+
+	* R/TestResultClass.r: License header text added
+
+2006-04-04 19:25  burger
+
+	* R/TestLogger.r: initial commit
+
+2006-04-04 19:24  burger
+
+	* R/: TestResultMethods.r, TestSuiteResult.r,
+	  TestSuiteResultMethods.r: Lincence header text added
+
 2006-04-04 17:38  burger
 
 	* NEWS, inst/doc/RUnit.pdf: updated
@@ -487,6 +852,10 @@
 2006-04-03 18:31  burger
 
 	* DESCRIPTION: patch level 0.4.11: checkException arg added
+
+2006-04-03 14:40  burger
+
+	* inst/examples/runitfoo.r: example function
 
 2006-03-21 15:47  burger
 
@@ -573,6 +942,46 @@
 2005-12-05 14:44  burger
 
 	* R/html.r: writeHtmlTable added; API tags updated
+
+2005-11-21 15:29  burger
+
+	* DESCRIPTION: patch level 0.5.0 added - temporary - dependency on
+	  EpiR.base (arrayTemplate class)
+
+2005-11-21 15:28  burger
+
+	* R/zzz.r: class & method init currently required arrayTemplate and
+	  thus relies on EpiR.base FIXME: remove dependency on EpiR.base
+	  once design has matured
+
+2005-11-21 15:28  burgerm
+
+	* R/zzz.r: file zzz.r was added on branch S4-devel-branch-2006-08
+	  on 2006-08-29 22:54:46 +0000
+
+2005-11-21 15:26  burger
+
+	* R/Logger.r: first exploration
+
+2005-11-21 15:26  burgerm
+
+	* R/Logger.r: file Logger.r was added on branch
+	  S4-devel-branch-2006-08 on 2006-08-29 22:54:46 +0000
+
+2005-11-21 15:15  burger
+
+	* R/textProtocol.r: added execTime S3 method
+
+2005-11-21 15:15  burger
+
+	* R/: TestFileResult.r, TestFunctionResult.r, TestResultMethods.r,
+	  TestSuiteResult.r, TestFileResultMethods.r,
+	  TestSuiteResultMethods.r: first prototype
+
+2005-11-21 15:13  burger
+
+	* R/TestResultClass.r: first prototype: virtual base class: the
+	  mother of all test results
 
 2005-11-14 13:40  burger
 
@@ -1307,4 +1716,11 @@
 	* DESCRIPTION, R/00Init.r, R/initGeneratedRUnit.r, R/utilities.r,
 	  inst/NAMESPACE, inst/doc/RUnit.Rnw, man/RUnit.Rd,
 	  tests/runitRUnit.r: Initial revision
+
+2004-04-06 11:27  burger
+
+	* DESCRIPTION, R/00Init.r, R/initGeneratedRUnit.r, R/utilities.r,
+	  inst/NAMESPACE, inst/doc/RUnit.Rnw, man/RUnit.Rd,
+	  tests/runitRUnit.r: initial import: preparation for public CRAN
+	  package, will take on most of EpiR.tools functionality
 
