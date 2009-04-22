@@ -41,3 +41,6 @@ export(".setUp",
        "summary.RUnitTestData",
        "tracker")
 
+
+S3method(print, RUnitTestData)
+S3method(summary, RUnitTestData)
