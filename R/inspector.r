@@ -59,13 +59,15 @@ includeTracker <- function(fbody, track=track)
     return(sapply(code,
                   function(line)
                   {
-                    opBr <- grep(paste("^[ ]*",kwGrep," .*[ ]+$",sep=""),line)
-                    if(length(opBr) > 0)
-                    {
+                    opBr <- grep(paste("^[ ]*",kwGrep,".*[ ]+$",sep=""), line)
+                    ##  special case if combined with assignment or math operators
+                    opBr2 <- grep(paste("(<-|=|\\+|\\-|\\*|\\/)[ ]*if[ ]*\\(",sep=""), line)
+                    if(length(opBr) > 0 || length(opBr2) > 0) {
+                      
                       return(TRUE)
                     }
                     return(FALSE)
-                  },USE.NAMES=FALSE))
+                  }, USE.NAMES=FALSE))
   }
   
   
@@ -76,9 +78,9 @@ includeTracker <- function(fbody, track=track)
     ##
     ##@edescr
     ##
-    ##@in  potLine : [character] vector of code text line(s)
+    ##@in  potLine : [logical] mask vector which line contains a one-line control construct
     ##@in  block   : [integer] vector
-    ##@in  env     : [logical] vector
+    ##@in  env     : [logical] mask vector: which line already contains a opening brace
     ##@ret         : [list] with matching element vectors: openBr & clodeBr
     ##
     ##@codestatus : internal
@@ -86,35 +88,35 @@ includeTracker <- function(fbody, track=track)
     oBr <- character(length(potLine))
     clBr <- character(length(potLine))
     
-    lineIdx <- 1
+    lineIdx <- 1L
     while(lineIdx < length(potLine))
     {
-      if(potLine[lineIdx] && !(potLine[lineIdx+1]))
-      {
+      if(potLine[lineIdx] && !(potLine[lineIdx+1])) {
         oBr[lineIdx] <- "{"
-        if (!env[lineIdx+1])
-        {
+        if (!env[lineIdx+1]) {
+          
           clBr[lineIdx+2] <- paste(clBr[lineIdx+2],"}")
-        }
-        else
-        {
+          
+        } else {
+
           bbl <- block[lineIdx]
-          endBlockIdx <- min(which((bbl >= block) & ((1:length(block)) > lineIdx)))
+          endBlockIdx <- min(which((bbl >= block) & (seq_along(block) > lineIdx)))
           clBr[endBlockIdx] <- paste(clBr[endBlockIdx],"}")
         }
-      }
-      if(potLine[lineIdx] && (potLine[lineIdx+1]))
-      {
+        
+      } else if(potLine[lineIdx] && (potLine[lineIdx+1]) ) {
         oBr[lineIdx] <- "{"
         bbl <- block[lineIdx]
-        endBlockIdx <- min(which((bbl >= block) & ((1:length(block)) > lineIdx)))
+        endBlockIdx <- min(which((bbl >= block) & (seq_along(block) > lineIdx)))
         clBr[endBlockIdx] <- paste(clBr[endBlockIdx],"}")
       }
-      lineIdx <- lineIdx + 1
+      
+      lineIdx <- lineIdx + 1L
     }
     return(list(openBr=oBr, closeBr=clBr))
   }
 
+  
   ## check for new environments
   env <- sapply(fbody[-1],
                 function(code)
@@ -128,15 +130,15 @@ includeTracker <- function(fbody, track=track)
                 },USE.NAMES=FALSE)
   
   ## check the block structure
-  block <- sapply(fbody[-1],function(x)regexpr("[^ ]",x)[1],USE.NAMES=FALSE)
+  block <- sapply(fbody[-1], function(x) regexpr("[^ ]",x)[1], USE.NAMES=FALSE)
 
   ## is 4 a convention or a rule?
   block <- (block %/% 4) + 1
 
-  ## check for if's, while's, etc. without new environment
+  ## check for if's, while's, etc.
   ol <- oneLiner(fbody[-1])
 
-  ## create brackets for new environments
+  ## create brackets for control structures without new environments
   br <- setBrackets(ol,block,env)
 
   ## create new Code
@@ -163,7 +165,7 @@ includeTracker <- function(fbody, track=track)
   newBody <- paste(bpVec,newCode)
 
   ## return signature and body
-  return(list(modFunc=c(sig,newBody),newSource = newCode))
+  return(list(modFunc=c(sig,newBody), newSource=newCode))
 }
 
 
@@ -294,7 +296,7 @@ tracker <- function()
     trackInfoInit <- list()
     class(trackInfoInit) <- "trackInfo"
     trackInfo <<- trackInfoInit
-    fIdx <<- as.integer(0)
+    fIdx <<- 0L
     
     return(invisible())
   }
@@ -325,7 +327,7 @@ tracker <- function()
     ## cumulative processing time
     if(!is.null(oldTime))
     {
-      dtime <-  proc.time()[1]- oldTime
+      dtime <-  proc.time()[1] - oldTime
       trackInfo[[fIdx]]$time[nr] <<- trackInfo[[fIdx]]$time[nr] + dtime
     }
 
@@ -444,13 +446,13 @@ inspect <- function(expr, track=track)
   ##
   ##@codestatus : testing
   
-  ## getting the call and his parameter
+  ## get the call and its parameters
   fCall <- as.character(substitute(expr))
 
   ## get the original call
   callExpr <- deparse(substitute(expr))
   
-  ## getting the name of the function
+  ## get the name of the function
   fname <- fCall[1]
   
   ## check for generic function
@@ -460,7 +462,7 @@ inspect <- function(expr, track=track)
     selType <- sapply(fCall[-1],
                       function(x)
                       {
-                        if(exists(x,envir=sys.parent(sys.parent())))
+                        if(exists(x, envir=sys.parent(sys.parent())))
                         {                        
                           varSig <- is(get(x,envir=sys.parent(sys.parent())))[1]
                         }
@@ -500,7 +502,7 @@ inspect <- function(expr, track=track)
     
   } else {
     ## deparse the function
-    fbody <- try(deparse(get(fname), width.cutoff=500))
+    fbody <- try(deparse(get(fname), width.cutoff=500), silent=TRUE)
     if (inherits(fbody, "try-error")) {
       ##  in case the function is defined
       ##  in the test case file
@@ -531,7 +533,7 @@ inspect <- function(expr, track=track)
   if(!inherits(parsedFunc,"try-error"))
   {
     ## call the new function
-    res <- eval(parsedFunc,envir=parent.frame())
+    res <- eval(parsedFunc, envir=parent.frame())
   } else {
     ## no parsing possible
     ## simple call without tracking
