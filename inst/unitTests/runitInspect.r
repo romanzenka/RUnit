@@ -26,31 +26,6 @@ cat("\n\nRUnit test cases for 'RUnit:inspect' functions\n\n")
 }
 
 
-foo <- function(x) {
-  y <- 0
-  for(i in 1:100) {
-    y <- y + i
-  }
-  return(y)
-}
-  
-
-testRUnit.inspect <- function() {
-
- 
-  ## the name track is necessary
-  track <<- tracker()
-  
-  ## initialize the tracker
-  track$init()
-  
-  ## inspect the function
-  ## res will collect the result of calling foo
-  res <- inspect(foo(10), track=track)
-  checkEquals( res, 5050)
-
-}
-
 
 bar <- function(x) {
   y <- 0
@@ -77,8 +52,66 @@ foo <- function(x) {
     "many"
 
   cat("object contains",len, "elements")
-  
+
+  return(n)
 }
+
+foo2 <- function(x) {
+
+  if (length(x))
+    n <- length(x)
+
+  ##  should not confuse tracker
+  len <- ifelse(n==0, "zero", "more")
+
+  cat("object contains",len, "elements")
+}
+
+
+testRUnit.inspect <- function() {
+
+
+  foo <- function(x) {
+    y <- 0
+    for(i in 1:100) {
+      y <- y + i
+    }
+    return(y)
+  }
+
+  
+  ## the name track is necessary
+  track <<- tracker()
+  
+  ## initialize the tracker
+  track$init()
+  
+  ## inspect the function
+  ## res will collect the result of calling foo
+  res <- inspect(foo(10), track=track)
+  checkEquals( res, 5050)
+
+}
+
+
+testRUnit.inspect.extended <- function() {
+
+ 
+  ## the name track is necessary
+  track <<- tracker()
+  
+  ## initialize the tracker
+  track$init()
+
+  # from ? svd
+  hilbert <- function(n) { i <- 1:n; 1 / outer(i - 1, i, "+") }
+  X <- hilbert(9)[,1:6]
+  s <- svd(X)
+
+  res <- inspect(svd(X), track=track)
+  checkEquals( res, s)
+}
+
 
 testRUnit.getTrackInfo <- function() {
 
@@ -90,21 +123,26 @@ testRUnit.getTrackInfo <- function() {
   
   ## inspect the function
   checkTrue( exists("bar"))
-  
+
+
   ## res will collect the result of calling foo
   res <- inspect(bar(10), track=track)
   checkEquals( res, 5050)
 
+  res <- inspect(foo(10), track=track)
+  checkEquals( res, 1)
+
+  res <- inspect(foo2(10), track=track)
+  
   ## get the tracked function call info
   resTrack <- track$getTrackInfo()
   checkTrue( is.list(resTrack))
-  checkEquals( names(resTrack), c("R/bar"))
+  
+  checkTrue( c("R/foo2") %in% names(resTrack))
 
-  checkEquals( names(resTrack$"R/bar"),
+  checkEquals( names(resTrack$"R/foo2"),
               c("src", "run", "time", "graph", "nrRuns", "funcCall"))
 }
-
-
 
 
 testRUnit.printHTML <- function() {
@@ -143,4 +181,32 @@ testRUnit.printHTML <- function() {
   checkException(printHTML(resTrack,  baseDir=as.character(NA)))
   
 }
+
+
+testRUnit.printHTML.extended <- function() {
   
+  ## the name track is necessary
+  track <<- tracker()
+  
+  ## initialize the tracker
+  track$init()
+  
+  # from ? svd
+  hilbert <- function(n) { i <- 1:n; 1 / outer(i - 1, i, "+") }
+  X <- hilbert(9)[ ,1:6]
+  s <- svd(X)
+
+  
+  res <- inspect(svd(X, LINPACK=TRUE), track=track)
+
+  res <- inspect(svd(X), track=track)
+
+  res <- inspect(svd(X, nu=nrow(X)), track=track)
+  res <- inspect(svd(X, nv=ncol(X)), track=track)
+
+  res <- inspect(svd(X, nv=0L), track=track)
+  resTrack <- track$getTrackInfo()
+
+  outDir <- tempdir()
+  checkTrue( is.null(printHTML.trackInfo(resTrack, baseDir=outDir)))
+}
