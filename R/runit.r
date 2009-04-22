@@ -88,7 +88,13 @@ isValidTestSuite <- function(testSuite)
       warning(paste("'testSuite' object does not conform to S3 class definition.\n",
                     names(testSuite)[i]," element has to be of type 'character'."))
       return(FALSE)
-    }  
+    }
+    if(testSuite[[i]] == "")
+    {
+      warning(paste("'testSuite' object does not conform to S3 class definition.\n",
+                    names(testSuite)[i]," element may not be empty string."))
+      return(FALSE)
+    }
   }
   
   if (!all(file.exists(testSuite[["dirs"]])))
@@ -309,8 +315,12 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE) {
   assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir = .GlobalEnv)
 
   ## main loop
-  if(isValidTestSuite(testSuites)) {
+  if (isValidTestSuite(testSuites)) {
     testSuites <- list(testSuites)
+  } else if (isValidTestSuite(testSuites[[1]])) {
+    ## do nothing
+  } else {
+    stop("invalid test suite supplied.")
   }
   for (i in seq_along(testSuites)) {
     testSuite <- testSuites[[i]]
