@@ -44,8 +44,8 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   \item{dirs}{Vector of absolute directory names where to look for test files.}
   \item{testFileRegexp}{Regular expression for test files.}
   \item{testFuncRegexp}{Regular expression for test functions.}
-  \item{rngKind}{name of a valid RNG version (see \code{\link[base]{RNGkind}}).}
-  \item{rngNormalKind}{name of a valid rnorm RNG version (see \code{\link[base]{RNGkind}}).}
+  \item{rngKind}{name of a valid RNG version (see \code{\link[base:Random]{RNGkind}}).}
+  \item{rngNormalKind}{name of a valid rnorm RNG version (see \code{\link[base:Random]{RNGkind}}).}
   \item{testSuite}{A single object of class test suite.}
   \item{testSuites}{A single object of class test suite or a list of
     test suite objects.}
