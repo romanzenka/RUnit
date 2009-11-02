@@ -30,7 +30,7 @@ printTextProtocol <- function(testData,
   ##@edescr
   ##
   ##@in  testData            : [RUnitTestData] S3 class object
-  ##@in  fileName            : [character] string, fulll path + file name to be written to
+  ##@in  fileName            : [character] string, full path + file name to be written to
   ##@in  separateFailureList : [logical] if TRUE (default) add a failure list
   ##@in  showDetails         : [logical] if TRUE (default) add detailed trackbacks for each error incurred
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
