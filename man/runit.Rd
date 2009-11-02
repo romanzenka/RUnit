@@ -32,11 +32,11 @@ defineTestSuite(name, dirs, testFileRegexp = "^runit.+\\\\.[rR]$",
                 rngKind = "Marsaglia-Multicarry",
                 rngNormalKind = "Kinderman-Ramage")
 isValidTestSuite(testSuite)
-runTestSuite(testSuites, useOwnErrorHandler = TRUE)
+runTestSuite(testSuites, useOwnErrorHandler = TRUE, verbose = 1L)
 runTestFile(absFileName, useOwnErrorHandler = TRUE,
             testFuncRegexp = "^test.+",
             rngKind = "Marsaglia-Multicarry",
-            rngNormalKind = "Kinderman-Ramage")
+            rngNormalKind = "Kinderman-Ramage", verbose = 1L)
 }
 
 \arguments{
@@ -54,6 +54,8 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
     original handler before it returns). If \code{FALSE} the error
     handler is not touched by RUnit but then the test protocol does not
     contain any call stacks in the case of errors.}
+  \item{verbose}{level of verbosity of output log messages, 0: omits
+  begin/end comments for each test function.}
   \item{absFileName}{Absolute file name of a test function.}
 }
 
@@ -179,6 +181,16 @@ testResult <- runTestSuite(myTestSuite)
 ## prints detailed text protocol
 ## to standard out:
 printTextProtocol(testResult, showDetails = TRUE)
+
+##  use current default RNGs
+myTestSuite1 <- defineTestSuite("RUnit Example",
+                               system.file("examples", package = "RUnit"),
+                               testFileRegexp = "correctTestCase.r",
+                               rngKind = "Mersenne-Twister",
+                               rngNormalKind = "Inversion")
+
+testResult1 <- runTestSuite(myTestSuite)
+
 
 ##  for single test files, e.g. outside a package context
 testResult2 <- runTestFile(file.path(system.file("examples", package = "RUnit"),
