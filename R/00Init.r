@@ -54,6 +54,8 @@
 
   
   runitVersion <- packageDescription("RUnit", lib.loc=lib, fields="Version")
+  ##  avoid check NOTE messages
+  assign(".testLogger", NULL, envir=.GlobalEnv)
 }
 
 
