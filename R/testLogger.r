@@ -264,23 +264,26 @@
     .verbosity <<- level
   }
   
-  return(list(getTestData          = .getTestData,
-              setCurrentTestSuite  = .setCurrentTestSuite,
-              setCurrentSourceFile = .setCurrentSourceFile,
-              addSuccess           = function(testFuncName, secs) .addSuccess(testFuncName, secs),
-              addError             = function(testFuncName, errorMsg) .addError(testFuncName, errorMsg),
-              addFailure           = function(testFuncName, failureMsg) .addFailure(testFuncName, failureMsg),
-              addDeactivated       = function(testFuncName) .addDeactivated(testFuncName),
-              addCheckNum          = function(testFuncName) .addCheckNum(testFuncName),
-              isFailure            = .isFailure,
-              setFailure           = .setFailure,
-              isDeactivated        = .isDeactivated,
-              setDeactivated       = function(msg) .setDeactivated(msg),
-              incrementCheckNum    = .incrementCheckNum,
-              getCheckNum          = .getCheckNum,
-              getVerbosity         = .getVerbosity,
-              setVerbosity         = .setVerbosity,
-              cleanup              = .cleanup))
+ tl <- list(getTestData          = .getTestData,
+            setCurrentTestSuite  = .setCurrentTestSuite,
+            setCurrentSourceFile = .setCurrentSourceFile,
+            addSuccess           = function(testFuncName, secs) .addSuccess(testFuncName, secs),
+            addError             = function(testFuncName, errorMsg) .addError(testFuncName, errorMsg),
+            addFailure           = function(testFuncName, failureMsg) .addFailure(testFuncName, failureMsg),
+            addDeactivated       = function(testFuncName) .addDeactivated(testFuncName),
+            addCheckNum          = function(testFuncName) .addCheckNum(testFuncName),
+            isFailure            = .isFailure,
+            setFailure           = .setFailure,
+            isDeactivated        = .isDeactivated,
+            setDeactivated       = function(msg) .setDeactivated(msg),
+            incrementCheckNum    = .incrementCheckNum,
+            getCheckNum          = .getCheckNum,
+            getVerbosity         = .getVerbosity,
+            setVerbosity         = .setVerbosity,
+            cleanup              = .cleanup)
+
+  class(tl) <- "TestLogger"
+  return(invisible(tl))
 }
 
 
