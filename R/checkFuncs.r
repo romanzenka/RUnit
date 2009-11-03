@@ -49,7 +49,7 @@ checkEquals <- function(target, current, msg="",
   if (length(checkNames) != 1) {
     stop("'checkNames' has to be a scalar")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
+  if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
     .testLogger$incrementCheckNum()
   }
   if (!identical(TRUE, checkNames)) {
@@ -58,7 +58,7 @@ checkEquals <- function(target, current, msg="",
   }
   result <- all.equal(target, current, tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
+    if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
       .testLogger$setFailure()
     }
     stop(paste(result, collapse="\n"), msg)
@@ -93,14 +93,14 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   if (length(tolerance) != 1) {
     stop("'tolerance' has to be a scalar")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
+  if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
     .testLogger$incrementCheckNum()
   }
   ##  R 2.3.0: changed behaviour of all.equal
   ##  strip attributes before comparing current and target
   result <- all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
+    if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
       .testLogger$setFailure()
     }
     stop(paste(result, collapse="\n"), msg)
@@ -127,13 +127,13 @@ checkIdentical <- function(target, current, msg="")
   if (missing(current)) {
     stop("argument 'current' is missing")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
+  if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
     .testLogger$incrementCheckNum()
   }
   
   result <- identical(target, current)
   if (!identical(TRUE, result)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
+    if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
       .testLogger$setFailure()
     }
     stop(paste(paste(result, collapse="\n"), msg))
@@ -158,7 +158,7 @@ checkTrue <- function(expr, msg="")
   if (missing(expr)) {
     stop("'expr' is missing")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
+  if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
     .testLogger$incrementCheckNum()
   }
 
@@ -167,7 +167,7 @@ checkTrue <- function(expr, msg="")
   names(result) <- NULL
   
   if (!identical(result, TRUE)) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
+    if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
       .testLogger$setFailure()
     }
     stop("Test not TRUE\n", msg)
@@ -198,12 +198,12 @@ checkException <- function(expr, msg="", silent=FALSE)
   if (missing(expr)) {
     stop("'expr' is missing")
   }
-  if(exists(".testLogger", envir=.GlobalEnv)) {
+  if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
     .testLogger$incrementCheckNum()
   }
 
   if (!inherits(try(eval(expr, envir = parent.frame()), silent=silent), "try-error")) {
-    if(exists(".testLogger", envir=.GlobalEnv)) {
+    if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
       .testLogger$setFailure()
     }
     stop("Error not generated as expected\n", msg)
@@ -229,7 +229,7 @@ DEACTIVATED <- function(msg="")
   ##
   ##@codestatus : testing
 
-  if(exists(".testLogger", envir=.GlobalEnv)) {
+  if(exists(".testLogger", envir=.GlobalEnv) & inherits(.testLogger, "TestLogger")) {
     .testLogger$setDeactivated(paste(msg, "\n", sep=""))
   }
   stop(msg)
