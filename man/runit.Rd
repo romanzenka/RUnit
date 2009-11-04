@@ -137,7 +137,7 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
 }
 
   To further control test case execution it is possible to define two
-  parameterless function \code{.setUp()} and \code{.tearDown()} in each
+  parameterless function \code{.setUp} and \code{\link{.tearDown}} in each
   test file. \code{.setUp()} is executed directly before and
   \code{.tearDown()} directly after each test function execution.
 
@@ -161,7 +161,8 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   \code{defineTestSuite} returns an object of class  \code{RUnitTestSuite}.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
@@ -177,6 +178,11 @@ myTestSuite <- defineTestSuite("RUnit Example",
                                system.file("examples", package = "RUnit"),
                                testFileRegexp = "correctTestCase.r")
 testResult <- runTestSuite(myTestSuite)
+
+##  same but without the logger being involved
+# source(file.path(system.file("examples", package = "RUnit"), "correctTestCase.r"))
+# test.correctTestCase()
+
 
 ## prints detailed text protocol
 ## to standard out:
