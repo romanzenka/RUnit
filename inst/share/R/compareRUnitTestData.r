@@ -21,7 +21,7 @@ compare <- function(td1, td2, tolerance=100) {
   ##@bdescr
   ##  compare two test suite result data objects obtained
   ##  on the same test suite
-  ##  identify timing differences exceeding 'tolerance' [secconds]
+  ##  identify timing differences exceeding 'tolerance' [seconds]
   ##@edescr
   ##
   ##
@@ -59,7 +59,7 @@ compare <- function(td1, td2, tolerance=100) {
   comparePerSourceFile <- function(sf1,sf2, tol=0) {
     ##  FIXME
     ##  check if test case file was considered in this suite
-    ##  i.e. thest case file name can be in list albeit it
+    ##  i.e. test case file name can be in list albeit it
     ##  was not executed in the scenario
     ##  thus list is empty
     if (length(sf1) == 0 | length(sf2) == 0) {
@@ -83,7 +83,7 @@ compare <- function(td1, td2, tolerance=100) {
         }
       } else {
         ##  no timing delta
-        ##  should chekc for timing in second case
+        ##  should check for timing in second case
         ##  obj2[[x]][["time"]])
         return(c(x, obj1[[x]][["kind"]], as.numeric(NA),
                  obj2[[x]][["kind"]], as.numeric(NA), as.numeric(NA)))
@@ -102,7 +102,7 @@ compare <- function(td1, td2, tolerance=100) {
       idx1 <- match(x, basename(names(obj1)))
       idx2 <- match(x, basename(names(obj2)))
       if (length(idx1) != 1 || is.na(idx1) || length(idx2) != 1 || is.na(idx2)) {
-        stop("ambigous file name.")
+        stop("ambiguous file name.")
         next;
       }
       comparePerSourceFile(obj1[[idx1]], obj2[[idx2]], tol=tol)
