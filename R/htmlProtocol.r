@@ -34,7 +34,7 @@ printHTMLProtocol <- function(testData,
   ##@in  separateFailureList : [logical] if TRUE (default) add a list of all failures
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to be displayed
   ##@in  testFileToLinkMap   : [function] a function transforming the full name of the test file to a link location
-  ##@ret                     : [logical] TRUE if execution completed wo error
+  ##@ret                     : [logical] TRUE if execution completed w/o error
   ##
   ##@codestatus : testing
   
@@ -82,8 +82,7 @@ printHTMLProtocol <- function(testData,
   ## --------------------------------
 
   ## get singular or plural right
-  sop <- function(number, word, plext="s")
-  {
+  sop <- function(number, word, plext="s") {
     ifelse(number == 1, paste(number, word),
            paste(number, paste(word, plext, sep="")))
   }
@@ -112,8 +111,7 @@ printHTMLProtocol <- function(testData,
     tmp <- paste(testSuite, srcFileName, testFuncName, sep="_")
     if(asAnchor) {
       return(paste("#", gsub("/", "_", tmp), sep=""))
-    }
-    else {
+    } else {
       return(gsub("/", "_", tmp))
     }
   }
@@ -130,8 +128,7 @@ printHTMLProtocol <- function(testData,
           writeRaw(traceBack[i], htmlFile=fileName)
           writeEndTag("li", htmlFile=fileName)
         }
-      }
-      else {
+      } else {
         writeBeginTag("ol", htmlFile=fileName)
         for(i in traceBackCutOff:length(traceBack)) {
           writeBeginTag("li", htmlFile=fileName)
@@ -200,7 +197,7 @@ printHTMLProtocol <- function(testData,
     }
     writeEndTable(htmlFile=fileName)
   }
-  else {  ## skip 'deactivated' column if no functions have been deactivated
+  else {  ## skip 'deactivated' column if no function has been deactivated
     writeBeginTable(c("Name", "Test functions", "Errors", "Failures"),
                     width="60%",
                     htmlFile=fileName,

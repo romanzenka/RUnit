@@ -32,55 +32,45 @@ printTextProtocol <- function(testData,
   ##@in  testData            : [RUnitTestData] S3 class object
   ##@in  fileName            : [character] string, full path + file name to be written to
   ##@in  separateFailureList : [logical] if TRUE (default) add a failure list
-  ##@in  showDetails         : [logical] if TRUE (default) add detailed trackbacks for each error incurred
+  ##@in  showDetails         : [logical] if TRUE (default) add detailed traceback for each error incurred
   ##@in  traceBackCutOff     : [integer] number of steps back in the trace back stack to display
   ##@ret                     : [logical] TRUE if execution completed without error
   ##
   ##@codestatus : testing
 
   ##  preconditions
-  if (!is(testData, "RUnitTestData"))
-  {
+  if (!is(testData, "RUnitTestData")) {
     stop("Argument 'testData' must be of class 'RUnitTestData'.")
   }
 
-  if (!is.character(fileName))
-  {
+  if (!is.character(fileName)) {
     stop("Argument 'fileName' has to be of type character.")
   }
-  if (length(fileName) != 1)
-  {
+  if (length(fileName) != 1) {
     stop("Argument 'fileName' must contain exactly one element.")
   }
 
-  if (!is.logical(separateFailureList))
-  {
+  if (!is.logical(separateFailureList)) {
     stop("Argument 'separateFailureList' has to be of type logical.")
   }
-  if (length(separateFailureList) != 1)
-  {
+  if (length(separateFailureList) != 1) {
     stop("Argument 'separateFailureList' must contain exactly one element.")
   }
 
-  if (!is.logical(showDetails))
-  {
+  if (!is.logical(showDetails)) {
     stop("Argument 'showDetails' has to be of type logical.")
   }
-  if (length(showDetails) != 1)
-  {
+  if (length(showDetails) != 1) {
     stop("Argument 'showDetails' must contain exactly one element.")
   }
 
-  if (!is.numeric(traceBackCutOff))
-  {
+  if (!is.numeric(traceBackCutOff)) {
     stop("Argument 'traceBackCutOff' has to be of type logical.")
   }
-  if (length(traceBackCutOff) != 1)
-  {
+  if (length(traceBackCutOff) != 1) {
     stop("Argument 'traceBackCutOff' must contain exactly one element.")
   }
-  if (traceBackCutOff < 0 || traceBackCutOff > 100)
-  {
+  if (traceBackCutOff < 0 || traceBackCutOff > 100) {
     stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
   }
 
@@ -89,15 +79,13 @@ printTextProtocol <- function(testData,
   pr <- function(..., sep=" ", nl=TRUE) {
     if(nl) {
       cat(... , "\n", file = fileName, append=TRUE, sep=sep)
-    }
-    else {
+    } else {
       cat(... , file = fileName, append=TRUE, sep=sep)
     }
   }
 
   ## get singular or plural right
-  sop <- function(number, word, plext="s")
-  {
+  sop <- function(number, word, plext="s") {
     ifelse(number == 1, paste(number, word),
            paste(number, paste(word, plext, sep="")))
   }
@@ -133,12 +121,10 @@ printTextProtocol <- function(testData,
           funcList <- srcFileRes[[i]][[testFuncNames[j]]]
           if(funcList$kind == "error") {
             pr("ERROR in ", testFuncNames[j], ": ", funcList$msg, nl=FALSE, sep="")
-          }
-          else if(funcList$kind == "failure") {
+          } else if(funcList$kind == "failure") {
             pr("FAILURE in ", testFuncNames[j], ": ", funcList$msg,
                sep="", nl=FALSE)
-          }
-          else if(funcList$kind == "deactivated") {
+          } else if(funcList$kind == "deactivated") {
             pr("DEACTIVATED ", testFuncNames[j], ": ", funcList$msg,
                sep="", nl=FALSE)
           }
@@ -164,12 +150,10 @@ printTextProtocol <- function(testData,
     pr("Test file regexp:", tsList$testFileRegexp)
     if(length(tsList$dirs) == 0) {
       pr("No directories !")
-    }
-    else {
+    } else {
       if(length(tsList$dirs) == 1) {
         pr("Involved directory:")
-      }
-      else {
+      } else {
         pr("Involved directories:")
       }
       for(dir in tsList$dirs) {
@@ -179,8 +163,7 @@ printTextProtocol <- function(testData,
       testFileNames <- names(res)
       if(length(res) == 0) {
         pr("no test files")
-      }
-      else {
+      } else {
         ## loop over all source files
         for(testFileName in testFileNames) {
           testFuncNames <- names(res[[testFileName]])
@@ -191,33 +174,32 @@ printTextProtocol <- function(testData,
             for(testFuncName in testFuncNames) {
               testFuncInfo <- res[[testFileName]][[testFuncName]]
               if(testFuncInfo$kind == "success") {
-                pr(testFuncName, ": (",testFuncInfo$checkNum, " checks) ... OK (", testFuncInfo$time, " seconds)", sep="")
-              }
-              else {
+                pr(testFuncName, ": (",testFuncInfo$checkNum, " checks) ... OK (", 
+                   testFuncInfo$time, " seconds)", sep="")
+              } else {
                 if(testFuncInfo$kind == "error") {
                   pr(testFuncName, ": ERROR !! ", sep="")
-                }
-                else if (testFuncInfo$kind == "failure") {
-                  pr(testFuncName, ": FAILURE !! (check number ", testFuncInfo$checkNum, ")", sep="")
-                }
-                else if (testFuncInfo$kind == "deactivated") {
+                } else if (testFuncInfo$kind == "failure") {
+                  pr(testFuncName, ": FAILURE !! (check number ", 
+                     testFuncInfo$checkNum, ")", sep="")
+                } else if (testFuncInfo$kind == "deactivated") {
                   pr(testFuncName, ": DEACTIVATED, ", nl=FALSE)
-                }
-                else {
+                } else {
                   pr(testFuncName, ": unknown error kind", sep="")
                 }
                 pr(testFuncInfo$msg, nl=FALSE)
                 if(length(testFuncInfo$traceBack) > 0) {
                   pr("   Call Stack:")
                   if(traceBackCutOff > length(testFuncInfo$traceBack)) {
-                    pr("   (traceBackCutOff argument larger than length of trace back: full trace back printed)")
+                    pr("   (traceBackCutOff argument larger than length of ",
+                       "trace back: full trace back printed)")
                     for(i in 1:length(testFuncInfo$traceBack)) {
                       pr("   ", i, ": ", testFuncInfo$traceBack[i], sep="")
                     }
-                  }
-                  else {
+                  } else {
                     for(i in traceBackCutOff:length(testFuncInfo$traceBack)) {
-                      pr("   ", 1+i-traceBackCutOff, ": ", testFuncInfo$traceBack[i], sep="")
+                      pr("   ", 1+i-traceBackCutOff, ": ", 
+                         testFuncInfo$traceBack[i], sep="")
                     }
                   }
                 }
