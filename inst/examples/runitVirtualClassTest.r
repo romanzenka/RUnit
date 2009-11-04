@@ -69,7 +69,7 @@ setMethod("setX<-", signature=signature(object=className, value="numeric"),
 
 testMyVirtualBaseClass.getX <- function() {
   ##@bdescr
-  ##  create a derived class with no own mehtod definitions
+  ##  create a derived class with no own method definitions
   ##  which inherits parent class methods that can then be checked
   ##
   ##  getter test case

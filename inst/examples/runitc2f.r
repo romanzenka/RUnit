@@ -5,10 +5,10 @@
 ## functions to be tested (usually defined in a different
 ## file from where the test cases are located):
 
-## centigrade to fahrenheit
+## centigrade to Fahrenheit
 c2f <- function(c) return(9/5 * c + 32)
 
-## fahrenheit to centigrade
+## Fahrenheit to centigrade
 f2c <- function(f) return(5/9 * f - 32)  ## ups, a bug (brackets missing)
 
 
