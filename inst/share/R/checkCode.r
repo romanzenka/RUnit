@@ -24,7 +24,7 @@ checkCodeFiles <- function(fileName) {
   ##  requires package codetools
   ##@edescr
   ##
-  ##@in  fileName : [character] vector of file names (includeing path, relative to pwd or absolute)
+  ##@in  fileName : [character] vector of file names (including path, relative to pwd or absolute)
   ##@ret          : [list] with elements per function, that incurred any warning
   ##
   ##@depends : codetools
@@ -46,7 +46,7 @@ checkCodeFiles <- function(fileName) {
   sapply(fileName, function(x) {
     cat("\n file ",x)
     
-    ok <- try(capture.output(source(x, local=TRUE, echo=FALSE)))
+    ok <- try(utils::capture.output(source(x, local=TRUE, echo=FALSE)))
     if (inherits(ok, "try-error")) {
       cat("\n file",x,"could not be sourced:", geterrmessage(), "\n")
       return()
@@ -64,7 +64,7 @@ checkCodeFiles <- function(fileName) {
           cat(x)
           assign("tmpRet", c(tmpRet, x), pos=parent.env(tmpRetEnv))
         }
-        checkUsage(ok, report=reportFunc, all=TRUE)
+        codetools::checkUsage(ok, report=reportFunc, all=TRUE)
         
         if (!is.null(tmpRet)) {
           retList[[length(retList) + 1]] <<- tmpRet
@@ -147,8 +147,8 @@ checkCodeSweave <- function(path=".") {
     if (path == ".") {
       path <- pwd
     }
-    ##  do we have a local path rather then an absoute
-    ##  how to infere correct absolute path?
+    ##  do we have a local path rather then an absolute
+    ##  how to infer correct absolute path?
   }
   
   fName <- list.files(path=path, pattern="\\.[RS]nw$", full.names=TRUE)
@@ -161,7 +161,7 @@ checkCodeSweave <- function(path=".") {
   }
   #on.exit(unlink(tmpDir, recursive=TRUE))
 
-  ##  change to temp folder to dup Stangle output therein
+  ##  change to temp folder to dump Stangle output therein
   setwd(tmpDir)
   on.exit(setwd(pwd), add=TRUE)
   
