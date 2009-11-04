@@ -66,11 +66,13 @@
   }
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
 
 \seealso{
   \code{\link{inspect}} for the registration of functions \& methods to
-  be on the tracking list.
+  be on the tracking list, and 
+  \code{\link{printHTML.trackInfo}} for displaying results
 }
 
 \examples{
