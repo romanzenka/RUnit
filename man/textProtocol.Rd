@@ -59,7 +59,8 @@
     the console. This argument takes effect only if
     \code{showDetails=TRUE}.}
   \item{testFileToLinkMap}{This function can be used to map the full name of the test file
-    to a corresponding html link to be used in the html protocol. By default, this is the identity map.}
+    to a corresponding html link to be used in the html protocol. By default, 
+    this is the identity map. See example below.}
   \item{...}{additional arguments to summary are passed on to the
   printTextProtocol() call.}
 }
@@ -94,13 +95,14 @@
   In the optional third section details are given about all executed
   test functions in the order they were processed. For each test file
   all test functions executed are listed in the order they were executed. After the test
-  function name the number of \code{check*} function calls inside the
+  function name the number of \code{check<*>} function calls inside the
   test case and the execution time in seconds are stated. In the
   case of an error or failure as much debug
   information as possible is provided.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
 
 \seealso{
   \code{\link{runTestSuite}}
