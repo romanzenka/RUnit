@@ -19,6 +19,7 @@
 \encoding{latin1}
 \name{printHTML.trackInfo}
 \alias{printHTML.trackInfo}
+\alias{printHTML}
 \title{Write HTML pages of the tracking result.}
 
 \usage{
@@ -26,14 +27,16 @@
 }
 
 \arguments{
-  \item{object}{'trackInfo' S3 class object (list), containing the result of the function \code{tracker}.}
+  \item{object}{'trackInfo' S3 class object (list), containing the result of the
+   function \code{tracker}.}
   \item{baseDir}{A character string, specifying the base directory for
   the HTML pages to be written to. Defaults to the current working directory.}
 }
 
 \description{
   \code{printHTML.trackInfo} creates a subdirectory named
-  "result"  in the base directory specified via \code{baseDir}. All HTML pages and images will be put
+  "result"  in the base directory specified via \code{baseDir}. All HTML pages 
+  and images will be put
   in that directory.
 }
 
@@ -49,8 +52,12 @@
   become clearly visible.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} \& Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
 
+\seealso{
+  \code{\link{tracker}} for the call tracking object definition.
+}
 \examples{
 
 ##  example function
