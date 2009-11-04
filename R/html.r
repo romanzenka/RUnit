@@ -183,7 +183,7 @@ writeBeginTag <- function(htmlTag,htmlFile,para="",append=TRUE)
   ##
   ##@codestatus : internal
    
-  if(para =="") {
+  if(all(para =="")) {
     writeRaw(paste("<",htmlTag,">",sep=""),htmlFile,append)
   } else {
     writeRaw(paste("<",htmlTag," ",para,">",sep=""),htmlFile,append)
