@@ -115,7 +115,7 @@ isValidTestSuite <- function(testSuite)
     return(FALSE)
   }
   if (length(testSuite[["rngNormalKind"]]) != 1) {
-    warning(paste("'rngNormalKind' element may only contain exatly one name."))
+    warning(paste("'rngNormalKind' element may only contain exactly one name."))
     return(FALSE)
   }
   return(TRUE)
