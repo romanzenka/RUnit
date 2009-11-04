@@ -310,3 +310,16 @@ getErrors <- function(testData) {
   }
   return(ret)
 }
+
+.existsTestLogger <- function(envir=.GlobalEnv) {
+  ##@bdescr
+  ##  Internal Function
+  ##  checks if .testLogger object is available in specified environment
+  ##  and if present if this object is of class 'TestLogger'
+  ##
+  ##@edescr
+  ##
+  ##@in  envir : [environment] to search within
+  ##@ret       : [logical] TRUE iff .testLogger list object is found in specified environment
+  exists(".testLogger", envir=envir) && inherits(.testLogger, "TestLogger")
+}
