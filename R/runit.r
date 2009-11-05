@@ -275,21 +275,21 @@ isValidTestSuite <- function(testSuite)
 }
 
 
-runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=1L) {
+runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption("RUnit")$verbose) {
   ##@bdescr
-  ## This is the main function of the runit framework. It identifies all specified
+  ## This is the main function of the RUnit framework. It identifies all specified
   ## test files and triggers all required actions. At the end it creates a test
   ## protocol data object. 
   ## IMPORTANT to note, the random number generator is (re-)set to the default
   ## methods specified in defineTestSuite() before each new test case *file* is sourced. 
-  ## This garantees that each new test case set defined together in on file can rely
+  ## This guarantees that each new test case set defined together in on file can rely
   ## on the default, even if the random number generator version is being reconfigured in some
   ## previous test case file(s).
   ##@edescr
   ##
   ##@in  testSuites         : [list] list of test suite lists
-  ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the runit error handler
-  ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: ommit begin/end comment 
+  ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the RUnit error handler
+  ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: omit begin/end comment 
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
@@ -354,7 +354,7 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
                         testFuncRegexp="^test.+",
                         rngKind="Marsaglia-Multicarry",
                         rngNormalKind="Kinderman-Ramage",
-                        verbose=1L) {
+                        verbose=getOption("RUnit")$verbose) {
   ##@bdescr
   ##  Convenience function.
   ##@edescr
@@ -362,8 +362,8 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
   ##@in  absFileName        : [character] complete file name of test cases code file
   ##@in  useOwnErrorHandler : [logical] if TRUE RUnits error handler will be used
   ##@in  testFuncRegexp     : [character]
-  ##@in  rngKind            : [character] name of the RNG, see RNGversion()
-  ##@in  rngNormalKind      : [character] name of the RNG for rnorm, see RNGversion()
+  ##@in  rngKind            : [character] name of the RNG, see RNGkind for avialbale options
+  ##@in  rngNormalKind      : [character] name of the RNG for rnorm, see RNGkind for avialbale options
   ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: ommit begin/end comment (passed on to function runTestSuite)
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
