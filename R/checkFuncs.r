@@ -177,7 +177,7 @@ checkTrue <- function(expr, msg="")
 }
 
 
-checkException <- function(expr, msg="", silent=FALSE)
+checkException <- function(expr, msg="", silent=getOption("RUnit")$silent)
 {
   ##@bdescr
   ## checks if a function call creates an error. The passed function must be parameterless.
@@ -198,11 +198,15 @@ checkException <- function(expr, msg="", silent=FALSE)
   if (missing(expr)) {
     stop("'expr' is missing")
   }
+  if(is.null(silent)) {
+    silent <- FALSE
+    warning("'silent' has to be of type 'logical'. Was NULL. Set to FALSE.")
+  }
   if(.existsTestLogger()) {
     .testLogger$incrementCheckNum()
   }
 
-  if (!inherits(try(eval(expr, envir = parent.frame()), silent=silent), "try-error")) {
+  if (!inherits(try(eval(expr, envir=parent.frame()), silent=silent), "try-error")) {
     if(.existsTestLogger()) {
       .testLogger$setFailure()
     }
