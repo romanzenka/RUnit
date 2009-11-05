@@ -297,7 +297,8 @@ getErrors <- function(testData) {
   ##
   ##@in testData : [list] S3 RUnitTestData class object
   ##@ret         : [list] containing no of errors, deactivated, failed, and total test functions
-  
+  ##
+  ##@codestatus : testing
   if(class(testData) != "RUnitTestData") {
     stop("getErrors needs an object of class 'RUnitTestData' as argument.")
   }
@@ -321,5 +322,7 @@ getErrors <- function(testData) {
   ##
   ##@in  envir : [environment] to search within
   ##@ret       : [logical] TRUE iff .testLogger list object is found in specified environment
+  ##
+  ##@codestatus : internal
   exists(".testLogger", envir=envir) && inherits(.testLogger, "TestLogger")
 }
