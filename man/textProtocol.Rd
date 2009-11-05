@@ -51,10 +51,10 @@
     all executed test functions.}
   \item{traceBackCutOff}{The details section of the test protocol contains the call stack for
     all errors. The first few entries of the complete stack typically
-    contain the internal \pkg{RUnit} function calls that execute the test cases and
+    contain the internal RUnit function calls that execute the test cases and
     are irrelevant for debugging. This argument specifies how many calls
     are removed from the stack before it is written to the protocol. The
-    default value is chosen such that all uninteresting \pkg{RUnit} calls are
+    default value is chosen such that all uninteresting RUnit calls are
     removed from the stack if \code{runTestSuite} has been called from
     the console. This argument takes effect only if
     \code{showDetails=TRUE}.}
@@ -102,7 +102,7 @@
 }
 
 \author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
-\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
+\ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
   \code{\link{runTestSuite}}

@@ -48,7 +48,7 @@ the function executed. If the function has no return value nothing is
 returned either.}
 
 \author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
-\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
+\ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
   \code{\link{tracker}} for the call tracking object, and 
