@@ -18,33 +18,11 @@
 ##  $Id$
 
 
-.First.lib <- function(lib, package, where)
+.onLoad <- function(libname, pkgname)
 {
   ##@bdescr
   ## Internal Function.
   ## Not to be called by users.
-  ##
-  ##@edescr
-  
-  ##  load required packages
-  errMsg <- paste("\nLoading required package 'methods' failed. RUnit could not be loaded.",
-                  "\nCheck your library installation path.\n")
-  require(methods) || stop(errMsg)
-
-  runitVersion <- packageDescription("RUnit", lib.loc=lib, fields="Version")
-}
-
-
-.onLoad <- function(lib, pkg)
-{
-  ##@bdescr
-  ## Internal Function.
-  ## Not to be called by users.
-  ##
-  ## has the same role as .First.lib in case a package provides a namespace
-  ## when .First.lib is disregarded
-  ## does not yield conflicts when loaded into R < 1.7.0 this function is simply ignored
-  ## library calls are executed via import() statements in the inst/NAMESPACE file
   ##@edescr
 
   ##  load required packages
@@ -53,11 +31,15 @@
   require(methods) || stop(errMsg)
 
   
-  runitVersion <- packageDescription("RUnit", lib.loc=lib, fields="Version")
-  ##  avoid check NOTE messages
+  runitVersion <- packageDescription("RUnit", lib.loc=libname, fields="Version")
+  ##  avoid cmd check NOTEs
   assign(".testLogger", NULL, envir=.GlobalEnv)
+  ##  add options to R's global options list
+  .buildRUnitOptions()
 }
 
-
-
+.onUnload <- function(libpath) {
+  ##  drop RUnit specific options from global options list
+  options("RUnit"=NULL)
+}
 
