@@ -37,6 +37,7 @@ testRUnit.checkEquals <- function()
   checkEquals(namedInt, x, checkNames=FALSE)
   
   ##  numeric
+   checkEquals(pi, pi)
   y <- 1/0
   checkEquals(Inf, y)
   checkEquals(y, Inf)
@@ -58,7 +59,8 @@ testRUnit.checkEquals <- function()
 
   ##  character
   checkEquals( character(1), character(1))
-
+  checkEquals( letters, letters)
+  
   ##  matrix
   checkEquals( matrix(1, 3,5), matrix(1, 3,5))
   checkEquals( matrix(1, 50000,5), matrix(1, 50000,5),
@@ -88,6 +90,14 @@ testRUnit.checkEquals <- function()
   names(alphaList) <- letters
   checkEquals( alphaList, alphaList)
   checkEquals( alphaList, alphaList, checkNames=FALSE)
+
+  ##  nested list with NA, NaN, Inf
+  nl <- list(a=list(1), b=list(1:4),
+             c=list(ab=1, bc=list(list(2), list(NA), list(NaN)) ),
+             d=list(m1=matrix(NA, 2,3), m2=matrix(1+1i, 4,5)),
+             e=list(e1=NaN, e2=list(Inf), e3=list(a=Inf, b=-Inf, c=NaN, d=-0/0)))
+  checkEquals(nl, nl)
+  
   ##  example from ?glm
   counts <- c(18,17,15,20,10,20,25,13,12)
   outcome <- gl(3,1,9)
@@ -109,6 +119,11 @@ testRUnit.checkEquals <- function()
   names(namedRaw) <- letters[1:14]
   checkEquals( namedRaw, namedRaw)
 
+  ##  formula
+  a <- 1:10
+  f <- gl(2,5)
+  checkEquals( a~f, a~f)
+  
   ##  S4 objects
   if (identical(TRUE, require(methods))) {
     setClass("track1",
@@ -135,8 +150,20 @@ testRUnit.checkEquals <- function()
     checkEquals( tPair, tPair)
   }
 
+  if (require(Biobase)) {
+    ##   class still available?
+    #if (isClass(Class="ExpressionSet", formal=TRUE)) {
+    #  ES <- new("ExpressionSet", exprs=matrix(runif(1000), nrow=100, ncol=10))
+    #  checkEquals(ES, ES)
+    #}
+    ##  cleanup workspace
+    ##  catch error if this ns is required by some other package
+    ##  and therefore cannot be unloaded
+    try(unloadNamespace("Biobase"))
+  }
+
   
-  ##  exception handling
+  ##  detect differences
   checkException( checkEquals(1 , 1, tolerance=FALSE))
   checkException( checkEquals(1 , 1, tolerance=numeric(0)))
   checkException( checkEquals(1 , 1, tolerance=numeric(2)))
@@ -186,20 +213,23 @@ testRUnit.checkEquals <- function()
   checkException( checkEquals( list(list(), list(list()), list(list(list()))),
                               list(list(), list(list()), list(list(list(), list())))))
 
-
+  
   ##  POSIXct
   checkException( checkEquals(as.POSIXct(Sys.time()), as.POSIXct("2007-04-04 16:00:00")))
   checkException( checkEquals(as.POSIXlt(Sys.time()), as.POSIXlt("2007-04-04 16:00:00")))
   
-  ##  nested type not supported
+  ##  nested type
   sysTime <- as.POSIXct(Sys.time())
   checkException( checkEquals( list(a=2, list(time=sysTime)), list(a=2, time=list(sysTime))))
 
   ##  raw
   checkException( checkEquals(raw(1), raw(2)))
   checkException( checkEquals(raw(1E5), raw(100001)))
-  
-  checkException( checkEquals(as.raw(1:1000), as.raw(c(1:99,-1,101:1000))))
+  raw3 <- raw(3)
+  raw3mod <- raw3
+  raw3mod[1] <- as.raw(3)
+  checkException( checkEquals(raw3, raw3mod))
+  checkException( checkEquals(as.raw(1:1000), as.raw(c(1:99,-1,101:1000)) ) )
 
   ##  S4 objects
   if (identical(TRUE, require(methods))) {
@@ -228,12 +258,24 @@ testRUnit.checkEqualsNumeric <- function()
   attributes(x) <- list(dummy="nonsense")
   checkTrue( checkEqualsNumeric( x, x))
   checkTrue( checkEqualsNumeric( 1:10, x, check.attributes=FALSE))
+
   
   rvec <- rnorm(132)
   checkTrue( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec, 12, 11)))
   checkTrue( checkEqualsNumeric( rvec, rvec))
 
-  ##  exception handling
+  ##  special constants
+  checkEqualsNumeric( pi, pi)
+  checkEqualsNumeric( NA, NA)
+  checkEqualsNumeric( c(1, NA, 3), c(1, NA, 3))
+  checkEqualsNumeric( NaN, NaN)
+  checkEqualsNumeric( c(1, NaN, 3), c(1, NaN, 3))
+  checkEqualsNumeric( Inf, Inf)
+  checkEqualsNumeric( c(1, Inf, 3), c(1, Inf, 3))
+  checkEqualsNumeric( -Inf, -Inf)
+  checkEqualsNumeric( c(1, -Inf, 3), c(1, -Inf, 3))
+
+  
   ##  numeric difference
   checkException( checkEqualsNumeric( 9, 10))
   checkException( checkEqualsNumeric( list(9), list(10)))
@@ -242,8 +284,20 @@ testRUnit.checkEqualsNumeric <- function()
   checkException( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec2, 12, 11)))
 
   
+  ##  exception handling
   ##  type not supported
   checkException( checkEqualsNumeric( list(rvec), list(rvec)))
+  if (require(Biobase)) {
+
+    ##   class still available?
+    if (isClass(Class="ExpressionSet", formal=TRUE)) {
+      ES <- new("ExpressionSet", exprs=matrix(runif(1000), nrow=100, ncol=10))
+      checkException(checkEqualsNumeric(ES, ES))
+    }
+    ##  cleanup workspace
+    try(unloadNamespace("Biobase"))
+  }
+
 }
 
 
@@ -258,16 +312,51 @@ testRUnit.checkIdentical <- function()
   checkTrue( checkIdentical( TRUE, TRUE))
   checkIdentical( FALSE, FALSE)
 
+  ##  bit representation identical
+  checkIdentical( NA, NA)
+  checkIdentical( c(1, NA, 3), c(1, NA, 3))
+  checkIdentical( NaN, NaN)
+  checkIdentical( c(1, NaN, 3), c(1, NaN, 3))
+  checkIdentical( Inf, Inf)
+  checkIdentical( c(1, Inf, 3), c(1, Inf, 3))
+  checkIdentical( -Inf, -Inf)
+  checkIdentical( c(1, -Inf, 3), c(1, -Inf, 3))
+  
   checkIdentical( as.integer(2), as.integer(2))
   checkIdentical( as.character(2), as.character(2))
   checkIdentical( as.complex(2), as.complex(2))
   checkIdentical( as.numeric(2), as.numeric(2))
   checkIdentical( as.expression("2+4"), as.expression("2+4"))
   checkIdentical( as.expression(2+4), as.expression(2+4))
+  checkIdentical( as.factor(letters), factor(letters))
+  
+  ##  nested list with NA, NaN, Inf
+  nl <- list(a=list(1), b=list(1:4),
+             c=list(ab=1, bc=list(list(2), list(NA), list(NaN)) ),
+             d=list(m1=matrix(NA, 2,3), m2=matrix(1+1i, 4,5)),
+             e=list(e1=NaN, e2=list(Inf), e3=list(a=Inf, b=-Inf, c=NaN, d=-0/0)))
+  checkIdentical(nl, nl)
 
+  ##  POSIX
   sysTime <- as.POSIXlt(Sys.time())
   checkIdentical( sysTime, sysTime)
 
+  ##  raw
+  checkIdentical( raw(14), raw(14))
+  namedRaw <-  as.raw(1:14)
+  names(namedRaw) <- letters[1:14]
+  checkIdentical( namedRaw, namedRaw)
+
+  ##  formula
+  a <- 1:10
+  f <- gl(2,5)
+  checkIdentical( a~f, a~f)
+
+  ##  call
+  cl <- call("round", 10.5)
+  checkIdentical( cl, cl)
+
+  
   ##  S3 objects (ie. lists with attributes)
   ##  from ?lm Example
   ctl <- c(4.17,5.58,5.18,6.11,4.50,4.61,5.17,4.53,5.33,5.14)
@@ -305,15 +394,27 @@ testRUnit.checkIdentical <- function()
   checkException( checkIdentical( as.complex(2), as.complex(3)))
   checkException( checkIdentical( as.numeric(2), as.numeric(3)))
   checkException( checkIdentical( as.expression("2+4"), as.expression("2+3")))
+  checkException( checkIdentical( as.factor(letters), factor(letters[-1])))
+  fac <- factor(letters)
+  levels(fac) <- c("1", letters[-1])
+  checkException( checkIdentical( fac,  as.factor(letters)))
+  
+  ##  nested list with NA, NaN, Inf
+  checkException( checkIdentical( ))
 
+  
+  ##  POSIX
   sysTime <- as.POSIXlt(Sys.time())
-
   checkException( checkIdentical( sysTime, as.POSIXlt(Sys.time(), tz="GMT")))
-
+  
+  ##  raw
+  checkException(checkIdentical( raw(14), raw(13)))
+  namedRaw <-  as.raw(1:14)
+  names(namedRaw) <- letters[1:14]
+  checkException(checkIdentical( namedRaw, as.raw(1:14)))
+                 
   ##  S3 objects (ie. lists with attributes)
   ##  from ?lm Example
- 
-
   lm.D9base <- lm(weight ~ group - 1)
   checkException( checkIdentical( lm.D9base, lm.D9))
 
@@ -417,6 +518,8 @@ testRUnit.DEACTIVATED <- function()
 
   checkException( DEACTIVATED())
   checkException( DEACTIVATED("some message"))
+  ##  compound text
+  checkException( DEACTIVATED(c("some message", "some more", "and more")))
 }
 
 
@@ -439,7 +542,8 @@ testRUnit.defineTestSuite <- function()
   
   
   ##  error handling
-  
+  ##  missing 'dirs' argument
+  checkException(defineTestSuite("RUnit Example", testFileRegexp="correctTestCase.r"))
 }
 
 
@@ -497,8 +601,23 @@ testRUnit.runTestFile <- function()
 
   testFile <- file.path(system.file("examples", package="RUnit"), "correctTestCase.r")
   checkTrue( file.exists(testFile))
+
+  ## The issue: .testLogger is the hard coded logger object
+  ## regenerated by each new run call in the global environment
+  ## thereby overwriting the existing logger.
+  ## With the current implementation there seems to be no way to
+  ## test the test suite execution *within* a test suite run
   
-  ##res <- runTestFile(testFile)
+#  tmpFile <- tempfile()
+#  writeLines(text=" testFile <- file.path(system.file(\"examples\", package=\"RUnit\"), \"correctTestCase.r\");\n res <- runTestFile(testFile, useOwnErrorHandler=FALSE);\n", con=tmpFile)
+#
+#  execEnv <- new.env(parent=.GlobalEnv)
+#  sys.source(tmpFile, execEnv)
+#  unlink(tmpFile)
+  
+#  checkTrue(exists("res", envir=execEnv))
+#  checkTrue(inherits(get("res", envir=execEnv), "RUnitTestData"))
+#  rm(execEnv)
   
   ##  error handling
   ##  all argument checks delegated to runTestSuite so no need for comprehensive check here
@@ -515,17 +634,15 @@ testRUnit.runTestSuite <- function()
   ## test case for function runTestSuite of class: none
   ##@edescr
 
-  testSuiteTest <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+  testSuiteTest <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"),
+                                   testFileRegexp="correctTestCase.r")
 
   checkTrue( isValidTestSuite(testSuiteTest))
 
-  ##  this call has to be executed in new environment
+  ## The issue: same as above
   ##res <- runTestSuite(testSuiteTest)
   ##
-  ##  FIXME: does not work as intended
-  #testEnv <- new.env()
-  #assign("res", runTestSuite(testSuiteTest), envir=testEnv)
-  #checkTrue( is(get("res", envir=testEnv), "RUnitTestData"))
+  
   
   ##  error handling
   ##
