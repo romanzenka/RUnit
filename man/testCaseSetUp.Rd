@@ -28,59 +28,23 @@
 }
 
 \description{
-  Both functions have to be provided by the test case author, take
-  precedence over the dummy definitions provided by the \pkg{RUnit}
-  package and are called one for every test case identified.
+  Either one or both functions have to be provided by the test case author, take
+  precedence over the dummy definitions provided by the RUnit
+  package and are called once for every test case identified.
 }
 
 \details{
   To be written ...
-  Meanwhile take a look at a simple test case file excerpt:
-  \verb{
-
-    ##  test case file header
-
-    ##  function setUp with no argument
-    ##  defined only for this test case file
-    .setUp <- function() {
-      require(lme4)
-
-      ##  generate reference data
-      fm1 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
-    }
-
-    .tearDown <- function() {
-
-      ##  clean up
-      if (exists("fm1")) {
-        rm(fm1)        
-      }
-
-      ##  catch error in case lme4 is required by another loaded package
-      ##  whence R cannot unload the namespace
-      try(unloadNamespace("lme4"))
-    }
-
-
-    test_doSomeChecks <- function() {
-
-      fm2 <- lmer(Reaction ~ Days + (1|Subject) + (0+Days|Subject), sleepstudy)
-      result <- anova(fm1, fm2)
-
-      checkTrue( inherits(result, "anova"))
-
-      ##  some sensible checks
-      ##  ...
-    }
-    
-  }
+ 
 }
 
 \value{
-    Functions do not return a value; called for their side effects.}
+    Functions do not return a value; called for their side effects.
+}
     
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
-\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
+\author{
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
   \code{\link{runTestFile}}.
