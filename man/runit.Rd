@@ -32,20 +32,24 @@ defineTestSuite(name, dirs, testFileRegexp = "^runit.+\\\\.[rR]$",
                 rngKind = "Marsaglia-Multicarry",
                 rngNormalKind = "Kinderman-Ramage")
 isValidTestSuite(testSuite)
-runTestSuite(testSuites, useOwnErrorHandler = TRUE, verbose = 1L)
+runTestSuite(testSuites, useOwnErrorHandler = TRUE, 
+             verbose = getOption("RUnit")$verbose)
 runTestFile(absFileName, useOwnErrorHandler = TRUE,
             testFuncRegexp = "^test.+",
             rngKind = "Marsaglia-Multicarry",
-            rngNormalKind = "Kinderman-Ramage", verbose = 1L)
+            rngNormalKind = "Kinderman-Ramage", 
+            verbose = getOption("RUnit")$verbose)
 }
 
 \arguments{
   \item{name}{The name of the test suite.}
   \item{dirs}{Vector of absolute directory names where to look for test files.}
-  \item{testFileRegexp}{Regular expression for test files.}
-  \item{testFuncRegexp}{Regular expression for test functions.}
-  \item{rngKind}{name of a valid RNG version (see \code{\link[base:Random]{RNGkind}}).}
-  \item{rngNormalKind}{name of a valid rnorm RNG version (see \code{\link[base:Random]{RNGkind}}).}
+  \item{testFileRegexp}{Regular expression for matching test files.}
+  \item{testFuncRegexp}{Regular expression for matching test functions.}
+  \item{rngKind}{name of an available RNG  (see \code{\link[base:Random]{RNGkind}} 
+    for possible options).}
+  \item{rngNormalKind}{name of a valid rnorm RNG version (see 
+    \code{\link[base:Random]{RNGkind}} for possible options).}
   \item{testSuite}{A single object of class test suite.}
   \item{testSuites}{A single object of class test suite or a list of
     test suite objects.}
@@ -88,8 +92,8 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   contained in an object of class  \code{RUnitTestSuite} which is a list
   with the following elements.
   \describe{
-  \item{name}{A simple character string. The name of a test suite is mainly used to create a well
-    structure test protocol.}
+  \item{name}{A simple character string. The name of a test suite is mainly used 
+    to create a well structure test protocol.}
   \item{dirs}{A character vector containing the absolute names of all
     directories where to look for test files.}
   \item{testFileRegexp}{A regular expression specifying the test
@@ -125,15 +129,15 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   for each specified test function in the source file. This element is a list with
   the following entries:
   \describe{
-  \item{kind}{Character string with one of \code{success}, \code{error} or \code{failure}
-    describing the outcome of the test function.}
+  \item{kind}{Character string with one of \code{success}, \code{error} or 
+    \code{failure} describing the outcome of the test function.}
   \item{msg}{the error message in case of an error or failure and
     \code{NULL} for a successfully executed test function.}
   \item{time}{The duration (measured in seconds) of the successful
     execution of a test function and \code{NULL} in the case of an error
     or failure.}
-  \item{traceBack}{The full trace back as a character vector in the case of an error and
-    \code{NULL} otherwise.}
+  \item{traceBack}{The full trace back as a character vector in the case of an 
+    error and \code{NULL} otherwise.}
 }
 
   To further control test case execution it is possible to define two
@@ -161,8 +165,9 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   \code{defineTestSuite} returns an object of class  \code{RUnitTestSuite}.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
-\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
+\author{
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
@@ -180,8 +185,9 @@ myTestSuite <- defineTestSuite("RUnit Example",
 testResult <- runTestSuite(myTestSuite)
 
 ##  same but without the logger being involved
-# source(file.path(system.file("examples", package = "RUnit"), "correctTestCase.r"))
-# test.correctTestCase()
+## source(file.path(system.file("examples", package = "RUnit"), 
+##                  "correctTestCase.r"))
+## test.correctTestCase()
 
 
 ## prints detailed text protocol
@@ -199,7 +205,8 @@ testResult1 <- runTestSuite(myTestSuite)
 
 
 ##  for single test files, e.g. outside a package context
-testResult2 <- runTestFile(file.path(system.file("examples", package = "RUnit"),
+testResult2 <- runTestFile(file.path(system.file("examples", 
+                                                 package = "RUnit"),
                                      "correctTestCase.r"))
 printTextProtocol(testResult2, showDetails = TRUE)
 }
