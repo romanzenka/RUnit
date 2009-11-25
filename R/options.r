@@ -41,5 +41,9 @@
   if (is.null(RUnit$silent)) {
     RUnit$silent <- FALSE
   }
+  
+  if (is.null(RUnit$outfile)) {
+    RUnit$outfile <- NULL
+  }
   options("RUnit"=RUnit)
 }

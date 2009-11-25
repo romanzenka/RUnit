@@ -304,11 +304,29 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   if (is.na(useOwnErrorHandler)) {
     stop("argument 'useOwnErrorHandler' may not contain NA.")
   }
-  
-  
+
+  oFile <- getOption("RUnit")$outfile
+  if (!is.null(oFile)) {
+    if(is.character(oFile)) {
+      ##  connection has to be open when handed on to sink
+      oFile <- file(oFile, "w")
+    } else if(!inherits(oFile, "connection")) {
+      stop("'outfile' must be a connection or a character string.")
+    }
+    sink(file=oFile)
+    sink(file=oFile, type="message")
+    resetStream <- function() {
+      sink(type="message")
+      sink()
+      flush(oFile)
+      close(oFile)
+      ##close(oFile)
+    }
+    on.exit(resetStream())
+  }
   ##  record RNGkind and reinstantiate on exit
   rngDefault <- RNGkind()
-  on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]))
+  on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]), add=TRUE)
   
   oldErrorHandler <- getOption("error")
   ## reinstall error handler
