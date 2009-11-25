@@ -59,7 +59,8 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
     handler is not touched by RUnit but then the test protocol does not
     contain any call stacks in the case of errors.}
   \item{verbose}{level of verbosity of output log messages, 0: omits
-  begin/end comments for each test function.}
+  begin/end comments for each test function. Queried from 
+    global options set for RUnit at package load.}
   \item{absFileName}{Absolute file name of a test function.}
 }
 
@@ -172,7 +173,8 @@ Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
 \seealso{
   \code{\link{checkTrue}} and friends for writing test cases.
   \code{\link{printTextProtocol}} and \code{\link{printHTMLProtocol}}
-  for printing the test protocol.
+  for printing the test protocol. See \link{RUnit-options} for global
+  options controlling log out.
 }
 
 

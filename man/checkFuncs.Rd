@@ -85,7 +85,7 @@ DEACTIVATED(msg)
   \code{try} mechanism to check if the evaluation generates an error.
   If it does the test is OK. Otherwise an error is
   generated and the failure is reported to the test logger such that it
-  appears in the test protocol.
+  appears in the test protocol. 
   
   \code{DEACTIVATED} interrupts the test function and reports the test case
   as deactivated. In the test protocol deactivated test functions are
@@ -132,7 +132,8 @@ Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
   \code{\link{all.equal}}, \code{\link{all.equal.numeric}} and
   \code{\link{identical}} are the underlying comparison functions.
   \code{\link{try}} is used for error catching.
-  \code{\link{.setUp}} for details on test case setup.
+  \code{\link{.setUp}} for details on test case setup. See
+  \link{RUnit-options} for global options controlling log out.
 }
 
 
