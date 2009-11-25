@@ -19,6 +19,7 @@
 \encoding{latin1}
 \name{options}
 \alias{RUnit options}
+\alias{RUnit-options}
 \title{RUnit options}
 \description{
 RUnit uses three options available via the global R options list
