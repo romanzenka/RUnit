@@ -8,6 +8,23 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.25
+    o   enable redirection of error and log messages to file, controlled via new 
+        global option 'outfile', (following a suggestion by Seth Falcon)
+
+Changes in RUnit 0.4.24
+    o   added RUnit specific options 'verbose' and 'silent' to global options list 
+        to allow control of test log output
+    o   moved unit tests from tests/ to inst/unitTests 
+    o   added Makefile for executing unit tests (using R wiki example)
+
+Changes in RUnit 0.4.23
+    o   vignette: fixed function name in example code, reported by  Blair Christian
+    o   init .testLogger to avoid R CMD check NOTE messages
+    o   allow verbosity of console output log to be controlled: added 'verbose' argument
+        to runTestFile and runTestSuite (following a suggestion by Seth Falcon)
+    o   test logger object declared as S3 class 'TestLogger'
+
 Changes in RUnit 0.4.22
     o   clarified applicable license: GPL 2
     o   defineTestSuite: gained some argument checks
@@ -18,7 +35,8 @@ Changes in RUnit 0.4.21
     o   documentation issues corrected, identified by new R 2.9.0 devel Rd parser
 
 Changes in RUnit 0.4.20
-    o   test protocol generation on Mac OS X failed due to incorrect code to identify 'gcc' version  
+    o   test protocol generation on Mac OS X failed due to incorrect code to identify
+        'gcc' version  
     o   Rd documentation updated
 
 Changes in RUnit 0.4.19
@@ -61,9 +79,10 @@ Changes in RUnit 0.4.14
         2.4.0 compatibility
     
 Changes in RUnit 0.4.13
-    o   allow the RNG to be set by the user via new arguments 'rngKind' and 'rngNormalKind' to 
-        functions defineTestSuite and runTestFile (patch by Seth Falcon)
-    o   fixed exit status: RNG kind was left changed after runTestSuite execution in user workspace
+    o   allow the RNG to be set by the user via new arguments 'rngKind' and 
+        'rngNormalKind' to functions defineTestSuite and runTestFile (patch by Seth Falcon)
+    o   fixed exit status: RNG kind was left changed after runTestSuite execution in 
+        user workspace
     o   email contact address modified
 
 Changes in RUnit 0.4.12
