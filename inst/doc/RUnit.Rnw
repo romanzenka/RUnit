@@ -34,7 +34,7 @@
 \tableofcontents
 \section*{Abstract}
 \label{section:abstract}
-Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modeled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyse and report the software quality status. The presented framework is completely implemented within R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an well structured test protocol.
+Software development for production systems presents a challenge to the development team as the quality of the coded package(s) has to be constantly monitored and verified. We present a generic approach to software testing for the R language modelled after successful examples such as JUnit, CppUnit, and PerlUnit. The aim of our approach is to facilitate development of reliable software packages and provide a set of tools to analyse and report the software quality status. The presented framework is completely implemented within R and does not rely on external tools or other language systems. The basic principle is that every function or method is accompanied with a test case that queries many calling situations including incorrect invocations. A test case can be executed instantly without reinstalling the whole package - a feature that is necessary for parallel development of functionality and test cases. On a second level one or more packages can be tested in a single test run, the result of which is reported in an well structured test protocol.
 To verify the coverage of the test framework a code inspector is provided that monitors the code coverage of executed test cases. The result of individual test invocations as well as package wide evaluations can be compiled into a summary report exported to HTML. This report details the executed tests, their failure or success, as well as the code coverage. Taking it one step further and combining the build system with a development and release procedure with defined code status description this approach opens the way for a principled software quality monitoring and risk assessment of the developed application.
 For our code development we have utilised the described system with great benefit w.r.t.\ code reliability and maintenance efforts in a medium sized development team.
 
@@ -107,7 +107,7 @@ of tips relating to a Test-First development approach can be found in \cite{tfg}
 \item {Develop test cases parallel to implementing your
     functionality. Keep testing all the time (code - test - simplify
     cycle). Do not wait until the software is complete and attempt to
-    add test cases at the very end. This typically leads to crappy
+    add test cases at the very end. This typically leads to poor quality
     and incomplete test cases.}
 
 \item{Distinguish between unit and integration tests: Unit tests
@@ -117,7 +117,7 @@ of tips relating to a Test-First development approach can be found in \cite{tfg}
     interplay of various software components.}
 
 \item{Good test coverage enables refactoring, by which a
-        reorganisation of the implementation is meant. Without testing the
+        reorganisation of the implementation is meant. Without regular testing the
         attitude {\it `I better do not touch this code anymore`} once some piece
         of software appears to be working is frequently
         encountered. It is very pleasing and time-saving just to run a
@@ -217,7 +217,7 @@ The creation and execution of test suites can be summarised by the following rec
 \begin{itemize}
 \item{A test file can contain an arbitrary number of test functions. A test directory can contain an arbitrary number of test files, a test suite can contain an arbitrary number of test directories and the test runner can run an arbitrary number of test suites -- all resulting in one test protocol. The test function and file names of a test suite must, however,  obey a naming convention expressible through regular expressions.
     As default test functions start with {\tt test} and files with {\tt runit}.}
-\item{RUnit makes a distinction between failures and error. A failure occurs if one of the check functions fail (e.g.~{\tt checkTrue(FALSE)} creates a failure). An error is reported if an ordinary R error (usually created by {\tt stop}) occurs.}
+\item{RUnit makes a distinction between failure and error. A failure occurs if one of the check functions fail (e.g.~{\tt checkTrue(FALSE)} creates a failure). An error is reported if an ordinary R error (usually created by {\tt stop}) occurs.}
 \item{Since version 0.4.0 there is a function {\tt DEACTIVATED} which
 can be used to deactivate test cases temporarily. This might be useful
 in the case of a major refactoring. In particular, the deactivated
