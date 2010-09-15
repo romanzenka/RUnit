@@ -554,7 +554,9 @@ testRUnit.isValidTestSuite <- function()
   ##@edescr
   
   ##  correct working
-  testSuite <- defineTestSuite("RUnit Example", system.file("examples", package="RUnit"), testFileRegexp="correctTestCase.r")
+  testSuite <- defineTestSuite("RUnit Example",
+                               system.file("examples", package="RUnit"),
+                               testFileRegexp="correctTestCase.r")
   checkTrue( isValidTestSuite(testSuite))
   
   ##  error handling
@@ -585,11 +587,62 @@ testRUnit.isValidTestSuite <- function()
   testSuiteFail[["testFuncRegexp"]] <- list()
   checkTrue( !isValidTestSuite(testSuiteFail))
   
-  
+
+  ##  length 1 required
+  testSuiteFail <- testSuite
+  testSuiteFail[["name"]] <- character(0)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["name"]] <- character(2)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["testFileRegexp"]] <- character(0)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["testFileRegexp"]] <- character(2)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["testFuncRegexp"]] <- character(0)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["testFuncRegexp"]] <- character(2)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["rngKind"]] <- character(0)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["rngKind"]] <- character(2)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["rngNormalKind"]] <- character(0)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["rngNormalKind"]] <- character(2)
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
   ##  director has to exist
   testSuiteFail <- testSuite
   testSuiteFail[["dirs"]] <- "doesNotExist"
   checkTrue( !isValidTestSuite(testSuiteFail))
+
+  testSuiteFail <- testSuite
+  testSuiteFail[["dirs"]] <- c(tempdir(), "doesNotExist", tempdir())
+  checkTrue( !isValidTestSuite(testSuiteFail))
+
+  ##  same, '' has to return FALSE
+  testSuiteFail <- testSuite
+  testSuiteFail[["dirs"]] <- c(tempdir(), "", tempdir())
+  checkTrue( !isValidTestSuite(testSuiteFail))
+ 
 }
   
 
