@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2010  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   ##
   ##@codestatus : testing
 
+  stopifnot(require(graphics))
   ## experimental 2nd order connections
   ## color for arrows
   color <- c("black","lightgreen","green","lightblue","blue","orangered","red")
@@ -37,10 +38,10 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   if(all(con==0))
   {
     ## open png device
-    png(filename=pngfile,width=1024,height=960)
+    grDevices::png(filename=pngfile,width=1024,height=960)
     plot(1:10,axes=FALSE,xlab="",ylab="",main="",type="n")
     text(5,5,labels="No connection graph available")
-    dev.off()
+    grDevices::dev.off()
     return(invisible())
   }
   
@@ -54,7 +55,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   con <- (con + 14) %/% 15
 
   ## open png device
-  png(filename=pngfile,width=1024,height=960)
+  grDevices::png(filename=pngfile,width=1024,height=960)
   
   ## basic plot
   plot(x=1:nrow(con), y=1:nrow(con), type="n",axes=FALSE,ylab="# line",xlab="",
@@ -89,10 +90,10 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
           middle <- (xmin+offset[from])/2
 
           ## top spline
-          splTop <- spline(c(xmin,middle,offset[from]), c(from + 0.2,top,from))
+          splTop <- stats::spline(c(xmin,middle,offset[from]), c(from + 0.2,top,from))
 
           ## bottom spline
-          splBot <- spline(c(xmin,middle,offset[from]), c(from - 0.2,bot,from))
+          splBot <- stats::spline(c(xmin,middle,offset[from]), c(from - 0.2,bot,from))
           lines(splTop$x, splTop$y, col=colDraw)
           lines(splBot$x, splBot$y, col=colDraw)
           l <- length(splTop$y)
@@ -105,7 +106,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
         } else {
           ## "regular" case
           middle <- (i+j)/2;
-          splxy <- spline(c(from - 0.2, middle, to + 0.2),
+          splxy <- stats::spline(c(from - 0.2, middle, to + 0.2),
                           c(xmin - 0.2, offset[from], xmin + 0.2))
           lines(splxy$y, splxy$x, col=colDraw)
           
@@ -131,7 +132,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   leg.txt <- c("0-15%","15-30%","30-45%","45-60%","60-75%","75-90%","90-100%")
   legend(x=legposx,y=1,legend=leg.txt,lty=1,xjust=1,col=color)
   
-  dev.off()
+  grDevices::dev.off()
 
   return(invisible())
 }
