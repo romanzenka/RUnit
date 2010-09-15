@@ -83,28 +83,33 @@ isValidTestSuite <- function(testSuite)
   }
   for(i in seq_along(testSuite))
   {
-    if(!is.character(testSuite[[i]]))
-    {
+    if(!is.character(testSuite[[i]])) {
       warning(paste("'testSuite' object does not conform to S3 class definition.\n",
-                    names(testSuite)[i]," element has to be of type 'character'."))
+                    "'", names(testSuite)[i],"' element has to be of type 'character'.", sep=""))
       return(FALSE)
     }
-    if(testSuite[[i]] == "")
-    {
+    if(any(testSuite[[i]] == "")) {
       warning(paste("'testSuite' object does not conform to S3 class definition.\n",
-                    names(testSuite)[i]," element may not be empty string."))
+                    "'",names(testSuite)[i],"' element may not contain empty string.", sep=""))
       return(FALSE)
     }
   }
-  
-  if (!all(file.exists(testSuite[["dirs"]])))
-  {
-    warning(paste("specified directory", paste(testSuite[["dirs"]], collapse=", "), "not found."))
+  notFound <- !file.exists(testSuite[["dirs"]])
+  if (any(notFound)) {
+    warning(paste("specified directory",
+                  paste(testSuite[["dirs"]][notFound], collapse=", "), "not found."))
     return(FALSE)
   }
-
   if (length(testSuite[["name"]]) != 1) {
     warning(paste("'name' element may only contain exactly one name."))
+    return(FALSE)
+  }
+  if (length(testSuite[["testFileRegexp"]]) != 1) {
+    warning(paste("'testFileRegexp' element may only contain exactly one string."))
+    return(FALSE)
+  }
+  if (length(testSuite[["testFuncRegexp"]]) != 1) {
+    warning(paste("'testFuncRegexp' element may only contain exactly one string."))
     return(FALSE)
   }
   ##  RNGkind has an internal list of valid names which cannot be accessed
