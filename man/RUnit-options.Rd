@@ -1,5 +1,5 @@
 %%  RUnit : A unit test framework for the R programming language
-%%  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 %%
 %%  This program is free software; you can redistribute it and/or modify
 %%  it under the terms of the GNU General Public License as published by
@@ -26,15 +26,15 @@ RUnit uses three options available via the global R options list
 }
 
 \details{
-  RUnit specif options are added to R's global options list on package
-  loading and removed again on pachage unloading.
+  RUnit specific options are added to \R's global options list on package
+  loading and removed again on package unloading.
 }
 \section{Options used in RUnit}{
   \describe{
     \item{\code{silent}:}{logical flag, default \code{FALSE}, sets the 'silent' argument for
     \code{checkException}. Allows to globally silence output from
-    exception checks for all test suites excuted in one run.}
-    \item{\code{verbose}:}{non-negative integer, default \code{1}, \code{0}: surpresses enclosing
+    exception checks for all test suites executed in one run.}
+    \item{\code{verbose}:}{non-negative integer, default \code{1}, \code{0}: suppress enclosing
     begin/end messages for each test case, \code{1}: output enclosing
     begin/end messages for each test case}
     \item{\code{outfile}:}{\code{NULL}, connection or character, default
@@ -42,7 +42,7 @@ RUnit uses three options available via the global R options list
     Will be used to redirect all output to specified file/connection
     using \code{sink}. Connection is close after test suite execution
     call (via \code{runTestSuite} or \code{runTestFile}) has completed.
-    If the file exists it is overwriten.}
+    If the file exists it is overwritten.}
 }
 }
 \author{Matthias Burger}
