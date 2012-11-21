@@ -1,5 +1,5 @@
 %%  RUnit : A unit test framework for the R programming language
-%%  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 %%
 %%  This program is free software; you can redistribute it and/or modify
 %%  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@
 \alias{printTextProtocol}
 \alias{printHTMLProtocol}
 \alias{print.RUnitTestData}
+\alias{print}
 \alias{summary.RUnitTestData}
 \alias{getErrors}
+\alias{summary}
 
 \title{Printing a plain text or HTML version of an RUnit test run protocol.}
 
@@ -34,8 +36,8 @@
                     separateFailureList = TRUE,
                     traceBackCutOff = 9,
                     testFileToLinkMap = function(x) x )
-  print.RUnitTestData(x, ...)
-  summary.RUnitTestData(object, ...)
+  \method{print}{RUnitTestData}(x, ...)
+  \method{summary}{RUnitTestData}(object, ...)
   getErrors(testData)
 }
 
