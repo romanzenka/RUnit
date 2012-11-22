@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ printTextProtocol <- function(testData,
                               fileName = "",
                               separateFailureList = TRUE,
                               showDetails = TRUE,
-                              traceBackCutOff=9) {
+                              traceBackCutOff=9L) {
 
   ##@bdescr
   ##  Report generator
@@ -39,39 +39,51 @@ printTextProtocol <- function(testData,
   ##@codestatus : testing
 
   ##  preconditions
+  if (missing(testData)) {
+	  stop("argument 'testData' is missing.")
+  }
   if (!is(testData, "RUnitTestData")) {
-    stop("Argument 'testData' must be of class 'RUnitTestData'.")
+    stop("argument 'testData' must be of class 'RUnitTestData'.")
   }
 
   if (!is.character(fileName)) {
-    stop("Argument 'fileName' has to be of type character.")
+    stop("argument 'fileName' has to be of type character.")
   }
   if (length(fileName) != 1) {
-    stop("Argument 'fileName' must contain exactly one element.")
+    stop("argument 'fileName' must contain exactly one element.")
   }
-
+  if (is.na(fileName)) {
+	  stop("argument 'fileName' may not contain NA.")
+  }
   if (!is.logical(separateFailureList)) {
-    stop("Argument 'separateFailureList' has to be of type logical.")
+    stop("argument 'separateFailureList' has to be of type logical.")
   }
   if (length(separateFailureList) != 1) {
-    stop("Argument 'separateFailureList' must contain exactly one element.")
+    stop("argument 'separateFailureList' must contain exactly one element.")
   }
-
+  if (is.na(separateFailureList)) {
+	  stop("argument 'separateFailureList' may not contain NA.")
+  }
   if (!is.logical(showDetails)) {
-    stop("Argument 'showDetails' has to be of type logical.")
+    stop("argument 'showDetails' has to be of type logical.")
   }
   if (length(showDetails) != 1) {
-    stop("Argument 'showDetails' must contain exactly one element.")
+    stop("argument 'showDetails' must contain exactly one element.")
   }
-
-  if (!is.numeric(traceBackCutOff)) {
-    stop("Argument 'traceBackCutOff' has to be of type logical.")
+  if (is.na(showDetails)) {
+	  stop("argument 'showDetails' may not contain NA.")
+  }
+  ##  TODO 
+  ##  should be is.integer only
+  ##  to be changed in future release
+  if (!is.integer(traceBackCutOff) && !is.numeric(traceBackCutOff)) {
+    stop("argument 'traceBackCutOff' has to be of type integer.")
   }
   if (length(traceBackCutOff) != 1) {
-    stop("Argument 'traceBackCutOff' must contain exactly one element.")
+    stop("argument 'traceBackCutOff' must contain exactly one element.")
   }
   if (traceBackCutOff < 0 || traceBackCutOff > 100) {
-    stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
+    stop("argument 'traceBackCutOff' out of valid range [0, 100].")
   }
 
 
@@ -226,7 +238,7 @@ print.RUnitTestData <- function(x, ...)
   ##@in  ... : [ANY] currently ignored
   ##@ret     : [NULL]
   ##
-  ##@codestatus : untested
+  ##@codestatus : testing
   
   errInfo <- getErrors(x)
   cat("Number of test functions:", errInfo$nTestFunc, "\n")
@@ -250,7 +262,7 @@ summary.RUnitTestData <- function(object, ...)
   ##@in  ...    : [ANY]
   ##@ret        : [logical] return valof from printTextProtocol
   ##
-  ##@codestatus : untested
+  ##@codestatus : testing
   
   printTextProtocol(object, ...)
 }
