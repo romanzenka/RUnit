@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -89,5 +89,6 @@ testRUnit.getErrors <- function() {
   checkEquals(res$nFail, 15)
 
   ##  check exception handling
+  checkException( getErrors( ))
   checkException( getErrors( list()))
 }
