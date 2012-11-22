@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -299,6 +299,9 @@ getErrors <- function(testData) {
   ##@ret         : [list] containing no of errors, deactivated, failed, and total test functions
   ##
   ##@codestatus : testing
+  if (missing(testData)) {
+	stop("argument testData is missing.")
+  }
   if(class(testData) != "RUnitTestData") {
     stop("getErrors needs an object of class 'RUnitTestData' as argument.")
   }
