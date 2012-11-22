@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
 printHTMLProtocol <- function(testData,
                               fileName = "",
                               separateFailureList = TRUE,
-                              traceBackCutOff=9,
-                              testFileToLinkMap=function(x) x) {
+                              traceBackCutOff = 9L,
+                              testFileToLinkMap = function(x) x) {
 
   ##@bdescr
   ##  Report generator
@@ -41,42 +41,49 @@ printHTMLProtocol <- function(testData,
   ## --------------------------------
   ##  CHECK OF INPUT DATA
   ## --------------------------------
-  if (!is(testData, "RUnitTestData"))
-  {
-    stop("Argument 'testData' must be of class 'RUnitTestData'.")
+  if (missing(testData)) {
+    stop("argument 'testData' is missing.")
   }
-
-  if (!is.character(fileName))
-  {
-    stop("Argument 'fileName' has to be of type character.")
+  if (!is(testData, "RUnitTestData")) {
+    stop("argument 'testData' must be of class 'RUnitTestData'.")
   }
-  if (length(fileName) != 1)
-  {
-    stop("Argument 'fileName' must contain exactly one element.")
+  if (!is.character(fileName)) {
+    stop("argument 'fileName' has to be of type character.")
   }
-
-  if (!is.logical(separateFailureList))
-  {
-    stop("Argument 'separateFailureList' has to be of type logical.")
+  if (length(fileName) != 1) {
+    stop("argument 'fileName' must contain exactly one element.")
   }
-  if (length(separateFailureList) != 1)
-  {
-    stop("Argument 'separateFailureList' must contain exactly one element.")
+  if (is.na(fileName)) {
+	stop("argument 'fileName' may not contain NA.")
   }
-
-  if (!is.numeric(traceBackCutOff))
-  {
-    stop("Argument 'traceBackCutOff' has to be of type logical.")
+  if (!is.logical(separateFailureList)) {
+    stop("argument 'separateFailureList' has to be of type logical.")
   }
-  if (length(traceBackCutOff) != 1)
-  {
-    stop("Argument 'traceBackCutOff' must contain exactly one element.")
+  if (length(separateFailureList) != 1) {
+    stop("argument 'separateFailureList' must contain exactly one element.")
   }
-  if (traceBackCutOff < 0 || traceBackCutOff > 100)
-  {
-    stop("Argument 'traceBackCutOff' out of valid range [0, 100].")
+  if (is.na(separateFailureList)) {
+	  stop("argument 'separateFailureList' may not contain NA.")
   }
-
+  ##  TODO 
+  ##  should be is.integer only
+  ##  to be changed in future release
+  if (!is.integer(traceBackCutOff) && !is.numeric(traceBackCutOff)) {
+    stop("argument 'traceBackCutOff' has to be of type integer.")
+  }
+  if (length(traceBackCutOff) != 1) {
+    stop("argument 'traceBackCutOff' must contain exactly one element.")
+  }
+  if (is.na(traceBackCutOff)) {
+	stop("argument 'traceBackCutOff' may not contain NA.")
+  }
+  if (traceBackCutOff < 0 || traceBackCutOff > 100) {
+    stop("argument 'traceBackCutOff' out of valid range [0, 100].")
+  }
+  if (!is.function(testFileToLinkMap)) {
+	stop("argument 'testFileToLinkMap' has to be of type function.")
+  }
+  
   ## --------------------------------
   ## HELPER FUNCTIONS
   ## --------------------------------
