@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -43,25 +43,55 @@ testRUnit.printHTMLProtocol <- function()
   ##  missing 'testData' object
   checkException(printHTMLProtocol())
 
-  ##  wrong class
+  ##  wrong type
   checkException(printHTMLProtocol("dummy"))
-
+  ##  wrong class
+  checkException(printTextProtocol("dummy"))
+  myTestData <- vector(mode="list", 3)
+  for (i in seq_along(myTestData)) {
+	  myTestData[[i]]$nErr <- i
+	  myTestData[[i]]$nDeactivated <- i - 1
+	  myTestData[[i]]$nTestFunc <- i*13
+	  myTestData[[i]]$nFail <- i + 3
+  }
+  class(myTestData) <- "myTestData"
+  checkException(printHTMLProtocol(myTestData))
   
-  ##  fileName arg errors
+  
+  ##  testData
   testData <- list()
   class(testData) <- "RUnitTestData"
+
+  ##  fileName
   ##  wrong type
   checkException(printHTMLProtocol(testData, fileName=numeric(1)))
   ##  wrong length
   checkException(printHTMLProtocol(testData, fileName=character(0)))
   checkException(printHTMLProtocol(testData, fileName=character(2)))
-
+  ##  NA
+  checkException(printHTMLProtocol(testData, traceBackCutOff=as.character(NA)))
   
-  ##  separateFailureList arg errors
+  ##  separateFailureList
   ##  wrong type
   checkException(printHTMLProtocol(testData, separateFailureList=numeric(0)))
   ##  wrong length
   checkException(printHTMLProtocol(testData, separateFailureList=logical(0)))
   checkException(printHTMLProtocol(testData, separateFailureList=logical(2)))
+  ##  NA
+  checkException(printHTMLProtocol(testData, traceBackCutOff=as.logical(NA)))
+  
+  ##  traceBackCutOff
+  ##  wrong type
+  checkException(printHTMLProtocol(testData, traceBackCutOff=locical(1)))
+  ##  wrong length
+  checkException(printHTMLProtocol(testData, traceBackCutOff=integer(0)))
+  checkException(printHTMLProtocol(testData, traceBackCutOff=integer(2)))
+  ##  NA
+  checkException(printHTMLProtocol(testData, traceBackCutOff=as.integer(NA)))
+  
+  ##  testFileToLinkMap
+  ##  wrong type
+  checkException(printHTMLProtocol(testData, testFileToLinkMap=TRUE))
+  checkException(printHTMLProtocol(testData, testFileToLinkMap=expression(1)))
 }
 
