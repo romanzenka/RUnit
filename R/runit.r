@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -37,13 +37,66 @@ defineTestSuite <- function(name, dirs,
   ##
   ##@codestatus : testing
 
-  if (missing(dirs)) {
-    stop("argument 'dirs' is missing without a default.")
-  }
+  ##  preconditions
   if (missing(name)) {
     warning("argument 'name' is missing. using basename(dirs)[1] instead.")
     name <- basename(dirs)[1]
   }
+  if (!is.character(name)) {
+	  stop("argument 'name' has to be of type character.")
+  }
+  if (length(name) != 1) {
+	  stop("argument 'name' must contain exactly one element.")
+  }
+  if (missing(dirs)) {
+	  stop("argument 'dirs' is missing without a default.")
+  }
+  if (!is.character(dirs)) {
+	  stop("argument 'dirs' has to be of type character.")
+  }
+  if (any(is.na(dirs))) {
+	  stop("argument 'dirs' may not contain missing value(s).")
+  }
+  if (length(dirs) < 1) {
+	  stop("argument 'dirs' must contain at least one element.")
+  }
+  if (!is.character(testFileRegexp)) {
+	  stop("argument 'testFileRegexp' has to be of type character.")
+  }
+  if (length(testFileRegexp) != 1) {
+	  stop("argument 'testFileRegexp' must contain exactly one element.")
+  }
+  if (is.na(testFileRegexp)) {
+	  stop("argument 'testFileRegexp' may not contain missing value.")
+  }
+  if (!is.character(testFuncRegexp)) {
+	  stop("argument 'testFuncRegexp' has to be of type character.")
+  }
+  if (length(testFuncRegexp) != 1) {
+	  stop("argument 'testFuncRegexp' must contain exactly one element.")
+  }
+  if (is.na(testFuncRegexp)) {
+	  stop("argument 'testFuncRegexp' may not contain missing value.")
+  }
+  if (!is.character(rngKind)) {
+	  stop("argument 'rngKind' has to be of type character.")
+  }
+  if (length(rngKind) != 1) {
+	  stop("argument 'rngKind' must contain exactly one element.")
+  }
+  if (is.na(rngKind)) {
+	  stop("argument 'rngKind' may not contain missing value.")
+  }
+  if (!is.character(rngNormalKind)) {
+	  stop("argument 'rngNormalKind' has to be of type character.")
+  }
+  if (length(rngNormalKind) != 1) {
+	  stop("argument 'rngNormalKind' must contain exactly one element.")
+  }
+  if (is.na(rngNormalKind)) {
+	  stop("argument 'rngNormalKind' may not contain missing value.")
+  }
+  
   ret <- list(name=name,
               dirs=dirs,
               testFileRegexp=testFileRegexp,
@@ -88,11 +141,20 @@ isValidTestSuite <- function(testSuite)
                     "'", names(testSuite)[i],"' element has to be of type 'character'.", sep=""))
       return(FALSE)
     }
+	if(any(is.na(testSuite[[i]]))) {
+		warning(paste("'testSuite' object does not conform to S3 class definition.\n",
+						"'",names(testSuite)[i],"' element may not contain NA.", sep=""))
+		return(FALSE)
+	}
     if(any(testSuite[[i]] == "")) {
       warning(paste("'testSuite' object does not conform to S3 class definition.\n",
                     "'",names(testSuite)[i],"' element may not contain empty string.", sep=""))
       return(FALSE)
     }
+  }
+  if (length(testSuite[["dirs"]]) < 1) {
+	  warning(paste("'dirs' element may not be empty."))
+	  return(FALSE)
   }
   notFound <- !file.exists(testSuite[["dirs"]])
   if (any(notFound)) {
@@ -300,6 +362,9 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   ##@codestatus : testing
   
   ##  preconditions
+  if (missing(testSuites)) {
+	  stop("argument 'testSuites' is missing.")
+  }
   if (!is.logical(useOwnErrorHandler)) {
     stop("argument 'useOwnErrorHandler' has to be of type logical.")
   }
@@ -308,6 +373,18 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   }
   if (is.na(useOwnErrorHandler)) {
     stop("argument 'useOwnErrorHandler' may not contain NA.")
+  }
+  if (!is.integer(verbose)) {
+	  stop("argument 'verbose' has to be of type integer.")
+  }
+  if (length(verbose) != 1) {
+	  stop("argument 'verbose' has to be of length 1.")
+  }
+  if (is.na(verbose)) {
+	  stop("argument 'verbose' may not contain NA.")
+  }
+  if (verbose < 0) {
+	  stop("argument 'verbose' out of valid range [0,n).")
   }
 
   oFile <- getOption("RUnit")$outfile
@@ -387,13 +464,14 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
   ##@in  testFuncRegexp     : [character]
   ##@in  rngKind            : [character] name of the RNG, see RNGkind for avialbale options
   ##@in  rngNormalKind      : [character] name of the RNG for rnorm, see RNGkind for avialbale options
-  ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: ommit begin/end comment (passed on to function runTestSuite)
+  ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 
+  ##                                       0: ommit begin/end comment (passed on to function runTestSuite)
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
   
   ##  preconditions
-  ##  all error checking and handling is delegated to function runTestSuite
+  ##  all error checking and handling is delegated to functions defineTestSuite & runTestSuite
   
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
