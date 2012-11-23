@@ -31,10 +31,10 @@
 \usage{
   printTextProtocol(testData, fileName = "",
                     separateFailureList = TRUE,
-                    showDetails = TRUE, traceBackCutOff = 9)
+                    showDetails = TRUE, traceBackCutOff = 9L)
   printHTMLProtocol(testData, fileName = "",
                     separateFailureList = TRUE,
-                    traceBackCutOff = 9,
+                    traceBackCutOff = 9L,
                     testFileToLinkMap = function(x) x )
   \method{print}{RUnitTestData}(x, ...)
   \method{summary}{RUnitTestData}(object, ...)
