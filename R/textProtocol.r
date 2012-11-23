@@ -115,6 +115,7 @@ printTextProtocol <- function(testData,
   if(errInfo$nDeactivated > 0) {
     pr("Number of deactivated test functions:", errInfo$nDeactivated)
   }
+  pr("Number of checks:", errInfo$nCheck)
   pr("Number of errors:", errInfo$nErr)
   pr("Number of failures:", errInfo$nFail, "\n\n")
 
@@ -164,9 +165,9 @@ printTextProtocol <- function(testData,
       pr("No directories !")
     } else {
       if(length(tsList$dirs) == 1) {
-        pr("Involved directory:")
+        pr("Test case directory:")
       } else {
-        pr("Involved directories:")
+        pr("Test case directories:")
       }
       for(dir in tsList$dirs) {
         pr(dir)
@@ -186,7 +187,8 @@ printTextProtocol <- function(testData,
             for(testFuncName in testFuncNames) {
               testFuncInfo <- res[[testFileName]][[testFuncName]]
               if(testFuncInfo$kind == "success") {
-                pr(testFuncName, ": (",testFuncInfo$checkNum, " checks) ... OK (", 
+                pr(testFuncName, ": (", testFuncInfo$checkNum, 
+				   ifelse(testFuncInfo$checkNum < 2, " check", " checks"), ") ... OK (", 
                    testFuncInfo$time, " seconds)", sep="")
               } else {
                 if(testFuncInfo$kind == "error") {
@@ -245,6 +247,7 @@ print.RUnitTestData <- function(x, ...)
   if(errInfo$nDeactivated > 0) {
     cat("Number of deactivated test functions:", errInfo$nDeactivated, "\n")
   }
+  cat("Number of checks:", errInfo$nCheck, "\n")
   cat("Number of errors:", errInfo$nErr, "\n")
   cat("Number of failures:", errInfo$nFail, "\n")
   
