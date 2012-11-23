@@ -156,7 +156,7 @@ printHTMLProtocol <- function(testData,
   ## --------------------------------------------
 
   ## title
-  title <- paste("RUNIT TEST PROTOCOL", date(), sep="--")
+  title <- paste("RUNIT TEST PROTOCOL", date(), sep=" -- ")
   writeHtmlHeader(title, htmlFile=fileName)
   writeHtmlSection(title, 1, htmlFile=fileName)
 
@@ -171,6 +171,8 @@ printHTMLProtocol <- function(testData,
     writeP(paste("Number of deactivated test functions:", errInfo$nDeactivated),
            para=ifelse(errInfo$nDeactivated == 0, "", paste("style", deactivatedStyle, sep="=")))
   }
+  writeP(paste("Number of checks:", errInfo$nCheck),
+		  para=ifelse(errInfo$nErr == 0, "", paste("style", errorStyle, sep="=")))
   writeP(paste("Number of errors:", errInfo$nErr),
          para=ifelse(errInfo$nErr == 0, "", paste("style", errorStyle, sep="=")))
   writeP(paste("Number of failures:", errInfo$nFail),
@@ -348,10 +350,10 @@ printHTMLProtocol <- function(testData,
     }
     else {
       if(length(tsList$dirs) == 1) {
-        pr("Involved directory:")
+        pr("Test case directory:")
       }
       else {
-        pr("Involved directories:")
+        pr("Test case directories:")
       }
       for(dir in tsList$dirs) {
         pr(dir)
@@ -380,7 +382,9 @@ printHTMLProtocol <- function(testData,
               writeBeginTag("a", para=paste("name=\"", anchorName, "\"", sep=""),
                             htmlFile=fileName)
               if(testFuncInfo$kind == "success") {
-                pr(paste(testFuncName, ": (",testFuncInfo$checkNum, " checks) ... OK (", testFuncInfo$time,
+                pr(paste(testFuncName, ": (", testFuncInfo$checkNum, 
+						 ifelse(testFuncInfo$checkNum < 2, " check", " checks"),
+						 ") ... OK (", testFuncInfo$time,
                          " seconds)", sep=""))
                 writeEndTag("a", htmlFile=fileName)
               }
