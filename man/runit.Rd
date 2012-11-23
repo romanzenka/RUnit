@@ -110,19 +110,20 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   After the RUnit framework has sequentially executed all test suites it returns all
   data collected during the test run as an object of class
   \code{RUnitTestData}. This is a (deeply nested)
-  list with one list element for each executed test suite. Each of these
-  executed test suite lists contains the following elements:
+  list with one list element for each executed test suite. For each
+  test suite list it contains the following elements:
   \describe{
   \item{nTestFunc}{The number of test functions executed in the test
     suite.}
-  \item{nErr}{The number of errors that occurred during the execution.}
-  \item{nFail}{The number of failures that occurred during the execution.}
+  \item{nErr}{The number of errors that occurred during execution.}
+  \item{nFail}{The number of failures that occurred during execution.}
+  \item{nCheck}{The number of checks (check* function calls) evaluated during execution.}
   \item{dirs}{The test directories of the test suite.}
-  \item{testFileRegexp}{The regular expression for identifying the test
+  \item{testFileRegexp}{The regular expression used for identifying the test
     files of the test suite.}
-  \item{testFuncRegexp}{The regular expression for identifying the test
+  \item{testFuncRegexp}{The regular expression used for identifying the test
     functions of the test suite.}
-  \item{sourceFileResults}{A list containing the results for each
+  \item{sourceFileResults}{A nested list containing the results for each
     separate test file of the test suite.}
 }
 
@@ -142,20 +143,20 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
 }
 
   To further control test case execution it is possible to define two
-  parameterless function \code{.setUp} and \code{\link{.tearDown}} in each
-  test file. \code{.setUp()} is executed directly before and
+  parameterless function \code{\link{.setUp}} and \code{\link{.tearDown}} in each
+  test case file. \code{.setUp()} is executed directly before and
   \code{.tearDown()} directly after each test function execution.
 
   Quite often, it is useful to base test cases on random numbers. To
   make this procedure reproducible, the function \code{runTestSuite}
-  sets the random number generator to the default setting
-  \code{RNGkind(kind="Marsaglia-Multicarry",
-    normal.kind="Kinderman-Ramage")} before sourcing each test file
+  sets the random number generator to the default setting\cr
+  \code{RNGkind(kind="Marsaglia-Multicarry", normal.kind="Kinderman-Ramage")}  
+  before sourcing each test file
   (note that this default has been chosen due to historical reasons and
   differs from the current R default). This default can be overwritten
   by  configuring the random number generator at the beginning of a test
-  file. This setting, however, is valid only inside its own source file
-  and gets overwritten when the next test file is sourced.
+  file. This setting, however, is valid only inside its own test case source file
+  and gets overwritten when the next test case file is sourced.
 }
 
 
