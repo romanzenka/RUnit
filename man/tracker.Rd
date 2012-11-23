@@ -1,5 +1,5 @@
 %%  RUnit : A unit test framework for the R programming language
-%%  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 %%
 %%  This program is free software; you can redistribute it and/or modify
 %%  it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@
     \tab \code{init} \tab initializes the tracker environment\cr
     \tab \code{addFunc} \tab add function to the inspect tracking list
     (internal use)\cr
-    \tab \code{getSource} \tab return the modified source code used for during inspection 
-    the specified index (internal use)\cr
+    \tab \code{getSource} \tab return modified source code used during inspection 
+    of specified index (internal use)\cr
     \tab \code{bp} \tab update tracking info for specified function
     index (internal use)\cr
     \tab \code{getTrackInfo} \tab return 'trackInfo' object\cr
@@ -70,9 +70,9 @@
 \ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
 
 \seealso{
-  \code{\link{inspect}} for the registration of functions \& methods to
+  \code{\link{inspect}} for the registration of functions and methods to
   be on the tracking list, and 
-  \code{\link{printHTML.trackInfo}} for displaying results
+  \code{\link{printHTML.trackInfo}} for displaying results.
 }
 
 \examples{
