@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -28,25 +28,26 @@ testRUnit.S4classInheritance <- function()
   ##  given that no where argument is specified
   ##@edescr
 
+  className <- "testVirtualClass"
+  ret <- setClass(className,
+		          representation("VIRTUAL",
+                                 x = "numeric",
+                                 y = "numeric",
+                                 xlab = "character",
+                                 ylab = "character")
+                 )
+  
+  
+  checkTrue(is(ret, "classGeneratorFunction"))
 
-  className <- setClass("testVirtualClass",
-                        representation("VIRTUAL",
-                                       x = "numeric",
-                                       y = "numeric",
-                                       xlab = "character",
-                                       ylab = "character")
-                        )
+  checkException( new(className) )
   
-  
-  checkEquals(className, "testVirtualClass")
-
-  checkException( new(className))
-  
-  derivedClassName <- setClass("testDerivedClass",
-                               representation(className,
-                                              scale = "numeric",
-                                              title = "character")
-                               )
+  derivedClassName <- "testDerivedClass"
+  ret2 <- setClass(derivedClassName,
+                   representation(className,
+                                  scale = "numeric",
+                                  title = "character")
+                  )
   ##  Attention:
   ##  invert inheritance order!
   on.exit(removeClass(derivedClassName))
@@ -70,11 +71,12 @@ testRUnit.S4classInheritance <- function()
   checkTrue( is(obj, classNameMLE))
   checkTrue( isS4(obj))
   
-  derivedStats4ClassName <- setClass("mleChild",
-                                     representation(classNameMLE,
-                                                    scale = "numeric",
-                                                    title = "character")
-                                     )
+  derivedStats4ClassName <- "mleChild"
+  ret3 <- setClass(derivedStats4ClassName,
+                   representation(classNameMLE,
+                                  scale = "numeric",
+                                  title = "character")
+                  )
   on.exit(removeClass(derivedStats4ClassName), add=TRUE)
   
   checkEquals(derivedStats4ClassName, "mleChild")
