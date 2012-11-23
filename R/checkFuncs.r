@@ -1,5 +1,5 @@
 ##  RUnit : A unit test framework for the R programming language
-##  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+##  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 ##
 ##  This program is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
@@ -34,14 +34,23 @@ checkEquals <- function(target, current, msg="",
   ##
   ##@codestatus : testing
 
+  if (missing(target)) {
+     stop("argument 'target' is missing")
+  }
   if (missing(current)) {
      stop("argument 'current' is missing")
+  }
+  if(!is.character(msg)) {
+	  stop("'msg' has to be a character value")
   }
   if(!is.numeric(tolerance)) {
     stop("'tolerance' has to be a numeric value")
   }
   if (length(tolerance) != 1) {
     stop("'tolerance' has to be a scalar")
+  }
+  if (tolerance < 0) {
+    stop("'tolerance' has to be a value >= 0")
   }
   if(!is.logical(checkNames)) {
     stop("'checkNames' has to be a logical value")
@@ -84,14 +93,26 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   ##
   ##@codestatus : testing
 
+  if (missing(target)) {
+    stop("argument 'target' is missing")
+  }
   if (missing(current)) {
     stop("argument 'current' is missing")
+  }
+  if(!is.character(msg)) {
+	  stop("'msg' has to be a character value")
   }
   if(!is.numeric(tolerance)) {
     stop("'tolerance' has to be a numeric value")
   }
   if (length(tolerance) != 1) {
     stop("'tolerance' has to be a scalar")
+  }
+  if (is.na(tolerance)) {
+	  stop("'tolerance' may not contain missing value")
+  }
+  if (tolerance < 0) {
+    stop("'tolerance' has to be a value >= 0")
   }
   if(.existsTestLogger()) {
     .testLogger$incrementCheckNum()
@@ -124,8 +145,14 @@ checkIdentical <- function(target, current, msg="")
   ##
   ##@codestatus : testing
 
+  if (missing(target)) {
+	  stop("argument 'target' is missing")
+  }
   if (missing(current)) {
     stop("argument 'current' is missing")
+  }
+  if(!is.character(msg)) {
+	  stop("'msg' has to be a character value")
   }
   if(.existsTestLogger()) {
     .testLogger$incrementCheckNum()
@@ -157,6 +184,9 @@ checkTrue <- function(expr, msg="")
 
   if (missing(expr)) {
     stop("'expr' is missing")
+  }
+  if(!is.character(msg)) {
+	  stop("'msg' has to be a character value")
   }
   if(.existsTestLogger()) {
     .testLogger$incrementCheckNum()
@@ -198,9 +228,15 @@ checkException <- function(expr, msg="", silent=getOption("RUnit")$silent)
   if (missing(expr)) {
     stop("'expr' is missing")
   }
+  if(!is.character(msg)) {
+	  stop("'msg' has to be a character value")
+  }
   if(is.null(silent)) {
     silent <- FALSE
     warning("'silent' has to be of type 'logical'. Was NULL. Set to FALSE.")
+  }
+  if(length(silent) != 1) {
+	  stop("'silent' has to be vector of length 1")
   }
   if(.existsTestLogger()) {
     .testLogger$incrementCheckNum()
