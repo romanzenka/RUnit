@@ -71,23 +71,26 @@ testRUnit.getErrors <- function() {
   ##@edescr
   
   ##  create dummy test suite result object
-  testData <- vector(mode="list", 3)
+  nts <- sample(1:20, size=1)
+  testData <- vector(mode="list", nts)
   for (i in seq_along(testData)) {
     testData[[i]]$nErr <- i
-    testData[[i]]$nDeactivated <- i - 1
-    testData[[i]]$nTestFunc <- i*13
-    testData[[i]]$nFail <- i + 3
+    testData[[i]]$nDeactivated <- i - 1L
+    testData[[i]]$nTestFunc <- i * 13L
+    testData[[i]]$nFail <- i + 3L
+	testData[[i]]$nCheck <- i*i
   }
   class(testData) <- "RUnitTestData"
          
   res <- getErrors(testData)
   checkTrue (is.list(res))
-  checkEquals(length(res), 4)
-  checkEquals(res$nErr, 6)
-  checkEquals(res$nDeactivated, 3)
-  checkEquals(res$nTestFunc, 78)
-  checkEquals(res$nFail, 15)
-
+  checkEquals(length(res), 5)
+  checkEquals(res$nErr, sum(1:nts))
+  checkEquals(res$nDeactivated, sum(0:(nts-1L)))
+  checkEquals(res$nTestFunc, sum(1:nts)*13L)
+  checkEquals(res$nFail, sum(1:nts)+nts*3L)
+  checkEquals(res$nCheck, sum((1:nts)^2))
+  
   ##  check exception handling
   checkException( getErrors( ))
   checkException( getErrors( list()))
