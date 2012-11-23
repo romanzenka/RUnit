@@ -96,11 +96,12 @@
         stop(paste("Duplicate test suite:", testSuite$name))
       }
       .currentTestSuiteName <<- testSuite$name
-      .testData[[testSuite$name]] <<- list(nTestFunc = 0L,
+      .testData[[testSuite$name]] <<- list(nTestFunc    = 0L,
                                            nDeactivated = 0L,
-                                           nErr  = 0,
-                                           nFail = 0,
-                                           dirs = testSuite[["dirs"]],
+                                           nErr         = 0L,
+                                           nFail        = 0L,
+										   nCheck       = 0L,
+                                           dirs         = testSuite[["dirs"]],
                                            testFileRegexp = testSuite[["testFileRegexp"]],
                                            testFuncRegexp = testSuite[["testFuncRegexp"]],
                                            sourceFileResults = list())
@@ -128,7 +129,7 @@
     ##@in testFuncName : [character] name of test function
     ##@in secs : [numeric] time in seconds needed by the test function to complete
 
-    .testData[[.currentTestSuiteName]]$nTestFunc <<- 1 + .testData[[.currentTestSuiteName]]$nTestFunc
+    .testData[[.currentTestSuiteName]]$nTestFunc <<- 1L + .testData[[.currentTestSuiteName]]$nTestFunc
 
     .testData[[.currentTestSuiteName]]$sourceFileResults[[.currentSourceFileName]][[testFuncName]] <<-
       list(kind="success", checkNum=.checkNum, time=secs)
@@ -141,8 +142,8 @@
     ##@in testFuncName : [character] name of test function
     ##@in errorMsg : [character] the error message
 
-    .testData[[.currentTestSuiteName]]$nTestFunc <<- 1 + .testData[[.currentTestSuiteName]]$nTestFunc
-    .testData[[.currentTestSuiteName]]$nErr <<- 1 + .testData[[.currentTestSuiteName]]$nErr
+    .testData[[.currentTestSuiteName]]$nTestFunc <<- 1L + .testData[[.currentTestSuiteName]]$nTestFunc
+    .testData[[.currentTestSuiteName]]$nErr <<- 1L + .testData[[.currentTestSuiteName]]$nErr
 
     .testData[[.currentTestSuiteName]]$sourceFileResults[[.currentSourceFileName]][[testFuncName]] <<-
       list(kind="error", msg=errorMsg, checkNum=.checkNum, traceBack=.currentTraceBack)
@@ -155,8 +156,8 @@
     ##@in testFuncName : [character] name of test function
     ##@in failureMsg : [character] the failure message
 
-    .testData[[.currentTestSuiteName]]$nTestFunc <<- 1 + .testData[[.currentTestSuiteName]]$nTestFunc
-    .testData[[.currentTestSuiteName]]$nFail <<- 1 + .testData[[.currentTestSuiteName]]$nFail
+    .testData[[.currentTestSuiteName]]$nTestFunc <<- 1L + .testData[[.currentTestSuiteName]]$nTestFunc
+    .testData[[.currentTestSuiteName]]$nFail <<- 1L + .testData[[.currentTestSuiteName]]$nFail
 
     .testData[[.currentTestSuiteName]]$sourceFileResults[[.currentSourceFileName]][[testFuncName]] <<-
       list(kind="failure", msg=failureMsg, checkNum=.checkNum, traceBack=NULL)  ## traceBack is useless in this case
@@ -169,7 +170,7 @@
     ##@in testFuncName : [character] name of test function
 
 
-    .testData[[.currentTestSuiteName]]$nDeactivated <<- 1 + .testData[[.currentTestSuiteName]]$nDeactivated
+    .testData[[.currentTestSuiteName]]$nDeactivated <<- 1L + .testData[[.currentTestSuiteName]]$nDeactivated
     .testData[[.currentTestSuiteName]]$sourceFileResults[[.currentSourceFileName]][[testFuncName]] <<-
       list(kind="deactivated", msg=.deactivationMsg, checkNum=.checkNum)
   }
@@ -182,7 +183,7 @@
 
 
     .testData[[.currentTestSuiteName]]$sourceFileResults[[.currentSourceFileName]][[testFuncName]]$checkNum <<- .checkNum
-      
+	.testData[[.currentTestSuiteName]]$nCheck <<- .testData[[.currentTestSuiteName]]$nCheck + .checkNum
   }
   
   .cleanup <- function() {
@@ -194,7 +195,7 @@
     .currentTraceBack <<- NULL
     .failure <<- FALSE
     .deactivationMsg <<- NULL
-    .checkNum <<- 0
+    .checkNum <<- 0L
   }
 
   .isFailure <- function() {
@@ -235,7 +236,7 @@
     ##@bdescr
     ##  increment internal counter of total num of test cases
     ##@edescr
-    .checkNum <<- 1 + .checkNum
+    .checkNum <<- 1L + .checkNum
   }
   
   .getCheckNum <- function() {
@@ -303,14 +304,15 @@ getErrors <- function(testData) {
 	stop("argument testData is missing.")
   }
   if(class(testData) != "RUnitTestData") {
-    stop("getErrors needs an object of class 'RUnitTestData' as argument.")
+    stop("getErrors requires object of class 'RUnitTestData' as argument.")
   }
-  ret <- list(nErr=0, nDeactivated=0, nFail=0, nTestFunc=0)
+  ret <- list(nErr=0L, nDeactivated=0L, nFail=0L, nTestFunc=0L, nCheck=0L)
   for(i in seq_along(testData)) {
-    ret$nErr <- ret$nErr + testData[[i]]$nErr
+    ret$nErr         <- ret$nErr + testData[[i]]$nErr
     ret$nDeactivated <- ret$nDeactivated + testData[[i]]$nDeactivated
-    ret$nFail <- ret$nFail + testData[[i]]$nFail
-    ret$nTestFunc <- ret$nTestFunc + testData[[i]]$nTestFunc
+    ret$nFail        <- ret$nFail + testData[[i]]$nFail
+    ret$nTestFunc    <- ret$nTestFunc + testData[[i]]$nTestFunc
+	ret$nCheck       <- ret$nCheck + testData[[i]]$nCheck
   }
   return(ret)
 }
