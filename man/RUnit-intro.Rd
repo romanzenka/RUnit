@@ -1,5 +1,5 @@
 %%  RUnit : A unit test framework for the R programming language
-%%  Copyright (C) 2003-2009  Thomas Koenig, Matthias Burger, Klaus Juenemann
+%%  Copyright (C) 2003-2012  Thomas Koenig, Matthias Burger, Klaus Juenemann
 %%
 %%  This program is free software; you can redistribute it and/or modify
 %%  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 \encoding{latin1}
 \name{RUnit}
 \alias{RUnit}
+\alias{RUnit-package}
 \title{RUnit - Package Description}
 \description{
 This package models the common Unit Test framework for R
@@ -31,13 +32,19 @@ This package comes with a set of unit tests, serving as a test battery to check
 correct functioning against new R versions released as well as practical 
 examples for writing test cases (see the \file{inst/unitTests} subdirectory of 
 the source package, or \file{unitTests} contained in the 
-binary package version).
+built package version).
 
 The \R wiki has a section on setting up a test suite for your package and 
-combining it with \command{R CMD check} as well as references to alternative 
+combining it with 
+\command{R CMD} \command{check} as well as references to alternative 
 implementations:
 
-\url{http://wiki.r-project.org/rwiki/doku.php?id=developers:runit}
+\url{http://wiki.r-project.org/doku.php?id=developers:runit}
+
+Likewise the BioConductor team has compiled a howto for unit testing of BioC packages:
+
+\url{http://www.bioconductor.org/developers/unitTesting-guidelines/}
+
 }
 
 \references{RUnit - A Unit Test Framework for R. useR! 2004 Vienna}
