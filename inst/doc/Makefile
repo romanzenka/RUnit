@@ -2,16 +2,25 @@
 ##  RUnit
 ##  
 ##  utility 
-##  create PDF document from dvi (usefull if R CMD INSTALL fails to build the pdf)
+##  create PDF document from Sweave rnw file
 ##  $Id$
 ##
-all:       RUnit.pdf clean
-RUnit.pdf: RUnit.ps
-	ps2pdf  -dEncodeColorImages=false -dColorImageFilter=/FlateEncode -dAutoRotatePages=/None RUnit.ps
-RUnit.ps:  RUnit.dvi
-	dvips RUnit
-RUnit.dvi: RUnit.tex
-									latex RUnit
-	latex RUnit
+rnwFile = RUnit
+
+all:       $(rnwFile).pdf clean
+
+$(rnwFile).pdf: $(rnwFile).ps
+	ps2pdf  -dEncodeColorImages=false -dColorImageFilter=/FlateEncode -dAutoRotatePages=/None $(rnwFile).ps
+	
+$(rnwFile).ps:  $(rnwFile).dvi
+	dvips $(rnwFile)
+	
+$(rnwFile).dvi: $(rnwFile).tex
+	latex $(rnwFile)
+	latex $(rnwFile)
+	
+$(rnwFile).tex: $(rnwFile).Rnw
+	"$(R_HOME)/bin/R" CMD Sweave $(rnwFile).Rnw
+	
 clean:
-	rm -f RUnit.aux RUnit.log RUnit.toc
+	rm -f $(rnwFile).aux $(rnwFile).log $(rnwFile).toc $(rnwFile).out $(rnwFile).dvi $(rnwFile).tex
