@@ -8,6 +8,13 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.27
+    o   changes required to conform to current (R2.15.2 & 2.16.0 devel) package check necessities
+    o   added 'Number of checks' i.e. check function calls evaluated during test suite execution to
+        the test result protocol
+    o   extended check function precondtion i.e. argument checks and expanded test cases to
+        cover these extensions
+    
 Changes in RUnit 0.4.26
     o   isValidTestSuite: fixed insufficient if expression handling, reported by Rich Calaway; 
         extended validity checks
