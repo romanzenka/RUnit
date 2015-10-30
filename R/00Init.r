@@ -17,6 +17,7 @@
 
 ##  $Id$
 
+RUnitEnv <- new.env()
 
 .onLoad <- function(libname, pkgname)
 {
@@ -25,14 +26,7 @@
   ## Not to be called by users.
   ##@edescr
 
-  ##  load required packages
-  errMsg <- paste("\nLoading required package 'methods' failed. RUnit could not be loaded.",
-                  "\nCheck your library installation path.\n")
-  require(methods) || stop(errMsg)
-
-  
-  runitVersion <- packageDescription("RUnit", lib.loc=libname, fields="Version")
-  ##  avoid cmd check NOTEs
+##  runitVersion <- packageDescription("RUnit", lib.loc=libname, fields="Version")
   assign(".testLogger", NULL, envir=.GlobalEnv)
   ##  add options to R's global options list
   .buildRUnitOptions()

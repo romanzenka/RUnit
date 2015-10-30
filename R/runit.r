@@ -17,7 +17,7 @@
 ##  $Id$
 
 
-defineTestSuite <- function(name, dirs, 
+defineTestSuite <- function(name, dirs,
                             testFileRegexp="^runit.+\\.[rR]$",
                             testFuncRegexp="^test.+",
                             rngKind="Marsaglia-Multicarry",
@@ -67,7 +67,7 @@ isValidTestSuite <- function(testSuite)
   ##@ret            : [logical] TRUE if testSuite is valid
   ##
   ##@codestatus : testing
-  
+
   if(!is(testSuite, "RUnitTestSuite"))
   {
     warning(paste("'testSuite' object is not of class 'RUnitTestSuite'."))
@@ -137,7 +137,7 @@ isValidTestSuite <- function(testSuite)
   ##@edescr
   ##
   ##@codestatus : internal
-  
+
   return(invisible())
 }
 
@@ -152,7 +152,7 @@ isValidTestSuite <- function(testSuite)
   ##@edescr
   ##
   ##@codestatus : internal
-  
+
   return(invisible())
 }
 
@@ -171,7 +171,7 @@ isValidTestSuite <- function(testSuite)
   ##@ret              : [NULL]
   ##
   ##@codestatus : internal
-  
+
   ##  write to stdout for logging
 
   func <- get(funcName, envir=envir)
@@ -183,7 +183,7 @@ isValidTestSuite <- function(testSuite)
   if (.testLogger$getVerbosity() > 0) {
     cat("\n\nExecuting test function", funcName, " ... ")
   }
-  
+
   ## safe execution of setup function
   res <- try(setUpFunc())
   if (inherits(res, "try-error")) {
@@ -216,7 +216,7 @@ isValidTestSuite <- function(testSuite)
 
   ##  add number of check function calls within test case
   .testLogger$addCheckNum(testFuncName=funcName)
-  
+
   ## safe execution of tearDown function
   res <- try(tearDownFunc())
   if (inherits(res, "try-error")) {
@@ -253,11 +253,11 @@ isValidTestSuite <- function(testSuite)
     .testLogger$addError(testFuncName=absTestFileName, errorMsg=msgText)
     return(invisible())
   }
-  
+
 
   sandbox <- new.env(parent=.GlobalEnv)
   ##  will be destroyed after function closure is left
-  
+
   ##  catch syntax errors in test case file
   res <- try(sys.source(absTestFileName, envir=sandbox))
   if (inherits(res, "try-error")) {
@@ -276,7 +276,7 @@ isValidTestSuite <- function(testSuite)
   for (funcName in testFunctions) {
     .executeTestCase(funcName, envir=sandbox, setUpFunc=.setUp, tearDownFunc=.tearDown)
   }
-  
+
 }
 
 
@@ -284,9 +284,9 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   ##@bdescr
   ## This is the main function of the RUnit framework. It identifies all specified
   ## test files and triggers all required actions. At the end it creates a test
-  ## protocol data object. 
+  ## protocol data object.
   ## IMPORTANT to note, the random number generator is (re-)set to the default
-  ## methods specified in defineTestSuite() before each new test case *file* is sourced. 
+  ## methods specified in defineTestSuite() before each new test case *file* is sourced.
   ## This guarantees that each new test case set defined together in on file can rely
   ## on the default, even if the random number generator version is being reconfigured in some
   ## previous test case file(s).
@@ -294,11 +294,11 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   ##
   ##@in  testSuites         : [list] list of test suite lists
   ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the RUnit error handler
-  ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: omit begin/end comment 
+  ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: omit begin/end comment
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
-  
+
   ##  preconditions
   if (!is.logical(useOwnErrorHandler)) {
     stop("argument 'useOwnErrorHandler' has to be of type logical.")
@@ -332,15 +332,15 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   ##  record RNGkind and reinstantiate on exit
   rngDefault <- RNGkind()
   on.exit(RNGkind(kind=rngDefault[1], normal.kind=rngDefault[2]), add=TRUE)
-  
+
   oldErrorHandler <- getOption("error")
   ## reinstall error handler
   on.exit(options(error=oldErrorHandler), add=TRUE)
-  
+
   ## initialize TestLogger
   assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir=.GlobalEnv)
   .testLogger$setVerbosity(verbose)
-  
+
   ## main loop
   if (isValidTestSuite(testSuites)) {
     testSuites <- list(testSuites)
@@ -362,18 +362,18 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
     for(testFile in testFiles) {
       ## set a standard random number generator.
       RNGkind(kind=testSuite$rngKind, normal.kind=testSuite$rngNormalKind)
-      
+
       .sourceTestFile(testFile, testSuite$testFuncRegexp)
     }
   }
 
   ret <- .testLogger$getTestData()
-  
+
   return(ret)
 }
 
 
-runTestFile <- function(absFileName, useOwnErrorHandler=TRUE, 
+runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
                         testFuncRegexp="^test.+",
                         rngKind="Marsaglia-Multicarry",
                         rngNormalKind="Kinderman-Ramage",
@@ -391,19 +391,19 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
-  
+
   ##  preconditions
   ##  all error checking and handling is delegated to function runTestSuite
-  
+
   fn <- basename(absFileName)
   nn <- strsplit(fn, "\\.")[[1]][1]
   dn <- dirname(absFileName)
-  ts <- defineTestSuite(name=nn, dirs=dn, 
+  ts <- defineTestSuite(name=nn, dirs=dn,
                         testFileRegexp=paste("^", fn, "$", sep=""),
                         testFuncRegexp=testFuncRegexp,
                         rngKind=rngKind,
                         rngNormalKind=rngNormalKind)
-                        
+
   return(runTestSuite(ts, useOwnErrorHandler=useOwnErrorHandler,
                       verbose=verbose))
 }

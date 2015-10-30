@@ -34,8 +34,8 @@
                     separateFailureList = TRUE,
                     traceBackCutOff = 9,
                     testFileToLinkMap = function(x) x )
-  print.RUnitTestData(x, ...)
-  summary.RUnitTestData(object, ...)
+  \method{print}{RUnitTestData}(x, ...)
+  \method{summary}{RUnitTestData}(object, ...)
   getErrors(testData)
 }
 

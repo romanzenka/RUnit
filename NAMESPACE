@@ -32,13 +32,13 @@ export(".setUp",
        "getErrors",
        "inspect",
        "isValidTestSuite",
-       "print.RUnitTestData",
+ #      "print.RUnitTestData",
        "printTextProtocol",
        "printHTMLProtocol",
        "printHTML.trackInfo",
        "runTestSuite",
        "runTestFile",
-       "summary.RUnitTestData",
+ #      "summary.RUnitTestData",
        "tracker")
 
 
