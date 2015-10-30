@@ -1,12 +1,12 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
 281d731d8ba9ab81f394e842759da685 *ChangeLog
-e86bbc187a2de229f2e7ff5b3ecfde90 *DESCRIPTION
+6d2e4011f0710f44307f86cc3c9d0cd8 *DESCRIPTION
 d84b5b4672af842208cbeced12d1e5c0 *INDEX
 286fa6c770eb10312c871c8224a796a9 *NAMESPACE
 20a40fce01bc2f198531e41964659422 *NEWS
 d23d30b0ba86280de41165b880dfcb7a *R/00Init.r
 8229be4e6b81d4040af499e748d253b8 *R/checkFuncs.r
-e0ce6e6fe2e87c16f0f74a9bc8699d49 *R/exportHTML.r
+2b27ad0825731bf744d03b0d830726ce *R/exportHTML.r
 52af1699c74f3e57d41e3dd54b1c415f *R/html.r
 00d8e5f1c87b07d7fbfa772e5e6f598d *R/htmlProtocol.r
 7ac7594c426ea3d545e52dfefb2d2e1c *R/inspector.r
@@ -14,7 +14,7 @@ e0ce6e6fe2e87c16f0f74a9bc8699d49 *R/exportHTML.r
 57dde96aefe55471503a93c731692eb2 *R/runit.r
 9ee9f757bcbb822e91c78f830f453e80 *R/testLogger.r
 7666fa4f5cab063f9d80fcb29bd8a980 *R/textProtocol.r
-487a37d18a31f0863cd9f6946bfe5672 *build/RUnit.pdf
+89b265f1c1c4c4927beee3d37f082fa5 *build/RUnit.pdf
 78e71db479121e4b846892c443b2f423 *build/vignette.rds
 0a39e751dd8135b2d4c01453941b442a *inst/doc/RUnit.R
 d1eae6df10a7e5dfc7ff1ced0bd99e81 *inst/doc/RUnit.Rnw
@@ -24,7 +24,7 @@ bd1d2d6f724f8e4ca6850777117ce771 *inst/examples/runitVirtualClassTest.r
 3df11b61be3a51c4cd3f2aaa62b4c005 *inst/examples/runitc2f.r
 240d6cee4f1573a2c58e479782fd2650 *inst/share/R/checkCode.r
 d8977975a727b9e21ecd46bde613e5d5 *inst/share/R/compareRUnitTestData.r
-0266d8a167db3995721dc7e9b654a1fe *inst/unitTests/Makefile
+e97e7c5dda56971910efb622ab8c71b5 *inst/unitTests/Makefile
 87db5d27b6c4cc1dfd0182e6d1872113 *inst/unitTests/runalltests.R
 4786e446316afa81d13672096cb44010 *inst/unitTests/runitHTMLProtocol.r
 79fb47dfe1de6125e45a7e0d05ab9f70 *inst/unitTests/runitInspect.r

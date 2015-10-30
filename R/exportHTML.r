@@ -30,7 +30,7 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   ##
   ##@codestatus : testing
 
-  stopifnot(require(graphics))
+  #stopifnot(require(graphics))
   ## experimental 2nd order connections
   ## color for arrows
   color <- c("black","lightgreen","green","lightblue","blue","orangered","red")
@@ -39,8 +39,8 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
   {
     ## open png device
     grDevices::png(filename=pngfile,width=1024,height=960)
-    plot(1:10,axes=FALSE,xlab="",ylab="",main="",type="n")
-    text(5,5,labels="No connection graph available")
+    graphics::plot(1:10,axes=FALSE,xlab="",ylab="",main="",type="n")
+    graphics::text(5,5,labels="No connection graph available")
     grDevices::dev.off()
     return(invisible())
   }
