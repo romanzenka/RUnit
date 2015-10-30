@@ -19,6 +19,7 @@
 
 import(utils)
 import(methods)
+importFrom("graphics", "arrows", "legend", "lines", "plot", "text")
 
 export(".setUp",
        ".tearDown",

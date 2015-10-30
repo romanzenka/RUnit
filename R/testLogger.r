@@ -312,7 +312,7 @@ getErrors <- function(testData) {
   return(ret)
 }
 
-.existsTestLogger <- function(envir=.GlobalEnv) {
+.existsTestLogger <- function(envir=RUnitEnv) {
   ##@bdescr
   ##  Internal Function
   ##  checks if .testLogger object is available in specified environment
@@ -324,5 +324,5 @@ getErrors <- function(testData) {
   ##@ret       : [logical] TRUE iff .testLogger list object is found in specified environment
   ##
   ##@codestatus : internal
-  exists(".testLogger", envir=envir) && inherits(.testLogger, "TestLogger")
+  exists(".testLogger", envir=envir) && inherits(get(".testLogger", envir=envir), "TestLogger")
 }

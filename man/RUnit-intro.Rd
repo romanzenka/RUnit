@@ -32,17 +32,11 @@ correct functioning against new R versions released as well as practical
 examples for writing test cases (see the \file{inst/unitTests} subdirectory of 
 the source package, or \file{unitTests} contained in the 
 binary package version).
-
-The \R wiki has a section on setting up a test suite for your package and 
-combining it with \command{R CMD check} as well as references to alternative 
-implementations:
-
-\url{http://wiki.r-project.org/rwiki/doku.php?id=developers:runit}
 }
 
 \references{RUnit - A Unit Test Framework for R. useR! 2004 Vienna}
 \author{
-Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+Thomas \enc{Ko\"nig}{Koenig}, Klaus \enc{Ju\"nemann}{Juenemann} 
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{

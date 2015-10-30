@@ -8,6 +8,11 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.29
+    o   changed maintainer to Roman Zenka
+    o   .testLogger global variable now stored in package environment RUnitEnv
+    o   added imports of graphics package to NAMESPACE
+
 Changes in RUnit 0.4.26
     o   isValidTestSuite: fixed insufficient if expression handling, reported by Rich Calaway; 
         extended validity checks

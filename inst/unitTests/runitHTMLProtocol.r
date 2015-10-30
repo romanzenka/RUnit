@@ -25,7 +25,7 @@ testRUnit.printHTMLProtocol <- function()
   ##  FIXME
   ##  this is not safe, think about assigning .logger to new environment
   ##  copy baseenv() .logger
-  tmp <- get(".testLogger", envir = .GlobalEnv)
+  tmp <- get(".testLogger", envir = RUnitEnv)
   testCaseDir <- file.path(system.file(package="RUnit"), "examples")
   testSuiteInternal <- defineTestSuite("RUnit Self Test", testCaseDir, "correctTestCase.r")
   testData2 <- runTestSuite(testSuiteInternal, useOwnErrorHandler=FALSE)
@@ -34,7 +34,7 @@ testRUnit.printHTMLProtocol <- function()
   testProtocolFile <- file.path(tempdir(), paste(timeStamp, "test_printHTMLProtocol.html", sep="_"))
   ret <- printHTMLProtocol(testData2, fileName=testProtocolFile)
 
-  assign(".testLogger", tmp, envir = .GlobalEnv)
+  assign(".testLogger", tmp, envir = RUnitEnv)
   
   checkTrue( file.exists(testProtocolFile))
   

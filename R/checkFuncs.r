@@ -50,7 +50,7 @@ checkEquals <- function(target, current, msg="",
     stop("'checkNames' has to be a scalar")
   }
   if(.existsTestLogger()) {
-    .testLogger$incrementCheckNum()
+    RUnitEnv$.testLogger$incrementCheckNum()
   }
   if (!identical(TRUE, checkNames)) {
     names(target)  <- NULL
@@ -59,7 +59,7 @@ checkEquals <- function(target, current, msg="",
   result <- all.equal(target, current, tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
     if(.existsTestLogger()) {
-      .testLogger$setFailure()
+      RUnitEnv$.testLogger$setFailure()
     }
     stop(paste(result, collapse="\n"), msg)
   } else {
@@ -94,14 +94,14 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
     stop("'tolerance' has to be a scalar")
   }
   if(.existsTestLogger()) {
-    .testLogger$incrementCheckNum()
+    RUnitEnv$.testLogger$incrementCheckNum()
   }
   ##  R 2.3.0: changed behaviour of all.equal
   ##  strip attributes before comparing current and target
   result <- all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...)
   if (!identical(result, TRUE)) {
     if(.existsTestLogger()) {
-      .testLogger$setFailure()
+      RUnitEnv$.testLogger$setFailure()
     }
     stop(paste(result, collapse="\n"), msg)
   } else {
@@ -128,13 +128,13 @@ checkIdentical <- function(target, current, msg="")
     stop("argument 'current' is missing")
   }
   if(.existsTestLogger()) {
-    .testLogger$incrementCheckNum()
+    RUnitEnv$.testLogger$incrementCheckNum()
   }
   
   result <- identical(target, current)
   if (!identical(TRUE, result)) {
     if(.existsTestLogger()) {
-      .testLogger$setFailure()
+      RUnitEnv$.testLogger$setFailure()
     }
     stop(paste(paste(result, collapse="\n"), msg))
   } else {
@@ -159,7 +159,7 @@ checkTrue <- function(expr, msg="")
     stop("'expr' is missing")
   }
   if(.existsTestLogger()) {
-    .testLogger$incrementCheckNum()
+    RUnitEnv$.testLogger$incrementCheckNum()
   }
 
   ##  allow named logical argument 'expr'
@@ -168,7 +168,7 @@ checkTrue <- function(expr, msg="")
   
   if (!identical(result, TRUE)) {
     if(.existsTestLogger()) {
-      .testLogger$setFailure()
+      RUnitEnv$.testLogger$setFailure()
     }
     stop("Test not TRUE\n", msg)
   } else {
@@ -203,12 +203,12 @@ checkException <- function(expr, msg="", silent=getOption("RUnit")$silent)
     warning("'silent' has to be of type 'logical'. Was NULL. Set to FALSE.")
   }
   if(.existsTestLogger()) {
-    .testLogger$incrementCheckNum()
+    RUnitEnv$.testLogger$incrementCheckNum()
   }
 
   if (!inherits(try(eval(expr, envir=parent.frame()), silent=silent), "try-error")) {
     if(.existsTestLogger()) {
-      .testLogger$setFailure()
+      RUnitEnv$.testLogger$setFailure()
     }
     stop("Error not generated as expected\n", msg)
   } else {
@@ -234,7 +234,7 @@ DEACTIVATED <- function(msg="")
   ##@codestatus : testing
 
   if(.existsTestLogger()) {
-    .testLogger$setDeactivated(paste(msg, "\n", sep=""))
+    RUnitEnv$.testLogger$setDeactivated(paste(msg, "\n", sep=""))
   }
   stop(msg)
 }
