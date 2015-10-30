@@ -8,6 +8,9 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.30
+    o   printJUnitProtocol added for JUnit-style output
+
 Changes in RUnit 0.4.29
     o   changed maintainer to Roman Zenka
     o   .testLogger global variable now stored in package environment RUnitEnv

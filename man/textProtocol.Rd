@@ -20,11 +20,12 @@
 \name{textProtocol}
 \alias{printTextProtocol}
 \alias{printHTMLProtocol}
+\alias{printJUnitProtocol}
 \alias{print.RUnitTestData}
 \alias{summary.RUnitTestData}
 \alias{getErrors}
 
-\title{Printing a plain text or HTML version of an RUnit test run protocol.}
+\title{Printing a plain text, HTML or JUnit-like XML version of an RUnit test run protocol.}
 
 \usage{
   printTextProtocol(testData, fileName = "",
@@ -34,6 +35,7 @@
                     separateFailureList = TRUE,
                     traceBackCutOff = 9,
                     testFileToLinkMap = function(x) x )
+  printJUnitProtocol(testData, fileName = "")
   \method{print}{RUnitTestData}(x, ...)
   \method{summary}{RUnitTestData}(object, ...)
   getErrors(testData)
@@ -75,6 +77,13 @@
   readable than the plain text version due to links in the document.
   The resulting test protocol can be configured through the function arguments.
 
+  \code{printJUnitProtocol} prints a JUnit-style XML protocol of a test run.
+  This feature is especially useful when running your RUnit tests through
+  a continuous integration server that understands JUnit (like Jenkins).
+  This machine-parseable output allows you to track errors over time,
+  sort by execution time and similar useful tricks. 
+  To take advantage of this function, you have to have the XML package installed.
+
   \code{print} prints the number of executed test functions and the
   number of failures and errors.
 
@@ -101,8 +110,8 @@
   information as possible is provided.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
-\ifelse{html}{\out{&amp;}}{&} Matthias Burger}
+\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}, Matthias Burger
+\ifelse{html}{\out{&amp;}}{&} Roman Zenka}
 
 \seealso{
   \code{\link{runTestSuite}}
@@ -124,7 +133,12 @@ printTextProtocol(testResult, showDetails = TRUE)
 ## prints detailed html protocol
 ## to standard out
 printHTMLProtocol(testResult)
-
+## prints JUnit-style XML protocol
+## to standard out. 
+## You need to have XML package installed for this
+if(require("XML")) {
+  printJUnitProtocol(testResult)
+}
 
 \dontrun{
 ##  example function to add links to URL of the code files in a code
