@@ -8,6 +8,10 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.26
+    o   isValidTestSuite: fixed insufficient if expression handling, reported by Rich Calaway; 
+        extended validity checks
+
 Changes in RUnit 0.4.25
     o   enable redirection of error and log messages to file, controlled via new 
         global option 'outfile', (following a suggestion by Seth Falcon)
