@@ -1,5 +1,7 @@
 # RUnit
 
+[![Travis-CI Build Status](https://travis-ci.org/romanzenka/RUnit.svg?branch=master)](https://travis-ci.org/romanzenka/RUnit)
+
 RUnit is a testing package for R code, inspired by the xUnit family of testing tools. 
 
 Originally implemented by Thomas Koenig, Klaus Juenemann, and Matthias Burger, 
