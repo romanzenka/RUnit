@@ -61,7 +61,7 @@ checkEquals <- function(target, current, msg="",
     if(.existsTestLogger()) {
       RUnitEnv$.testLogger$setFailure()
     }
-    stop(paste(result, collapse="\n"), msg)
+    stop(paste(result, collapse="\n"), "\n", msg)
   } else {
     return(TRUE)
   }
@@ -103,7 +103,7 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
     if(.existsTestLogger()) {
       RUnitEnv$.testLogger$setFailure()
     }
-    stop(paste(result, collapse="\n"), msg)
+    stop(paste(result, collapse="\n"), "\n", msg)
   } else {
     return(TRUE)
   }
@@ -136,7 +136,7 @@ checkIdentical <- function(target, current, msg="")
     if(.existsTestLogger()) {
       RUnitEnv$.testLogger$setFailure()
     }
-    stop(paste(paste(result, collapse="\n"), msg))
+    stop(paste(paste(result, collapse="\n"), "\n", msg))
   } else {
     return(TRUE)
   }
