@@ -15,5 +15,3 @@ Description: R functions implementing a standard Unit Testing
         generation tools.
 License: GPL-2
 NeedsCompilation: no
-Repository: CRAN
-Packaged: 2015-08-11 14:04:01 UTC; m044910
