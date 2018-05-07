@@ -1,6 +1,6 @@
 Package: RUnit
-Version: 0.4.31
-Date: 2015-11-05
+Version: 0.4.32
+Date: 2018-05-07
 Title: R Unit Test Framework
 Author: Matthias Burger <burgerm@users.sourceforge.net>, Klaus
         Juenemann <k.junemann@gmx.net>, Thomas Koenig
