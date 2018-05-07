@@ -33,12 +33,14 @@ defineTestSuite(name, dirs, testFileRegexp = "^runit.+\\\\.[rR]$",
                 rngNormalKind = "Kinderman-Ramage")
 isValidTestSuite(testSuite)
 runTestSuite(testSuites, useOwnErrorHandler = TRUE, 
-             verbose = getOption("RUnit")$verbose)
+             verbose = getOption("RUnit")$verbose,
+             gcBeforeTest = FALSE)
 runTestFile(absFileName, useOwnErrorHandler = TRUE,
             testFuncRegexp = "^test.+",
             rngKind = "Marsaglia-Multicarry",
             rngNormalKind = "Kinderman-Ramage", 
-            verbose = getOption("RUnit")$verbose)
+            verbose = getOption("RUnit")$verbose,
+            gcBeforeTest = FALSE)
 }
 
 \arguments{
@@ -62,6 +64,10 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
   begin/end comments for each test function. Queried from 
     global options set for RUnit at package load.}
   \item{absFileName}{Absolute file name of a test function.}
+  \item{gcBeforeTest}{Run garbage collector before executing a test
+  for more precise test timing. Enabling this option makes the tests
+  run longer, especially when testing many small tests. By default
+  GC is disabled (since 0.4.32).}
 }
 
 \description{
@@ -136,7 +142,10 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
     \code{NULL} for a successfully executed test function.}
   \item{time}{The duration (measured in seconds) of the successful
     execution of a test function and \code{NULL} in the case of an error
-    or failure.}
+    or failure. When running with \code{gcBeforeTest} option 
+    set to \code{FALSE} (default since 0.4.32), the timing of the tests might
+    be misleading when garbage collector has to reclaim memory allocated by
+    a previous test.}
   \item{traceBack}{The full trace back as a character vector in the case of an 
     error and \code{NULL} otherwise.}
 }
@@ -167,7 +176,7 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
 }
 
 \author{
-Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+Thomas \enc{KÃ¶nig}{Koenig}, Klaus \enc{JÃ¼nemann}{Juenemann} 
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{

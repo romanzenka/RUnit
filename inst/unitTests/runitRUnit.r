@@ -677,7 +677,7 @@ testRUnit.runTestFile <- function()
   ##  check if any argument check is reached/performed
   ##  useOwnErrorHandler
   ##  type logical
-  checkException( runTestFile(testFile, useOwnErrorHandler=integer(1)))
+  checkException( runTestFile(testFile, useOwnErrorHandler=integer(1), gcBeforeTest=TRUE))
 }
 
 
@@ -707,7 +707,11 @@ testRUnit.runTestSuite <- function()
   checkException( runTestSuite(tS, useOwnErrorHandler=logical(0)))
   checkException( runTestSuite(tS, useOwnErrorHandler=logical(2)))
   checkException( runTestSuite(tS, useOwnErrorHandler=as.logical(NA)))
-  
+  ## gcBeforeTest
+  checkException( runTestSuite(tS, gcBeforeTest = "hello"))
+  checkException( runTestSuite(tS, gcBeforeTest = c(TRUE, FALSE)))
+  checkException( runTestSuite(tS, gcBeforeTest = as.logical(NA)))
+    
   ##  testSuite
   
 

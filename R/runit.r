@@ -196,7 +196,7 @@ isValidTestSuite <- function(testSuite)
   ## reset book keeping variables in RUnitEnv$.testLogger
   RUnitEnv$.testLogger$cleanup()
   ## ordinary test function execution:
-  timing <- try(system.time(func()))
+  timing <- try(system.time(func(), gcFirst=RUnitEnv$.gcBeforeTest))
   if (inherits(timing, "try-error")) {
     if(RUnitEnv$.testLogger$isFailure()) {
       RUnitEnv$.testLogger$addFailure(testFuncName=funcName,
@@ -280,7 +280,8 @@ isValidTestSuite <- function(testSuite)
 }
 
 
-runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption("RUnit")$verbose) {
+runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption("RUnit")$verbose,
+                         gcBeforeTest=FALSE) {
   ##@bdescr
   ## This is the main function of the RUnit framework. It identifies all specified
   ## test files and triggers all required actions. At the end it creates a test
@@ -295,6 +296,7 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   ##@in  testSuites         : [list] list of test suite lists
   ##@in  useOwnErrorHandler : [logical] TRUE (default) : use the RUnit error handler
   ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: omit begin/end comment
+  ##@in  gcBeforeTest       : [logical] FALSE (default) : garbage collect before timing each test
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
@@ -309,7 +311,16 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   if (is.na(useOwnErrorHandler)) {
     stop("argument 'useOwnErrorHandler' may not contain NA.")
   }
-
+  if (!is.logical(gcBeforeTest)) {
+    stop("argument 'gcBeforeTest' has to be of type logical.")
+  }
+  if (length(gcBeforeTest) != 1) {
+    stop("argument 'gcBeforeTest' has to be of length 1.")
+  }
+  if (is.na(gcBeforeTest)) {
+    stop("argument 'gcBeforeTest' may not contain NA.")
+  }
+  
   oFile <- getOption("RUnit")$outfile
   if (!is.null(oFile)) {
     if(is.character(oFile)) {
@@ -340,6 +351,8 @@ runTestSuite <- function(testSuites, useOwnErrorHandler=TRUE, verbose=getOption(
   ## initialize TestLogger
   assign(".testLogger", .newTestLogger(useOwnErrorHandler), envir=RUnitEnv)
   RUnitEnv$.testLogger$setVerbosity(verbose)
+  ## store the information about GC before test
+  assign(".gcBeforeTest", gcBeforeTest, envir=RUnitEnv)
 
   ## main loop
   if (isValidTestSuite(testSuites)) {
@@ -377,7 +390,8 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
                         testFuncRegexp="^test.+",
                         rngKind="Marsaglia-Multicarry",
                         rngNormalKind="Kinderman-Ramage",
-                        verbose=getOption("RUnit")$verbose) {
+                        verbose=getOption("RUnit")$verbose,
+                        gcBeforeTest=FALSE) {
   ##@bdescr
   ##  Convenience function.
   ##@edescr
@@ -388,6 +402,7 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
   ##@in  rngKind            : [character] name of the RNG, see RNGkind for avialbale options
   ##@in  rngNormalKind      : [character] name of the RNG for rnorm, see RNGkind for avialbale options
   ##@in  verbose            : [integer] >= 1: (default) write begin/end comments for each test case, 0: ommit begin/end comment (passed on to function runTestSuite)
+  ##@in  gcBeforeTest       : [logical] FALSE (default) : garbage collect before timing each test
   ##@ret                    : [list] 'RUnitTestData' S3 class object
   ##
   ##@codestatus : testing
@@ -405,5 +420,5 @@ runTestFile <- function(absFileName, useOwnErrorHandler=TRUE,
                         rngNormalKind=rngNormalKind)
 
   return(runTestSuite(ts, useOwnErrorHandler=useOwnErrorHandler,
-                      verbose=verbose))
+                      verbose=verbose, gcBeforeTest=gcBeforeTest))
 }
