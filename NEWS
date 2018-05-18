@@ -18,6 +18,7 @@ Changes in RUnit 0.4.32
         more reliable timing information.
     o   added .Rinstignore to cut down on warnings when building the package
     o   removed Biobase specific tests, replaced with direct S4 class creation
+    o   fixed CRAN URLs in README.md
 
 Changes in RUnit 0.4.31
     o   checkEquals and others output optional message on separate line
