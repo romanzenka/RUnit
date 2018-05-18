@@ -17,6 +17,7 @@ Changes in RUnit 0.4.32
         When trying to optimize tests for speed, set gcBeforeTest to TRUE for
         more reliable timing information.
     o   added .Rinstignore to cut down on warnings when building the package
+    o   removed Biobase specific tests, replaced with direct S4 class creation
 
 Changes in RUnit 0.4.31
     o   checkEquals and others output optional message on separate line
