@@ -96,6 +96,14 @@ checkEqualsNumeric <- function(target, current, msg="", tolerance = .Machine$dou
   if(.existsTestLogger()) {
     RUnitEnv$.testLogger$incrementCheckNum()
   }
+  ## Fix for R>4.1.2 where as.vector.data.frame returns a list instead of vector
+  if(is.data.frame(target)) {
+  	target <- unlist(as.list(target), use.names=FALSE)
+  }
+  if(is.data.frame(current)) {
+  	current <- unlist(as.list(current), use.names=FALSE)
+  }
+
   ##  R 2.3.0: changed behaviour of all.equal
   ##  strip attributes before comparing current and target
   result <- all.equal.numeric(as.vector(target), as.vector(current), tolerance=tolerance, ...)

@@ -8,8 +8,11 @@
         *
         **************************************************
 
+Changes in RUnit 0.4.32
+    o	checkEqualsNumeric functions when given two one-column data.frames
+
 Changes in RUnit 0.4.31
-    o   checkEquals and others output optional message on separete line
+    o   checkEquals and others output optional message on separate line
 
 Changes in RUnit 0.4.30
     o   printJUnitProtocol added for JUnit-style output
