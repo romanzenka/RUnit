@@ -150,19 +150,6 @@ testRUnit.checkEquals <- function()
     checkEquals( tPair, tPair)
   }
 
-  if (require(Biobase)) {
-    ##   class still available?
-    #if (isClass(Class="ExpressionSet", formal=TRUE)) {
-    #  ES <- new("ExpressionSet", exprs=matrix(runif(1000), nrow=100, ncol=10))
-    #  checkEquals(ES, ES)
-    #}
-    ##  cleanup workspace
-    ##  catch error if this ns is required by some other package
-    ##  and therefore cannot be unloaded
-    try(unloadNamespace("Biobase"))
-  }
-
-  
   ##  detect differences
   checkException( checkEquals(1 , 1, tolerance=FALSE))
   checkException( checkEquals(1 , 1, tolerance=numeric(0)))
@@ -287,17 +274,18 @@ testRUnit.checkEqualsNumeric <- function()
   ##  exception handling
   ##  type not supported
   checkException( checkEqualsNumeric( list(rvec), list(rvec)))
-  if (require(Biobase)) {
-
-    ##   class still available?
-    if (isClass(Class="ExpressionSet", formal=TRUE)) {
-      ES <- new("ExpressionSet", exprs=matrix(runif(1000), nrow=100, ncol=10))
-      checkException(checkEqualsNumeric(ES, ES))
-    }
-    ##  cleanup workspace
-    try(unloadNamespace("Biobase"))
+  
+  ##  S4 objects
+  if (identical(TRUE, require(methods))) {
+    ##  class defined above
+    s4Obj <- new("track1")
+    s4Obj@x <- 1:10
+    checkException( checkEqualsNumeric( s4Obj, s4Obj))
+    
+    tPair <- new("trackPair")
+    tPair@trackx <- s4Obj
+    checkException( checkEqualsNumeric( tPair, tPair))
   }
-
 }
 
 
@@ -677,7 +665,7 @@ testRUnit.runTestFile <- function()
   ##  check if any argument check is reached/performed
   ##  useOwnErrorHandler
   ##  type logical
-  checkException( runTestFile(testFile, useOwnErrorHandler=integer(1)))
+  checkException( runTestFile(testFile, useOwnErrorHandler=integer(1), gcBeforeTest=TRUE))
 }
 
 
@@ -707,7 +695,11 @@ testRUnit.runTestSuite <- function()
   checkException( runTestSuite(tS, useOwnErrorHandler=logical(0)))
   checkException( runTestSuite(tS, useOwnErrorHandler=logical(2)))
   checkException( runTestSuite(tS, useOwnErrorHandler=as.logical(NA)))
-  
+  ## gcBeforeTest
+  checkException( runTestSuite(tS, gcBeforeTest = "hello"))
+  checkException( runTestSuite(tS, gcBeforeTest = c(TRUE, FALSE)))
+  checkException( runTestSuite(tS, gcBeforeTest = as.logical(NA)))
+    
   ##  testSuite
   
 
