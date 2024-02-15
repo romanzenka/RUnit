@@ -43,7 +43,7 @@
 }
     
 \author{
-Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{

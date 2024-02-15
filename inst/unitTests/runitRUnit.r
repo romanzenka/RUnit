@@ -250,6 +250,9 @@ testRUnit.checkEqualsNumeric <- function()
   rvec <- rnorm(132)
   checkTrue( checkEqualsNumeric( matrix(rvec, 12, 11), matrix(rvec, 12, 11)))
   checkTrue( checkEqualsNumeric( rvec, rvec))
+  
+  # This got broken in new R and is explicitly fixed
+  checkTrue( checkEqualsNumeric( data.frame(a=1:10), data.frame(a=1:10)))
 
   ##  special constants
   checkEqualsNumeric( pi, pi)

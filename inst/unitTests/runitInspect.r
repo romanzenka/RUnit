@@ -164,13 +164,14 @@ testRUnit.printHTML <- function() {
   resTrack <- track$getTrackInfo()
 
   outDir <- tempdir()
+
   ##checkTrue( is.null(printHTML(resTrack, baseDir=outDir)))
-  checkTrue( is.null(printHTML.trackInfo(resTrack, baseDir=outDir)))
+  checkTrue( is.null(printHTML(resTrack, baseDir=outDir)))
   checkTrue( "index.html" %in% dir(file.path(outDir, "results")))
   
   inspect(foo(1:3), track=track)
   resTrack <- track$getTrackInfo()
-  checkTrue( is.null(printHTML.trackInfo(resTrack, baseDir=outDir)))
+  checkTrue( is.null(printHTML(resTrack, baseDir=outDir)))
   
   ##  error handling
   checkException(printHTML("notCorrectClass"))
@@ -179,7 +180,6 @@ testRUnit.printHTML <- function() {
   checkException(printHTML(resTrack,  baseDir=character(0)))
   checkException(printHTML(resTrack,  baseDir=character(2)))
   checkException(printHTML(resTrack,  baseDir=as.character(NA)))
-  
 }
 
 
@@ -208,5 +208,5 @@ testRUnit.printHTML.extended <- function() {
   resTrack <- track$getTrackInfo()
 
   outDir <- tempdir()
-  checkTrue( is.null(printHTML.trackInfo(resTrack, baseDir=outDir)))
+  checkTrue( is.null(printHTML(resTrack, baseDir=outDir)))
 }

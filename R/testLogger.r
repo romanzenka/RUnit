@@ -299,7 +299,7 @@ getErrors <- function(testData) {
   ##@ret         : [list] containing no of errors, deactivated, failed, and total test functions
   ##
   ##@codestatus : testing
-  if(class(testData) != "RUnitTestData") {
+  if(!is(testData, "RUnitTestData")) {
     stop("getErrors needs an object of class 'RUnitTestData' as argument.")
   }
   ret <- list(nErr=0, nDeactivated=0, nFail=0, nTestFunc=0)

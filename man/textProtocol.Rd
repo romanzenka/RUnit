@@ -110,7 +110,8 @@
   information as possible is provided.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}, Matthias Burger
+\author{
+Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}, Matthias Burger
 \ifelse{html}{\out{&amp;}}{&} Roman Zenka}
 
 \seealso{

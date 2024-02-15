@@ -289,7 +289,7 @@ resBar <- inspect(bar(d), track=track); ## execute the test function and track
 
 resTrack <- track$getTrackInfo(); ## get the result of Code Inspector (a list)
 
-printHTML.trackInfo(resTrack) ; ## create HTML sites
+printHTML(resTrack, baseDir=tempdir()) ; ## create HTML sites
 @
 
 Note, that the tracking object is an global object and must have the name {\tt track}.
