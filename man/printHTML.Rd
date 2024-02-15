@@ -17,13 +17,12 @@
 %%  $Id$
 
 \encoding{latin1}
-\name{printHTML.trackInfo}
-\alias{printHTML.trackInfo}
+\name{printHTML}
 \alias{printHTML}
 \title{Write HTML pages of the tracking result.}
 
 \usage{
-  printHTML.trackInfo(object, baseDir = ".")
+  printHTML(object, baseDir = ".")
 }
 
 \arguments{
@@ -34,7 +33,7 @@
 }
 
 \description{
-  \code{printHTML.trackInfo} creates a subdirectory named
+  \code{printHTML} creates a subdirectory named
   "result"  in the base directory specified via \code{baseDir}. All HTML pages 
   and images will be put
   in that directory.
@@ -52,7 +51,8 @@
   become clearly visible.
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\author{
+Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
@@ -84,7 +84,7 @@ res <- inspect(foo(10), track = track)
 resTrack <- track$getTrackInfo()
 
 ##  create HTML pages
-printHTML.trackInfo(resTrack)
+printHTML(resTrack, baseDir=tempdir())
 }
 
 \keyword{programming}

@@ -138,9 +138,9 @@ plotConnection.trackInfo <- function(con, pngfile, ...)
 }
 
 
-printHTML <- function(object, ...) UseMethod("printHTML")
+printHTML <- function(object, baseDir=".") UseMethod("printHTML")
 
-printHTML.default <- function(object, ...) NextMethod("printHTML")
+printHTML.default <- function(object, baseDir=".") NextMethod("printHTML")
 
 printHTML.trackInfo <- function(object, baseDir=".")
 {

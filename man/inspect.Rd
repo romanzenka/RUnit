@@ -47,12 +47,13 @@
 the function executed. If the function has no return value nothing is
 returned either.}
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
+\author{
+Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
   \code{\link{tracker}} for the call tracking object, and 
-  \code{\link{printHTML.trackInfo}} for displaying results.
+  \code{\link{printHTML}} for displaying results.
 }
 
 \examples{
@@ -81,7 +82,7 @@ res <- inspect(foo(10), track = track)
 resTrack <- track$getTrackInfo()
 
 ## create HTML sites
-printHTML.trackInfo(resTrack)
+printHTML(resTrack, baseDir=tempdir())
 }
 
 \keyword{programming}

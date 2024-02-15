@@ -66,13 +66,13 @@
   }
 }
 
-\author{Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann} 
-\ifelse{html}{\out{&amp;}}{\&} Matthias Burger}
+\author{Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
+\ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
-  \code{\link{inspect}} for the registration of functions \& methods to
+  \code{\link{inspect}} for the registration of functions & methods to
   be on the tracking list, and 
-  \code{\link{printHTML.trackInfo}} for displaying results
+  \code{\link{printHTML}} for displaying results
 }
 
 \examples{
@@ -115,8 +115,8 @@ resBar1 <- inspect(bar(30), track = track)
 ##  get the tracked function call info for all inspect calls
 resTrack <- track$getTrackInfo()
 
-##  create HTML sites in folder ./results for all inspect calls
-printHTML.trackInfo(resTrack)
+##  create HTML sites in folder <tempdir>/results for all inspect calls
+printHTML(resTrack, baseDir=tempdir())
 }
 
 \keyword{programming}
