@@ -27,8 +27,8 @@ This would run the actual tests stored in the packages `inst/tests` subdirectory
     # Which functions to run. Have to start with 'test.'
     testFunctionRegexp = "^test.+"
 
-    # Path to the unit tests folder in the package
-    dir <- system.file(subdir, package=pkgname)
+    # Path to the unit tests folder in the package (assuming "inst/tests" here)
+    dir <- system.file("tests", package=pkgname)
   
     # Define RUnit test suite
     suite <- defineTestSuite(name=paste(pkgname, "RUnit Tests"),
