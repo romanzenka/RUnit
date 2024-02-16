@@ -16,7 +16,7 @@
 
 %%  $Id$
 
-\encoding{latin1}
+\encoding{utf8}
 \name{RUnit}
 \alias{RUnit}
 \title{RUnit - Package Description}
@@ -36,7 +36,7 @@ binary package version).
 
 \references{RUnit - A Unit Test Framework for R. useR! 2004 Vienna}
 \author{
-Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
