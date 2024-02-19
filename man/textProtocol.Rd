@@ -16,7 +16,7 @@
 
 %%  $Id$
 
-\encoding{latin1}
+\encoding{utf8}
 \name{textProtocol}
 \alias{printTextProtocol}
 \alias{printHTMLProtocol}
@@ -111,7 +111,7 @@
 }
 
 \author{
-Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}, Matthias Burger
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}, Matthias Burger
 \ifelse{html}{\out{&amp;}}{&} Roman Zenka}
 
 \seealso{

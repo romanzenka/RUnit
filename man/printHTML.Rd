@@ -16,7 +16,7 @@
 
 %%  $Id$
 
-\encoding{latin1}
+\encoding{utf8}
 \name{printHTML}
 \alias{printHTML}
 \title{Write HTML pages of the tracking result.}
@@ -52,7 +52,7 @@
 }
 
 \author{
-Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{

@@ -16,7 +16,7 @@
 
 %%  $Id$
 
-\encoding{latin1}
+\encoding{utf8}
 \name{tracker}
 \alias{tracker}
 
@@ -66,7 +66,8 @@
   }
 }
 
-\author{Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
+\author{
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{

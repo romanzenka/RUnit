@@ -16,7 +16,7 @@
 
 %%  $Id$
 
-\encoding{latin1}
+\encoding{utf8}
 \name{inspect}
 \alias{inspect}
 \title{Track the executed code lines of a function or method.}
@@ -48,7 +48,7 @@ the function executed. If the function has no return value nothing is
 returned either.}
 
 \author{
-Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{

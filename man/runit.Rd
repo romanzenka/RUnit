@@ -16,7 +16,7 @@
 
 %%  $Id$
 
-\encoding{latin1}
+\encoding{utf8}
 \name{runTestSuite}
 \alias{runTestSuite}
 \concept{test suite}
@@ -176,7 +176,7 @@ runTestFile(absFileName, useOwnErrorHandler = TRUE,
 }
 
 \author{
-Thomas \enc{K{\"o}nig}{Koenig}, Klaus \enc{J{\"u}nemann}{Juenemann}
+Thomas \enc{König}{Koenig}, Klaus \enc{Jünemann}{Juenemann}
 \ifelse{html}{\out{&amp;}}{&} Matthias Burger}
 
 \seealso{
