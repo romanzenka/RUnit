@@ -45,3 +45,4 @@ export(".setUp",
 S3method(print, RUnitTestData)
 S3method(summary, RUnitTestData)
 S3method(printHTML, trackInfo)
+S3method(printHTML, default)
